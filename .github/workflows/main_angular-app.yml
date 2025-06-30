@@ -1,7 +1,4 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy Node.js app to Azure Web App - angular-app
+name: Build and deploy Angular App to Azure Web App
 
 on:
   push:
@@ -13,41 +10,64 @@ jobs:
   build:
     runs-on: windows-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js version
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '~20'
+          node-version: '20'
 
-      - name: npm install, build, and test
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Install project dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Copy environment files
         run: |
-          npm install
-          npm run build --if-present
-          npm run test --if-present
-      
-      - name: Upload artifact for deployment job
+          copy ".\Deployment Materials\Dev\environment.prod.ts" ".\angular\src\environments\environment.prod.ts"
+          copy ".\Deployment Materials\Dev\environment.ts" ".\angular\src\environments\environment.ts"
+
+      - name: Install ABP CLI
+        run: dotnet tool install -g Volo.Abp.Cli
+
+      - name: Generate Angular proxies
+        run: |
+          cd angular
+          abp generate-proxy -t ng
+
+      - name: Build Angular App
+        run: |
+          cd angular
+          yarn build:prod
+
+      - name: Copy web.config into build output
+        run: copy ".\Deployment Materials\Dev\web.config" ".\angular\dist\ClientPortal\web.config"
+
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: node-app
-          path: .
+          name: angular-build
+          path: angular/dist/ClientPortal/
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: build
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+      id-token: write
+      contents: read
 
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: node-app
-      
+          name: angular-build
+          path: build
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -55,11 +75,21 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F19BFDD5AE564B319EE16A3D98546933 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_6D41669333344869B9DB1556E5200DAD }}
 
-      - name: 'Deploy to Azure Web App'
+      - name: Stop Azure Web App before deploy (optional)
+        run: |
+          az webapp stop --name angular-app --resource-group YOUR_RESOURCE_GROUP_NAME
+        env:
+          AZURE_HTTP_USER_AGENT: GitHubActions
+
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
-        id: deploy-to-webapp
         with:
           app-name: 'angular-app'
           slot-name: 'Production'
-          package: .
-          
+          package: build
+
+      - name: Start Azure Web App after deploy (optional)
+        run: |
+          az webapp start --name angular-app --resource-group YOUR_RESOURCE_GROUP_NAME
+        env:
+          AZURE_HTTP_USER_AGENT: GitHubActions
