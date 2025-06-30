@@ -1,0 +1,148 @@
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title-group class="w-100 d-flex justify-content-between align-items-center">
+      <mat-card-title class="abp-card-title m-0">
+        {{ '::Menu:PrinterSetup' | abpLocalization }}
+      </mat-card-title>
+
+      <div class="d-flex align-items-center gap-2">
+        <div *abpPermission="'ClientPortal.Printing.CreateAccount'" class="flex-shrink-0">
+          <button
+            mat-raised-button
+            class="btn-sm"
+            color="accent"
+            (click)="onCreatePrintNodeAccount()"
+          >
+            <mat-icon>person_add</mat-icon>
+            {{ '::PrintNode:CreateAccount' | abpLocalization }}
+          </button>
+        </div>
+        <button mat-raised-button class="btn-sm" color="accent" (click)="onSync()">
+          <mat-icon>sync</mat-icon>
+          {{ '::PrinterSetup:SyncComputersAndPrinters' | abpLocalization }}
+        </button>
+        <button mat-raised-button class="btn-sm" color="primary" (click)="onSave()">
+          <mat-icon>save</mat-icon>
+          {{ '::Save' | abpLocalization }}
+        </button>
+      </div>
+    </mat-card-title-group>
+  </mat-card-header>
+
+  <form [formGroup]="form">
+    <mat-card-content class="mt-2">
+      <mat-expansion-panel class="mb-2" expanded="true">
+        <mat-expansion-panel-header>
+          {{ '::PrinterSetup:PrintingSetting' | abpLocalization }}</mat-expansion-panel-header
+        >
+        <div class="mb-3 ms-1">
+          <div>
+            <mat-checkbox formControlName="isAutoPrintForReviewOrder">
+              {{ '::PrintingSetting:IsAutoPrintForReviewOrder' | abpLocalization }}
+            </mat-checkbox>
+          </div>
+          <div>
+            <mat-checkbox formControlName="isPrintCardMessageWithOrderCopy">
+              {{ '::PrintingSetting:IsPrintCardMessageWithOrderCopy' | abpLocalization }}
+            </mat-checkbox>
+          </div>
+        </div>
+      </mat-expansion-panel>
+      <mat-expansion-panel class="mb-2" expanded="true">
+        <mat-expansion-panel-header>
+          {{ '::PrinterSetup:DefaultSetup' | abpLocalization }}
+        </mat-expansion-panel-header>
+        <div class="container-fluid">
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <colgroup>
+                <col style="width: 10%" />
+                <col style="width: 25%" />
+                <col style="width: 65%" />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>{{ '::PrinterSetup:OrderPrinter' | abpLocalization }}</th>
+                  <th>{{ '::PrinterSetup:CardPrinter' | abpLocalization }}</th>
+                </tr>
+              </thead>
+              <tbody formArrayName="jobTypes">
+                <tr
+                  *ngFor="let row of jobTypes.controls; let i = index; trackBy: trackByIndex"
+                  [formGroupName]="i"
+                >
+                  <input type="hidden" formControlName="id" />
+
+                  <td class="align-middle">
+                    {{
+                      '::Enum:PrintJobType:' + getJobTypeLabel(row.get('jobType')?.value)
+                        | abpLocalization
+                    }}
+                  </td>
+                  <td>
+                    <app-printer-tray-selector
+                      (printerChanged)="row.get('orderPrinterId')?.setValue($event)"
+                      [label]="'::PrinterSetup:OrderPrinter' | abpLocalization"
+                      [printerControl]="row.get('orderPrinterId')"
+                      [printers]="printers"
+                      [trayControl]="row.get('orderTray')"
+                      [trayOptions]="row.get('orderTrayOptions')?.value"
+                    >
+                    </app-printer-tray-selector>
+                  </td>
+
+                  <td>
+                    <div class="row g-0">
+                      <div class="col-md-4 pe-md-2">
+                        <app-printer-tray-selector
+                          (printerChanged)="row.get('cardPrinter3Id')?.setValue($event)"
+                          [label]="'::PrinterSetup:CardPrinter3Panel' | abpLocalization"
+                          [printerControl]="row.get('cardPrinter3Id')"
+                          [printers]="printers"
+                          [trayControl]="row.get('cardTray3')"
+                          [trayOptions]="row.get('cardTray3Options')?.value"
+                        >
+                        </app-printer-tray-selector>
+                      </div>
+
+                      <div class="col-md-4 px-md-2">
+                        <app-printer-tray-selector
+                          (printerChanged)="row.get('cardPrinter4Id')?.setValue($event)"
+                          [label]="'::PrinterSetup:CardPrinter4Panel' | abpLocalization"
+                          [printerControl]="row.get('cardPrinter4Id')"
+                          [printers]="printers"
+                          [trayControl]="row.get('cardTray4')"
+                          [trayOptions]="row.get('cardTray4Options')?.value"
+                        >
+                        </app-printer-tray-selector>
+                      </div>
+
+                      <div class="col-md-4 ps-md-2">
+                        <app-printer-tray-selector
+                          (printerChanged)="row.get('cardPrinterAllInOneId')?.setValue($event)"
+                          [label]="'::PrinterSetup:CardPrinterAllInOne' | abpLocalization"
+                          [printerControl]="row.get('cardPrinterAllInOneId')"
+                          [printers]="printers"
+                          [trayControl]="row.get('cardTrayAllInOne')"
+                          [trayOptions]="row.get('cardTrayAllInOneOptions')?.value"
+                        >
+                        </app-printer-tray-selector>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </mat-expansion-panel>
+      <mat-expansion-panel expanded="true">
+        <mat-expansion-panel-header>
+          {{ '::PrinterSetup:SetupOverride' | abpLocalization }}</mat-expansion-panel-header
+        >
+        <app-printer-setup-override [printers]="printers"></app-printer-setup-override>
+      </mat-expansion-panel>
+    </mat-card-content>
+  </form>
+</mat-card>

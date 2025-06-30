@@ -1,0 +1,11 @@
+<app-check-payment-processing
+  *ngIf="openCheckPaymentForm"
+  [batchDetailDto]="batchDetailDto"
+  [batchAccountListItem]="batchAccountListItem"
+></app-check-payment-processing>
+
+<app-card-payment-processing
+  *ngIf="openCardPaymentForm"
+  [batchDetailDto]="batchDetailDto"
+  [batchAccountListItem]="batchAccountListItem"
+></app-card-payment-processing>

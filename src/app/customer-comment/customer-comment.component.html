@@ -1,0 +1,93 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title-group class="w-100 d-flex justify-content-between align-items-center">
+      <mat-card-title>{{ '::CustomerComments' | abpLocalization }}</mat-card-title>
+      <div class="button-group d-flex">
+        <button
+          mat-raised-button
+          class="me-2"
+          color="primary"
+          type="button"
+          (click)="createComment()"
+        >
+          <mat-icon>add</mat-icon>
+          <span>{{ '::CustomerComment:NewComment' | abpLocalization }}</span>
+        </button>
+      </div>
+    </mat-card-title-group>
+    <app-back-button [route]="'/customers'"></app-back-button>
+  </mat-card-header>
+
+  <mat-card-content>
+    <table
+      mat-table
+      [dataSource]="comments.items"
+      class="w-100"
+      matSort
+      (matSortChange)="changeSort($event)"
+    >
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>{{ '::Actions' | abpLocalization }}</th>
+        <td mat-cell *matCellDef="let element">
+          <button
+            mat-raised-button
+            color="primary"
+            [matMenuTriggerFor]="menu"
+            [matMenuTriggerData]="{ id: element.id }"
+          >
+            <mat-icon>settings</mat-icon>
+            {{ '::Actions' | abpLocalization }}
+            <mat-icon>expand_more</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="comment">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::CustomerComment:Comment' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.comment }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="customerId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::CustomerComment:CustomerId' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.customerId }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="commentAsLocationNote">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::CustomerComment:CommentAsLocationNote' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ (element.commentAsLocationNote ? '::Yes' : '::No') | abpLocalization }}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns"></tr>
+
+      <tr class="mat-row no-data-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="columns.length">
+          <app-empty-table-message></app-empty-table-message>
+        </td>
+      </tr>
+    </table>
+    <mat-paginator
+      [length]="comments.totalCount"
+      [pageSize]="list.maxResultCount"
+      (page)="changePage($event)"
+    ></mat-paginator>
+  </mat-card-content>
+</mat-card>
+
+<mat-menu #menu="matMenu">
+  <ng-template matMenuContent let-id="id">
+    <button mat-menu-item (click)="editComment(id)">
+      {{ '::Edit' | abpLocalization }}
+    </button>
+    <button mat-menu-item (click)="delete(id)">
+      {{ '::Delete' | abpLocalization }}
+    </button>
+  </ng-template>
+</mat-menu>

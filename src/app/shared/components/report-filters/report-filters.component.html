@@ -1,0 +1,413 @@
+<mat-card>
+  <mat-card-content>
+    <form [formGroup]="filterForm" (ngSubmit)="onReportGenerate()" class="py-3">
+      <div class="form-group row">
+        <div class="mb-2 mt-2">
+          {{ '::Payroll:DateRangeFiltering' | abpLocalization }}
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasDateCriteria">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Reports:Common:FilterByDate' | abpLocalization }}</mat-label>
+            <mat-select formControlName="filterDateCategory">
+              <mat-option
+                *ngFor="let dateCategory of filterDateCategory"
+                [value]="dateCategory.value"
+              >
+                {{ '::Enum:FilterDateCategory.' + dateCategory.value | abpLocalization }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <ng-container *ngIf="reportFilterConfig?.hasDateRange">
+          <div class="col-md-4 mb-2">
+            <mat-form-field class="w-100" appearance="outline">
+              <mat-label>{{ '::Payroll:From' | abpLocalization }}</mat-label>
+              <mat-date-range-input
+                [formGroup]="filterForm.get('firstDateRangeGroup')"
+                [rangePicker]="picker"
+              >
+                <input matStartDate formControlName="fromDate" />
+                <input matEndDate formControlName="toDate" />
+              </mat-date-range-input>
+              <mat-hint>{{ '::Date:HintRange' | abpLocalization }}</mat-hint>
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-date-range-picker #picker></mat-date-range-picker>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-4 mb-2">
+            <mat-form-field class="w-100" appearance="outline">
+              <mat-label>{{ '::Payroll:To' | abpLocalization }}</mat-label>
+              <mat-date-range-input
+                [formGroup]="filterForm.get('secondDateRangeGroup')"
+                [rangePicker]="picker1"
+              >
+                <input matStartDate formControlName="fromDate" />
+                <input matEndDate formControlName="toDate" />
+              </mat-date-range-input>
+              <mat-hint>{{ '::Date:HintRange' | abpLocalization }}</mat-hint>
+              <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+              <mat-date-range-picker #picker1></mat-date-range-picker>
+            </mat-form-field>
+          </div>
+        </ng-container>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasCustomerClass">
+          <app-multi-select-dropdown
+            [label]="'::Customer:AcctClassValueId' | abpLocalization"
+            [options]="selectedCustomer.availableAcctClasses"
+            [idField]="'id'"
+            [nameField]="'name'"
+            [control]="filterForm.get('customerClassList')"
+          ></app-multi-select-dropdown>
+        </div>
+
+        <ng-container *ngIf="reportFilterConfig?.hasSingleDate">
+          <div class="col-md-4 mb-2">
+            <mat-form-field class="w-100" appearance="outline">
+              <mat-label>{{ '::Payroll:From' | abpLocalization }}</mat-label>
+              <input matInput [matDatepicker]="fromDatePicker" formControlName="fromDate" />
+              <mat-hint>{{ '::Date:Hint' | abpLocalization }}</mat-hint>
+              <mat-datepicker-toggle matSuffix [for]="fromDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #fromDatePicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4 mb-2">
+            <mat-form-field class="w-100" appearance="outline">
+              <mat-label>{{ '::Payroll:To' | abpLocalization }}</mat-label>
+              <input matInput [matDatepicker]="toDatePicker" formControlName="toDate" />
+              <mat-hint>{{ '::Date:Hint' | abpLocalization }}</mat-hint>
+              <mat-datepicker-toggle matSuffix [for]="toDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #toDatePicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </ng-container>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasSalesType">
+          <app-multi-select-dropdown
+            [label]="'::Reports:ProductSalesByOrderPlacement:SalesTypes' | abpLocalization"
+            [options]="salesTypes"
+            [idField]="'value'"
+            [nameField]="'key'"
+            [control]="filterForm.get('salesTypes')"
+            [hasLocalizationDisplayName]="true"
+            [displayNameLocalizationKey]="'::Enum:SalesType.'"
+          ></app-multi-select-dropdown>
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasStores">
+          <app-multi-select-dropdown
+            [label]="'::OrderControl:Store' | abpLocalization"
+            [options]="storeList"
+            [idField]="'id'"
+            [nameField]="'storeName'"
+            [control]="filterForm.get('stores')"
+          ></app-multi-select-dropdown>
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasProductTypes">
+          <app-multi-select-dropdown
+            [label]="'::Product.Type' | abpLocalization"
+            [options]="productInfo?.availableProductTypes"
+            [idField]="'id'"
+            [nameField]="'name'"
+            [control]="filterForm.get('productTypes')"
+          ></app-multi-select-dropdown>
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasProductDepartments">
+          <app-multi-select-dropdown
+            [label]="'::Product.Department' | abpLocalization"
+            [options]="productInfo?.availableDepartments"
+            [idField]="'id'"
+            [nameField]="'name'"
+            [control]="filterForm.get('productDepartments')"
+          ></app-multi-select-dropdown>
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasProducts">
+          <app-multi-select-dropdown
+            [label]="'::Reports:ProductSalesByDeliveryType:Products' | abpLocalization"
+            [options]="products?.items"
+            [idField]="'id'"
+            [nameField]="'name'"
+            [control]="filterForm.get('productIds')"
+          ></app-multi-select-dropdown>
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasEmployeeClass">
+          <app-multi-select-dropdown
+            [label]="'::Reports:Fields:EmployeeClass' | abpLocalization"
+            [options]="employeeClasses"
+            [idField]="'id'"
+            [nameField]="'name'"
+            [control]="filterForm.get('employeeClassList')"
+          ></app-multi-select-dropdown>
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasReportCategory">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Reports:Common:ReportType' | abpLocalization }}</mat-label>
+            <mat-select formControlName="reportCategory">
+              <mat-option
+                *ngFor="let reportCategory of reportCategories"
+                [value]="reportCategory.value"
+                >{{ reportCategory.key }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasCustomers">
+          <app-multi-select-dropdown
+            [label]="'::Report:Fields:Customer' | abpLocalization"
+            [options]="customers"
+            [idField]="'id'"
+            [nameField]="'name'"
+            [control]="filterForm.get('customers')"
+          ></app-multi-select-dropdown>
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasSalesPerson">
+          <app-multi-select-dropdown
+            [label]="'::Reports:Common:Salesperson' | abpLocalization"
+            [options]="salesPersons?.items"
+            [idField]="'employeeId'"
+            [nameField]="'displayName'"
+            [control]="filterForm.get('salesPersons')"
+          ></app-multi-select-dropdown>
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasCancellationReason">
+          <app-multi-select-dropdown
+            [label]="'::Report:Filter:CancelReasons' | abpLocalization"
+            [options]="cancelReasons"
+            [idField]="'id'"
+            [nameField]="'name'"
+            [control]="filterForm.get('cancellationReasonIds')"
+          ></app-multi-select-dropdown>
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasReplacementReason">
+          <app-multi-select-dropdown
+            [label]="'::Report:Filter:ReplacementReason' | abpLocalization"
+            [options]="replacementReasons"
+            [idField]="'id'"
+            [nameField]="'name'"
+            [control]="filterForm.get('replacementReasonIds')"
+          ></app-multi-select-dropdown>
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasReportTitle">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Reports:Common:ReportTitle' | abpLocalization }}</mat-label>
+            <input
+              matInput
+              type="text"
+              formControlName="reportTitle"
+              placeholder="{{ '::Reports:Common:ReportTitle' | abpLocalization }}"
+            />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasOrderType">
+          <app-multi-select-dropdown
+            [label]="'::Reports:StoreSalesAnalysis:OrderType' | abpLocalization"
+            [options]="orderTypes"
+            [idField]="'value'"
+            [nameField]="'key'"
+            [control]="filterForm.get('orderTypes')"
+            [hasLocalizationDisplayName]="true"
+            [displayNameLocalizationKey]="'::Enum:OrderTypes.'"
+          ></app-multi-select-dropdown>
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasOrderStatus">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::OrderControl:OrderStatus' | abpLocalization }}</mat-label>
+            <mat-select formControlName="orderStatus">
+              <mat-option value="0">{{ '::All' | abpLocalization }}</mat-option>
+              <mat-option *ngFor="let orderStatus of orderStatus" [value]="orderStatus.value">{{
+                orderStatus.key
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasPaymentMethod">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Report:Filter:PaymentMethod' | abpLocalization }}</mat-label>
+            <mat-select formControlName="paymentMethod">
+              <mat-option value="0">{{ '::All' | abpLocalization }}</mat-option>
+              <mat-option
+                *ngFor="let paymentMethod of paymentMethods"
+                [value]="paymentMethod.value"
+              >
+                {{ '::Enum:PaymentMethod.' + paymentMethod.value | abpLocalization }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasPaymentStatus">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Report:Filter:PaymentStatus' | abpLocalization }}</mat-label>
+            <mat-select formControlName="paymentStatus">
+              <mat-option value="0">{{ '::All' | abpLocalization }}</mat-option>
+              <mat-option
+                *ngFor="let paymentStatus of paymentStatus"
+                [value]="paymentStatus.value"
+                >{{ paymentStatus.key }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasOccasion">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Report:Filter:Occasion' | abpLocalization }}</mat-label>
+            <mat-select formControlName="occasionCode">
+              <mat-option value="0">{{ '::All' | abpLocalization }}</mat-option>
+              <mat-option *ngFor="let occasion of occasions" [value]="occasion.value">
+                {{ '::Enum:OccasionCode.' + occasion.value | abpLocalization }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasDeliveryType">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Report:Filter:DeliveryType' | abpLocalization }}</mat-label>
+            <mat-select formControlName="deliveryType">
+              <mat-option value="0">{{ '::All' | abpLocalization }}</mat-option>
+              <mat-option
+                *ngFor="let deliveryType of deliveryCategories"
+                [value]="deliveryType.value"
+              >
+                {{ '::Enum:DeliveryCategory.' + deliveryType.value | abpLocalization }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasGMPercentageRange">
+          <div class="range-container">
+            <mat-form-field appearance="outline" class="range-field">
+              <mat-label>{{ '::Reports:Common:GMRange' | abpLocalization }}</mat-label>
+              <input
+                matInput
+                type="number"
+                formControlName="minRange"
+                placeholder="{{ '::Reports:Common:From' | abpLocalization }}"
+                data-ignore-clear-zero
+              />
+            </mat-form-field>
+
+            <span class="range-separator">
+              {{ '::Reports:Common:RangeSeparator' | abpLocalization }}
+            </span>
+
+            <mat-form-field appearance="outline" class="range-field">
+              <input
+                matInput
+                type="number"
+                formControlName="maxRange"
+                placeholder="{{ '::Reports:Common:To' | abpLocalization }}"
+                data-ignore-clear-zero
+              />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasPriceRange">
+          <div class="range-container">
+            <mat-form-field appearance="outline" class="range-field">
+              <mat-label>{{ '::Reports:Common:PriceSearch' | abpLocalization }}</mat-label>
+              <input
+                matInput
+                type="number"
+                formControlName="minPriceRange"
+                placeholder="{{ '::Reports:Common:From' | abpLocalization }}"
+                data-ignore-clear-zero
+              />
+            </mat-form-field>
+
+            <span class="range-separator">
+              {{ '::Reports:Common:RangeSeparator' | abpLocalization }}
+            </span>
+
+            <mat-form-field appearance="outline" class="range-field">
+              <input
+                matInput
+                type="number"
+                formControlName="maxPriceRange"
+                placeholder="{{ '::Reports:Common:To' | abpLocalization }}"
+                data-ignore-clear-zero
+              />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasNumberToRank">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Reports:Filters:NumberToRank' | abpLocalization }}</mat-label>
+            <input
+              type="number"
+              matInput
+              class="form-control"
+              formControlName="numberToRank"
+              data-ignore-clear-zero
+            />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasIncludePrice">
+          <p>
+            <mat-slide-toggle formControlName="isIncludePrice">
+              {{ '::Reports:Common:IsIncludePrice' | abpLocalization }}
+            </mat-slide-toggle>
+          </p>
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasOverallTotalsOnly">
+          <p>
+            <mat-slide-toggle formControlName="isOverallTotalsOnly">
+              {{ '::Reports:Common:IsOverallTotalsOnly' | abpLocalization }}
+            </mat-slide-toggle>
+          </p>
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasPrintByTypeOnly">
+          <p>
+            <mat-slide-toggle formControlName="isPrintByTypeOnly">
+              {{ '::Reports:Common:IsPrintByTypeOnly' | abpLocalization }}
+            </mat-slide-toggle>
+          </p>
+        </div>
+
+        <div class="col-md-4" *ngIf="reportFilterConfig?.hasSearchOptions">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::ValueTypes:Search' | abpLocalization }}</mat-label>
+            <input
+              matInput
+              type="text"
+              formControlName="keyword"
+              placeholder="{{ '::Report:Search' | abpLocalization }}"
+            />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row mt-2">
+        <div class="col-md-4">
+          <button mat-raised-button color="primary" type="submit" class="me-2">
+            <mat-icon>summarize</mat-icon>
+            {{ '::GenerateReport' | abpLocalization }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

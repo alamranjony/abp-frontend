@@ -1,0 +1,20 @@
+<mat-dialog-content class="communication-box">
+  <div class="dialog-header">
+    <button (click)="closeDialog()" class="close-button" color="warn" mat-icon-button>
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <mat-tab-group>
+    <mat-tab [label]="'::CommunicationBox:SendNewMessage' | abpLocalization">
+      <app-send-message-tab></app-send-message-tab>
+    </mat-tab>
+
+    <mat-tab [label]="'::CommunicationBox:Inbox' | abpLocalization">
+      <app-inbox-tab></app-inbox-tab>
+    </mat-tab>
+
+    <mat-tab [label]="'::CommunicationBox:SentMessages' | abpLocalization">
+      <app-sent-messages-tab></app-sent-messages-tab>
+    </mat-tab>
+  </mat-tab-group>
+</mat-dialog-content>

@@ -1,0 +1,37 @@
+.btn-info {
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-color: #fff;
+}
+
+::ng-deep .product-form .mat-mdc-form-field-required-marker {
+  color: red !important;
+}
+
+.img-container {
+  position: relative;
+  display: inline-block;
+}
+
+.mg-preview {
+  max-height: 300px;
+  width: auto;
+  aspect-ratio: auto;
+}
+
+.preview-label {
+  display: block;
+}
+
+.btn-remove {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background-color: #fff;
+  border: none;
+  color: red;
+  cursor: pointer;
+}
+
+.btn-remove i {
+  font-size: 15px;
+}

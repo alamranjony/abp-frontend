@@ -1,0 +1,27 @@
+.mat-card-content {
+  .d-flex {
+    justify-content: center;
+    align-items: center;
+  }
+
+  .select-label {
+    margin-right: 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #5f6368;
+  }
+
+  .select-slot {
+    width: 300px;
+    margin-right: 8px;
+  }
+
+  button {
+    margin-left: 8px;
+  }
+
+  .delivery-slot-name {
+    width: 300px;
+    margin-top: 16px;
+  }
+}

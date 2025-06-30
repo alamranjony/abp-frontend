@@ -1,0 +1,96 @@
+<mat-card>
+  <mat-card-header class="w-100">
+    <mat-card-title-group class="w-100">
+      <mat-card-title class="abp-card-title p-2">
+        {{ '::Menu:SmsHistories' | abpLocalization }}
+      </mat-card-title>
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="input-group px-2 row">
+      <div class="col-md-9">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::SmsHistories.Search' | abpLocalization }}</mat-label>
+          <input
+            matInput
+            [placeholder]="'::SmsHistories.Search.Hint' | abpLocalization"
+            (keyup)="loadSmsHistory()"
+            [(ngModel)]="searchParam"
+          />
+          <mat-icon matSuffix (click)="clearSearch()" *ngIf="searchParam">clear</mat-icon>
+          <mat-icon matSuffix *ngIf="!searchParam">search</mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="col-md-3">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>{{ '::SmsHistories.Status' | abpLocalization }}</mat-label>
+          <mat-select [(ngModel)]="status" (selectionChange)="onChangeStatus()">
+            <mat-option [value]="0">{{ '::SmsHistories.Status.All' | abpLocalization }}</mat-option>
+            <mat-option *ngFor="let status of statusOptions" [value]="status.value">{{
+              '::Enum:SmsStatus.' + status.value | abpLocalization
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <mat-table
+      [dataSource]="smsHistories.items"
+      class="w-100"
+      matSort
+      (matSortChange)="changeSort($event)"
+    >
+      <ng-container matColumnDef="recipientNumber">
+        <mat-header-cell *matHeaderCellDef>
+          {{ '::SmsHistories.RecipientNumber' | abpLocalization }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.recipientNumber }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::SmsHistories.Status' | abpLocalization }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ '::Enum:SmsStatus.' + element.status | abpLocalization }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="sentTime">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::SmsHistories.SentTime' | abpLocalization }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.sentTime | date: 'fullDate' }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="tryCount">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::SmsHistories.TryCount' | abpLocalization }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.tryCount }}
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: columns"></mat-row>
+
+      <tr class="mat-row no-data-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="columns.length">
+          <app-empty-table-message></app-empty-table-message>
+        </td>
+      </tr>
+    </mat-table>
+    <mat-paginator
+      [pageIndex]="this.listService.page"
+      [length]="smsHistories.totalCount"
+      [pageSize]="listService.maxResultCount"
+      (page)="changePage($event)"
+    >
+    </mat-paginator>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,11 @@
+<div class="top-bar-global-search container">
+  <div class="input-group">
+    <input
+      type="text"
+      class="form-control"
+      [placeholder]="searchFieldPlaceholder"
+      [(ngModel)]="searchText"
+      (keyup.enter)="performSearch()"
+    />
+  </div>
+</div>

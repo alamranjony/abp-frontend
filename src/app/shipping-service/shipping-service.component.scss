@@ -1,0 +1,21 @@
+.active-status {
+  background-color: green;
+  color: white;
+  padding: 4px 13px 4px 13px;
+  border-radius: 4px;
+}
+
+.inactive-status {
+  background-color: red;
+  color: white;
+  padding: 4px 8px 4px 8px;
+  border-radius: 4px;
+}
+
+.mat-column-status {
+  width: 25%;
+}
+
+.mat-column-actions {
+  width: 25%;
+}

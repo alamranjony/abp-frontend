@@ -1,0 +1,73 @@
+<h2 mat-dialog-title>
+  {{
+    data.isEditMode
+      ? ('::MessageTemplate:EditMessage' | abpLocalization)
+      : ('::MessageTemplate:AddMessage' | abpLocalization)
+  }}
+</h2>
+
+<mat-dialog-content>
+<mat-accordion>
+    <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{ '::MessageTemplate:AllowedToken' | abpLocalization }}
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-chip-set>
+      <mat-chip *ngFor="let token of data.allowedTokens">{{ token }}</mat-chip>
+      <div></div>
+    </mat-chip-set>
+  </mat-expansion-panel>
+</mat-accordion>
+
+<mat-card-content>
+  <mat-dialog-content>
+    <form [formGroup]="messageTemplateForm">
+      <div class="mt-2">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label for="message-template-system-name">{{
+            '::MessageTemplates:Fields:Name' | abpLocalization
+          }}</mat-label>
+            <mat-select
+              formControlName="name"
+              id="message-template-system-name"
+              (selectionChange)="onChangeSystemName($event)"
+            >
+            <mat-option *ngFor="let name of messageTemplateSystemNames" [value]="name">
+              {{ name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="mt-2">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label for="message-template-subject">
+            {{ '::MessageTemplates:Fields:Subject' | abpLocalization }}
+          </mat-label>
+          <input matInput id="message-template-subject" formControlName="subject" />
+        </mat-form-field>
+      </div>
+      <div class="mt-2">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label for="message-template-body">{{
+            '::MessageTemplates:Fields:Body' | abpLocalization
+          }}</mat-label>
+          <textarea
+            cols="35"
+            rows="8"
+            matInput
+            id="message-template-body"
+            formControlName="body"
+          ></textarea>
+        </mat-form-field>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="actions">
+    <button mat-button (click)="onClose()">Close</button>
+    <button mat-raised-button color="primary" (click)="onSave()">Save</button>
+  </mat-dialog-actions>
+</mat-card-content>
+</mat-dialog-content>

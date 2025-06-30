@@ -1,0 +1,47 @@
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.shop-list {
+  width: 100%;
+  background: #f9f9f9;
+  border-radius: 8px;
+  overflow-y: auto;
+}
+
+.shop-item {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.shop-item:hover {
+  background-color: #e0e0e0;
+  cursor: pointer;
+}
+
+.shop-code {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.shop-name {
+  color: #333;
+}
+
+.no-shops {
+  text-align: center;
+  color: red;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 10px;
+}

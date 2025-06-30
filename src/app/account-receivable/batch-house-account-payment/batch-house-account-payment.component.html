@@ -1,0 +1,198 @@
+<mat-card>
+  <mat-card-header class="w-100 mb-2">
+    <mat-card-title-group class="w-100">
+      <mat-card-title>{{
+        '::BatchHouseAccountPayment:DefaultPageTitle' | abpLocalization
+      }}</mat-card-title>
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="batchHouseAccountPaymentForm">
+      <div class="form-group row">
+        <div class="col-md-4 d-flex justify-content-between">
+          <mat-form-field class="w-55" appearance="outline">
+            <mat-label>{{ '::BatchHouseAccountPayment:BatchNo' | abpLocalization }}</mat-label>
+            <input matInput formControlName="batchNo" />
+          </mat-form-field>
+
+          <div class="w-20">
+            <button type="button" mat-raised-button color="primary" (click)="viewBatchDetails()">
+              <mat-icon>visibility</mat-icon>
+              <span>{{ '::BatchHouseAccountPayment:View' | abpLocalization }}</span>
+            </button>
+          </div>
+          <div class="w-20">
+            <button type="button" mat-raised-button color="primary" (click)="generateBatchNo()">
+              <mat-icon>autorenew</mat-icon>
+              <span>{{ '::BatchHouseAccountPayment:Generate' | abpLocalization }}</span>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::BatchHouseAccountPayment:Store' | abpLocalization }}</mat-label>
+            <mat-select formControlName="storeId">
+              <mat-option *ngFor="let store of stores" [value]="store.id">{{
+                store.storeName
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{
+              '::BatchHouseAccountPayment:TransactionTypeCode' | abpLocalization
+            }}</mat-label>
+            <mat-select formControlName="paymentTransactionCodeId">
+              <mat-option
+                *ngFor="let transactionTypeCode of transactionTypeCodes"
+                [value]="transactionTypeCode.id"
+                >{{ transactionTypeCode.title }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{
+              '::BatchHouseAccountPayment:TransactionDate' | abpLocalization
+            }}</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="transactionDate" />
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-md-3">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::BatchHouseAccountPayment:BatchTotal' | abpLocalization }}</mat-label>
+            <input matInput formControlName="batchTotalAmount" type="number" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::BatchHouseAccountPayment:ActualTotal' | abpLocalization }}</mat-label>
+            <input matInput formControlName="fulfilledAmount" type="number" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::BatchHouseAccountPayment:BatchDue' | abpLocalization }}</mat-label>
+            <input matInput formControlName="dueAmount" type="number" />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="form-group d-flex justify-content-end">
+        @if (!batchDetailDto) {
+          <button
+            *abpPermission="'ClientPortal.BatchDetails.CreateAndEdit'"
+            type="button"
+            mat-raised-button
+            color="primary"
+            (click)="createBatch()"
+          >
+            <mat-icon>add</mat-icon>
+            <span>{{ '::Create' | abpLocalization }}</span>
+          </button>
+        }
+
+        @if (batchDetailDto) {
+          <button
+            *abpPermission="'ClientPortal.BatchDetails.CreateAndEdit'"
+            type="button"
+            mat-raised-button
+            color="primary"
+            (click)="makeBatchPayment()"
+          >
+            <mat-icon>payment</mat-icon>
+            <span>{{ '::BatchHouseAccountPayment:AddPaymentBtn' | abpLocalization }}</span>
+          </button>
+        }
+      </div>
+    </form>
+  </mat-card-content>
+  <mat-card-content>
+    <table mat-table [dataSource]="batchAccounts" class="w-100">
+      <!-- accountNo Column -->
+      <ng-container matColumnDef="accountNo">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ '::BatchAccountList:AccountNo' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.customerNo }}</td>
+      </ng-container>
+
+      <!-- accountName Column -->
+      <ng-container matColumnDef="accountName">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ '::BatchAccountList:AccountName' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.customerName }}</td>
+      </ng-container>
+
+      <!-- transactionType Column -->
+      <ng-container matColumnDef="transactionType">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ '::BatchAccountList:TransactionType' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.paymentType }}</td>
+      </ng-container>
+
+      <!-- code Column -->
+      <ng-container matColumnDef="code">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ '::BatchAccountList:TransactionCode' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.transactionCode }}</td>
+      </ng-container>
+
+      <!-- date Column -->
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ '::BatchAccountList:TransactionDate' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.transactionDate | date: 'MM/dd/yyyy' }}
+        </td>
+      </ng-container>
+
+      <!-- checkNo Column -->
+      <ng-container matColumnDef="checkNo">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ '::BatchAccountList:CheckNo' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.checkNo }}</td>
+      </ng-container>
+
+      <!-- amount Column -->
+      <ng-container matColumnDef="amount">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ '::BatchAccountList:PaymentAmount' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.paymentAmount | number: '1.2-2' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>{{ '::Actions' | abpLocalization }}</th>
+        <td mat-cell *matCellDef="let element">
+          <button
+            *abpPermission="'ClientPortal.BatchDetails.CreateAndEdit'"
+            mat-raised-button
+            color="primary"
+            (click)="onClickEditBatchAccountBtn(element)"
+          >
+            {{ '::Edit' | abpLocalization }}
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let myRowData; columns: columns"></tr>
+
+      <tr class="mat-row no-data-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="columns.length">
+          <app-empty-table-message></app-empty-table-message>
+        </td>
+      </tr>
+    </table>
+  </mat-card-content>
+</mat-card>

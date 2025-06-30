@@ -1,0 +1,264 @@
+<h2 mat-dialog-title *ngIf="!isAddMode">{{ '::WillCall' | abpLocalization }}</h2>
+<h2 mat-dialog-title *ngIf="isAddMode">{{ '::WillCall' | abpLocalization }}</h2>
+
+<mat-dialog-content>
+  <mat-horizontal-stepper #stepper [linear]="true">
+    <mat-step [stepControl]="deliveryDetailsForm">
+      <form [formGroup]="deliveryDetailsForm">
+        <ng-template matStepLabel>{{ '::DeliveryDetails' | abpLocalization }}</ng-template>
+        <div class="stepper-actions text-right mb-3">
+          <button mat-raised-button mat-dialog-close type="button" color="accent" class="me-2">
+            {{ '::Cancel' | abpLocalization }}
+          </button>
+          <button mat-raised-button matStepperNext type="button" color="primary">
+            {{ '::Next' | abpLocalization }}
+          </button>
+        </div>
+        <div class="row">
+          <div class="col-md-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::DeliveryFromDate' | abpLocalization }}</mat-label>
+              <input
+                matInput
+                [matDatepicker]="fromPicker"
+                formControlName="deliveryFromDate"
+                required
+              />
+              <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+              <mat-datepicker #fromPicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::DeliveryToDate' | abpLocalization }}</mat-label>
+              <input
+                matInput
+                [matDatepicker]="toPicker"
+                formControlName="deliveryToDate"
+                required
+              />
+              <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+              <mat-datepicker #toPicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-2">
+            <mat-checkbox formControlName="isTimeRequired">{{
+              '::TimeRequirement' | abpLocalization
+            }}</mat-checkbox>
+          </div>
+          <div class="col-md-1">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::Hour' | abpLocalization }}</mat-label>
+              <input matInput formControlName="deliveryTimeHour" type="number" min="0" max="23" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-1">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::Minute' | abpLocalization }}</mat-label>
+              <input
+                matInput
+                formControlName="defaultDeliveryMinute"
+                type="number"
+                min="0"
+                max="59"
+              />
+            </mat-form-field>
+          </div>
+          <div class="col-md-2">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::Timing' | abpLocalization }}</mat-label>
+              <mat-select formControlName="deliveryTimeType">
+                <mat-option
+                  [value]="deliveryTiming.value"
+                  *ngFor="let deliveryTiming of deliveryTimings"
+                >
+                  {{ deliveryTiming.key }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::DeliveryType' | abpLocalization }}</mat-label>
+              <mat-select formControlName="deliveryType">
+                <mat-option [value]="deliveryTypeEnum.WillCall">
+                  {{ '::Enum:DeliveryType.' + deliveryTypeEnum.WillCall | abpLocalization }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::SpecialInstructions' | abpLocalization }}</mat-label>
+              <textarea matInput formControlName="specialInstruction"></textarea>
+              <mat-hint align="end"
+                >{{ deliveryDetailsForm.get('specialInstruction').value?.length || 0 }}/75</mat-hint
+              >
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::PickupLocation' | abpLocalization }}</mat-label>
+              <mat-select
+                formControlName="pickupLocationId"
+                (selectionChange)="onChangePickupLocation($event)"
+              >
+                <mat-option *ngFor="let store of availableStores" [value]="store.id">{{
+                  store.storeName
+                }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div *ngIf="selectedPickupStoreAddress" class="mb-2">
+              <strong>{{ selectedPickupStoreAddress }}</strong>
+            </div>
+          </div>
+          <div class="col-md-2 mt-2">
+            <mat-checkbox formControlName="isPickedUp">{{
+              '::PickedUp' | abpLocalization
+            }}</mat-checkbox>
+          </div>
+          <div class="col-md-4 mt-2">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::PickedUpBy' | abpLocalization }}</mat-label>
+              <input matInput formControlName="pickedUpBy" type="text" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::PersonPickingUp' | abpLocalization }}</mat-label>
+              <input matInput formControlName="personPickingUp" type="text" />
+            </mat-form-field>
+          </div>
+        </div>
+      </form>
+    </mat-step>
+
+    <mat-step [stepControl]="orderPersonalizationForm">
+      <form [formGroup]="orderPersonalizationForm">
+        <ng-template matStepLabel>{{ '::OrderPersonalization' | abpLocalization }}</ng-template>
+
+        <div class="stepper-actions text-right mb-3">
+          <button mat-raised-button matStepperPrevious type="button" color="accent" class="me-2">
+            {{ '::Back' | abpLocalization }}
+          </button>
+          <button mat-raised-button (click)="onSave()" type="button" color="primary" class="me-2">
+            {{ '::Save' | abpLocalization }}
+          </button>
+          <button mat-raised-button mat-dialog-close type="button" color="accent">
+            {{ '::Cancel' | abpLocalization }}
+          </button>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::Occasion' | abpLocalization }}</mat-label>
+              <mat-select formControlName="occasion">
+                <mat-option *ngFor="let occasion of occasions" [value]="occasion.value">
+                  {{ '::Enum:OccasionType.' + occasion.value | abpLocalization }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <mat-checkbox formControlName="copyCardMessage">{{
+              '::CopyCardMessage' | abpLocalization
+            }}</mat-checkbox>
+          </div>
+
+          <div class="col-md-6 mb-2 text-right">
+            <button mat-mini-fab color="primary" (click)="addRecipientForm()">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <div formArrayName="recipientPersonalization">
+          <div
+            *ngFor="let recipientGroup of recipientPersonalizationFormArray.controls; let i = index"
+            [formGroupName]="i"
+            class="blue-form-section"
+          >
+            <div class="row">
+              <div class="col-md-6">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>{{ '::RecipientName' | abpLocalization }}</mat-label>
+                  <input matInput formControlName="recipientName" />
+                </mat-form-field>
+              </div>
+              <div class="col-md-5">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>{{ '::ShortCode' | abpLocalization }}</mat-label>
+                  <mat-select
+                    formControlName="shortCodeId"
+                    (selectionChange)="onShortCodeChange($event.value, i)"
+                  >
+                    <mat-option *ngFor="let code of shortCodes" [value]="code.id">
+                      {{ code.shortCut }} - {{ code.description }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="col-md-1 text-right">
+                <button
+                  mat-mini-fab
+                  color="primary"
+                  (click)="duplicateRecipientForm(i)"
+                  matTooltip="Duplicate"
+                  *ngIf="orderPersonalizationForm.get('copyCardMessage')?.value"
+                >
+                  <mat-icon>add</mat-icon>
+                </button>
+
+                <button
+                  *ngIf="i > 0"
+                  mat-mini-fab
+                  color="warn"
+                  (click)="removeRecipientForm(i)"
+                  class="mt-1"
+                >
+                  <mat-icon>remove</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-11">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>{{ '::CardMessage' | abpLocalization }}</mat-label>
+                  <textarea matInput formControlName="cardMessage" maxlength="400"></textarea>
+                  <mat-hint align="end"
+                    >{{ recipientGroup.get('cardMessage').value?.length || 0 }}/400</mat-hint
+                  >
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p
+          *ngIf="recipientPersonalizationFormArray.length >= maxRecipients"
+          class="max-recipients-message"
+        >
+          The quantity matches the {{ maxRecipients }} recipient(s) added. Please increase the
+          quantity to add more recipients.
+        </p>
+      </form>
+    </mat-step>
+  </mat-horizontal-stepper>
+</mat-dialog-content>

@@ -1,0 +1,52 @@
+<h2 mat-dialog-title class="p-2">
+  {{ (data.isEditMode ? '::ValueTypes:Edit' : '::NewValue') | abpLocalization }}
+</h2>
+
+<mat-card-content>
+  <mat-dialog-content>
+    <form [formGroup]="form" class="value-type-form">
+      <div class="w-100">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::Name' | abpLocalization }}</mat-label>
+          <input matInput formControlName="name" />
+        </mat-form-field>
+      </div>
+      <div class="w-100">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::ValueType:ValueTypeSettingParent' | abpLocalization }}</mat-label>
+          <mat-select
+            (selectionChange)="onParentValueTypeChange($event)"
+            formControlName="valueTypeSettingParent"
+          >
+            <mat-option [value]="0">
+              {{ '::Select' | abpLocalization }}
+            </mat-option>
+            <mat-option *ngFor="let parent of valueTypeSettingParents" [value]="parent">
+              {{ '::ValueType:Parent:' + parent | abpLocalization }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="w-100">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::ValueType:ValueTypeSettingChildren' | abpLocalization }}</mat-label>
+          <mat-select formControlName="valueTypeSettingChild">
+            <mat-option *ngFor="let child of valueTypeSettingChildren" [value]="child">
+              {{ '::ValueType:Child:' + child | abpLocalization }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="w-100">
+        <mat-checkbox formControlName="isActive">{{ '::Active' | abpLocalization }}</mat-checkbox>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="actions">
+    <button mat-button (click)="onClose()">{{ '::Cancel' | abpLocalization }}</button>
+    <button mat-raised-button color="primary" (click)="onSave()">
+      {{ '::Save' | abpLocalization }}
+    </button>
+  </mat-dialog-actions>
+</mat-card-content>

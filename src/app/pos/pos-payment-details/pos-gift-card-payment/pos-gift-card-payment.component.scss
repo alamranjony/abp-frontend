@@ -1,0 +1,51 @@
+.pos-payment-options {
+  border: 1px solid var(--primary-color);
+  background-color: #fffbf6;
+}
+
+.card-container {
+  width: 80%;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.card-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+  font-size: 14px;
+  color: var(--primary-color);
+  text-wrap: nowrap;
+  font-weight: 500;
+}
+
+.card-divider::after,
+.card-divider::before {
+  content: '';
+  width: 400px;
+  margin: 0px 10px;
+  display: block;
+  height: 1px;
+  background-color: var(--primary-color);
+}
+
+.submit-button {
+  width: 80%;
+  margin: auto;
+  text-align: right;
+}
+
+.giftCard-Error {
+  text-align: center;
+  color: red;
+  width: 100%;
+}
+
+.giftCard-Success {
+  width: 100%;
+  color: #355e3b;
+}

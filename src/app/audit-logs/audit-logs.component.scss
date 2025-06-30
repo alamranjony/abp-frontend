@@ -1,0 +1,14 @@
+@use '@angular/material' as mat;
+
+mat-form-field {
+  @include mat.form-field-density(-2);
+}
+
+.datepicker-toggle-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.mat-datepicker-toggle {
+  display: inline-flex;
+}

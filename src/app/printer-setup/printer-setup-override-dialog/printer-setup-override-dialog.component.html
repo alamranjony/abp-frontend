@@ -1,0 +1,166 @@
+<h2 mat-dialog-title>
+  {{
+    (data.isEditMode ? '::PrinterSetupOverride:Edit' : '::PrinterSetupOverride:Add')
+      | abpLocalization
+  }}
+</h2>
+<mat-card-content>
+  <mat-dialog-content>
+    <form [formGroup]="form">
+      <div class="row col-md-12">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::PrinterSetupOverride:PrintJobType' | abpLocalization }}</mat-label>
+          <mat-select formControlName="printJobType">
+            <mat-option *ngFor="let jobType of printJobTypeOptions" [value]="jobType.value"
+              >{{ '::Enum:PrintJobType:' + jobType.key | abpLocalization }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="row col-md-12">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::PrinterSetupOverride:OverrideType' | abpLocalization }}</mat-label>
+            <mat-select
+              (selectionChange)="onOverrideTypeChange($event)"
+              formControlName="printerOverrideType"
+            >
+              <mat-option [value]="PrinterOverrideType.ProductDepartment"
+                >{{ '::Enum:PrinterOverrideType:1' | abpLocalization }}
+              </mat-option>
+              <mat-option [value]="PrinterOverrideType.OrderType"
+                >{{ '::Enum:PrinterOverrideType:2' | abpLocalization }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::PrinterSetupOverride:OverrideValue' | abpLocalization }}</mat-label>
+            <mat-select formControlName="valueId">
+              <mat-option *ngFor="let value of filteredValues" [value]="value.id">
+                {{ value.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row col-md-12">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::PrinterSetupOverride:OrderPrinter' | abpLocalization }}</mat-label>
+            <mat-select formControlName="orderPrinterId">
+              <mat-option [value]="EMPTY_GUID">{{ '::Select' | abpLocalization }}</mat-option>
+              <mat-option *ngFor="let printer of data.printers" [value]="printer.id">
+                {{ printer.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::PrinterSetupOverride:OrderTray' | abpLocalization }}</mat-label>
+            <mat-select formControlName="orderTray">
+              <mat-option *ngFor="let tray of orderTrays" [value]="tray">
+                {{ tray }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row col-md-12">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{
+              '::PrinterSetupOverride:ThreePanelCardPrinter' | abpLocalization
+            }}</mat-label>
+            <mat-select formControlName="threePanelCardPrinterId">
+              <mat-option [value]="EMPTY_GUID">{{ '::Select' | abpLocalization }}</mat-option>
+              <mat-option *ngFor="let printer of data.printers" [value]="printer.id">
+                {{ printer.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{
+              '::PrinterSetupOverride:ThreePanelCardPrinterTray' | abpLocalization
+            }}</mat-label>
+            <mat-select formControlName="threePanelCardTray">
+              <mat-option *ngFor="let tray of threePanelCardTrays" [value]="tray">
+                {{ tray }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row col-md-12">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{
+              '::PrinterSetupOverride:FourPanelCardPrinter' | abpLocalization
+            }}</mat-label>
+            <mat-select formControlName="fourPanelCardPrinterId">
+              <mat-option [value]="EMPTY_GUID">{{ '::Select' | abpLocalization }}</mat-option>
+              <mat-option *ngFor="let printer of data.printers" [value]="printer.id">
+                {{ printer.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{
+              '::PrinterSetupOverride:FourPanelCardPrinterTray' | abpLocalization
+            }}</mat-label>
+            <mat-select formControlName="fourPanelCardTray">
+              <mat-option *ngFor="let tray of fourPanelCardTrays" [value]="tray">
+                {{ tray }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row col-md-12">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{
+              '::PrinterSetupOverride:AllInOneCardPrinter' | abpLocalization
+            }}</mat-label>
+            <mat-select formControlName="allInOneCardPrinterId">
+              <mat-option [value]="EMPTY_GUID">{{ '::Select' | abpLocalization }}</mat-option>
+              <mat-option *ngFor="let printer of data.printers" [value]="printer.id">
+                {{ printer.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{
+              '::PrinterSetupOverride:AllInOneCardPrinterTray' | abpLocalization
+            }}</mat-label>
+            <mat-select formControlName="allInOneCardTray">
+              <mat-option *ngFor="let tray of allInOneCardTrays" [value]="tray">
+                {{ tray }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="actions">
+    <button (click)="onClose()" color="accent" mat-raised-button>
+      <mat-icon>close</mat-icon>
+      {{ '::Close' | abpLocalization }}
+    </button>
+    <button (click)="onSave()" color="primary" mat-raised-button>
+      <mat-icon>save</mat-icon>
+      {{ '::Save' | abpLocalization }}
+    </button>
+  </mat-dialog-actions>
+</mat-card-content>

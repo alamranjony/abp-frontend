@@ -1,0 +1,105 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title-group class="w-100 d-flex justify-content-between align-items-center">
+      <mat-card-title class="abp-card-title">
+        {{ '::Menu:MessageShortCut' | abpLocalization }}
+      </mat-card-title>
+      <div class="button-group d-flex">
+        <button
+          mat-raised-button
+          class="me-2"
+          color="primary"
+          *abpPermission="'ClientPortal.MessageShortcuts.CreateAndEdit'"
+          id="create"
+          type="button"
+          (click)="createMessageShortCut()"
+        >
+          <mat-icon>add</mat-icon>
+          <span>{{ '::NewMessageShortCut' | abpLocalization }}</span>
+        </button>
+        <app-export-csv
+          *abpPermission="'ClientPortal.MessageShortcuts.Export'"
+          [apiUrl]="exportUrl"
+          fileName="message-shortcuts"
+          [fieldList]="exportFieldList"
+        ></app-export-csv>
+      </div>
+    </mat-card-title-group>
+  </mat-card-header>
+
+  <mat-card-content>
+    <app-search (filterChange)="search($event)" [(filter)]="filter"></app-search>
+    <table
+      mat-table
+      [dataSource]="messageShortcut.items"
+      class="w-100"
+      matSort
+      (matSortChange)="changeSort($event)"
+    >
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>{{ '::Actions' | abpLocalization }}</th>
+        <td mat-cell *matCellDef="let element">
+          <button
+            mat-raised-button
+            color="primary"
+            [matMenuTriggerFor]="menu"
+            [matMenuTriggerData]="{ id: element.id }"
+          >
+            <mat-icon>settings</mat-icon>
+            {{ '::Actions' | abpLocalization }}
+            <mat-icon>expand_more</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="shortCut">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::ShortCut' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.shortCut }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::Description' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.description }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns"></tr>
+
+      <tr class="mat-row no-data-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="columns.length">
+          <app-empty-table-message></app-empty-table-message>
+        </td>
+      </tr>
+    </table>
+
+    <mat-paginator
+      [pageIndex]="list.page"
+      [length]="messageShortcut.totalCount"
+      [pageSize]="list.maxResultCount"
+      (page)="changePage($event)"
+    ></mat-paginator>
+  </mat-card-content>
+</mat-card>
+
+<mat-menu #menu="matMenu">
+  <ng-template matMenuContent let-id="id">
+    <button
+      mat-menu-item
+      (click)="editMessageShortCut(id)"
+      *abpPermission="'ClientPortal.MessageShortcuts.CreateAndEdit'"
+    >
+      {{ '::Edit' | abpLocalization }}
+    </button>
+    <button
+      mat-menu-item
+      (click)="deleteMessageShortCut(id)"
+      *abpPermission="'ClientPortal.MessageShortcuts.Delete'"
+    >
+      {{ '::Delete' | abpLocalization }}
+    </button>
+  </ng-template>
+</mat-menu>

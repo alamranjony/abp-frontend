@@ -1,0 +1,75 @@
+<div class="product-details-popup position-relative">
+  <h2 mat-dialog-title>
+    <ng-container *ngIf="data.productCategoryType === productCategoryType.GiftCard">
+      {{ '::Pos:GiftCardInformation' | abpLocalization }}
+    </ng-container>
+    <ng-container *ngIf="data.productCategoryType !== productCategoryType.GiftCard">
+      {{ '::Pos:ProductDetails' | abpLocalization }}
+    </ng-container>
+  </h2>
+  <mat-dialog-content class="mat-typography" class="content">
+    <mat-card appearance="outlined">
+      <mat-card-content class="position-relative">
+        <div class="product-container d-flex align-items-center">
+          <div class="image-container-outer">
+            <div class="image-container">
+              <img [src]="data.imageSrc" (error)="handleImageError($event)" />
+            </div>
+          </div>
+
+          <div class="other-info">
+            <div class="name">{{ data.name }}</div>
+            <div class="info" *ngIf="data.isProductType !== false">
+              {{ '::Pos:ProductCode' | abpLocalization }} - <span> ${{ data.productCode }}</span>
+            </div>
+
+            <div *ngIf="data.isProductType !== false && data.hasRecipes">
+              <ng-container>
+                {{ '::Pos:AvailableStock' | abpLocalization }} :
+                <span>{{
+                  bouquetCount >= maxInteger ? ('::Pos:AllowOutOfStockSale' | abpLocalization) : bouquetCount
+                }}</span>
+              </ng-container>
+            </div>
+
+            <div class="base-price" *ngIf="data.isProductType !== false">
+              {{ '::Pos:BasePrice' | abpLocalization }} - <span> ${{ data.basePrice }}</span>
+            </div>
+            <div class="details" *ngIf="!isEditing">
+              @if (data.subOrderId) {
+                {{ orderDetails }}
+              } @else {
+                {{ data.description }}
+              }
+
+              <mat-icon
+                color="primary"
+                class="action-edit"
+                *ngIf="
+                  data.productCategoryType === productCategoryType.Flower ||
+                  data.productCategoryType === productCategoryType.AddOn ||
+                  !data.productCategoryType
+                "
+                (click)="toggleEdit()"
+              >
+                border_color
+              </mat-icon>
+            </div>
+
+            <div class="edit-details text-end" *ngIf="isEditing">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Edit details</mat-label>
+                <textarea class="w-100" matInput [(ngModel)]="orderDetails"></textarea>
+              </mat-form-field>
+              <button mat-raised-button color="primary" (click)="saveDetails()">
+                <mat-icon>save</mat-icon>
+                {{ '::Save' | abpLocalization }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-dialog-content>
+  <mat-icon class="custom-close-popup" mat-dialog-close color="primary">close</mat-icon>
+</div>

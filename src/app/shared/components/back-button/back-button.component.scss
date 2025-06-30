@@ -1,0 +1,12 @@
+.back-to-list-btn {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  max-width: 100%;
+  padding: 8px 16px;
+}
+
+.back-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}

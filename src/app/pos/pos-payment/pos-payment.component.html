@@ -1,0 +1,8 @@
+<div
+  class="pos-payment mb-2"
+  [ngClass]="{ 'disabled-pos-payment': isPaymentDisable() }"
+  (click)="saveOrder()"
+  matRipple
+>
+  <mat-icon>credit_card</mat-icon> {{ '::Pos:Payment' | abpLocalization }}
+</div>

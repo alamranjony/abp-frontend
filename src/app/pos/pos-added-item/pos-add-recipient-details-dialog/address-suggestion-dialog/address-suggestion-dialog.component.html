@@ -1,0 +1,30 @@
+<h2 mat-dialog-title>{{ '::RecipientSuggestedAddress' | abpLocalization }}</h2>
+
+<div mat-dialog-content class="dialog-content">
+  <div class="suggestions-container">
+    <h3>{{ '::Suggestions' | abpLocalization }}</h3>
+    <ul>
+      <li *ngFor="let suggestion of data.suggestions" (click)="selectAddress(suggestion)">
+        <strong>
+          {{
+            (suggestion.address?.streetNumber ? suggestion.address.streetNumber + ' ' : '') +
+              suggestion.address?.streetName
+          }}
+        </strong>
+        <br />
+        {{ suggestion.address?.municipality || '' }},
+        {{ suggestion.address?.countrySubdivision || '' }},
+        {{ suggestion.address?.postalCode || '' }}
+      </li>
+    </ul>
+  </div>
+
+  <div #mapElement class="map-container"></div>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-raised-button color="accent" (click)="skip()">
+    <mat-icon>close</mat-icon>
+    {{ '::Skip' | abpLocalization }}
+  </button>
+</div>

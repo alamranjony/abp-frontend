@@ -1,0 +1,268 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title-group>
+      <mat-card-title>
+        {{ '::Menu:Payroll' | abpLocalization }}
+      </mat-card-title>
+      <div class="text-end col col-md-8">
+        <div class="text-lg-end">
+          <button
+            *abpPermission="'ClientPortal.Payrolls.ClockOthersInOut'"
+            mat-raised-button
+            color="primary"
+            class="me-2"
+            (click)="createPayroll()"
+          >
+            <mat-icon>add</mat-icon>
+            <span> {{ '::Payroll:NewPayroll' | abpLocalization }}</span>
+          </button>
+          <app-export-template-csv
+            *abpPermission="'ClientPortal.Payrolls.Import'"
+            fileName="Time-Sheet"
+            [fieldList]="exportFieldList"
+          ></app-export-template-csv>
+          <button
+            *abpPermission="'ClientPortal.Payrolls.Import'"
+            mat-raised-button
+            color="accent"
+            type="button"
+            (click)="handleImportClick()"
+            class="me-2"
+          >
+            <mat-icon>upload</mat-icon>
+            <span>{{ '::Import' | abpLocalization }}</span>
+          </button>
+          <button
+            *abpPermission="'ClientPortal.Payrolls.Print'"
+            mat-raised-button
+            color="accent"
+            type="button"
+            (click)="printData()"
+            class="me-2"
+          >
+            <mat-icon>print</mat-icon>
+            <span>{{ '::Print' | abpLocalization }}</span>
+          </button>
+
+          <app-export-csv
+            *abpPermission="'ClientPortal.Payrolls.Export'"
+            [apiUrl]="exportUrl"
+            fileName="Time-Sheet"
+            [fieldList]="exportFieldList"
+          ></app-export-csv>
+        </div>
+      </div>
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content class="mt-2">
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        <form [formGroup]="form">
+          <div class="mb-1">
+            {{ '::Payroll:From' | abpLocalization }}:
+            <span class="date-time-frequency">{{
+              newFirstPayrollOfYear | date: 'MM/dd/yyyy'
+            }}</span>
+            {{ '::Payroll:To' | abpLocalization }}:
+            <span class="date-time-frequency"> {{ todayDate | date: 'MM/dd/yyyy' }}</span>
+            {{ '::Payroll:PayPeriod' | abpLocalization }}:
+            <span class="date-time-frequency">{{ payrollFrequencyName }}</span>
+          </div>
+          <div class="form-group row">
+            <div class="col-md-4">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{ '::Payroll:PayPeriod' | abpLocalization }}</mat-label>
+                <mat-select
+                  formControlName="payPeriodSlot"
+                  (selectionChange)="onChangePayPeriodSlot($event)"
+                >
+                  <mat-option *ngFor="let slot of payPeriodSlots" [value]="slot.value">{{
+                    ('::Payroll:PayPeriod' | abpLocalization) +
+                      ': ' +
+                      (slot.startDate | date: 'MM/dd/yyyy') +
+                      ' ' +
+                      ('::Payroll:To' | abpLocalization) +
+                      ' ' +
+                      (slot.text | date: 'MM/dd/yyyy')
+                  }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-4" *abpPermission="'ClientPortal.Payrolls.TimeCardOtherReport'">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{ '::Payroll:Employee' | abpLocalization }}</mat-label>
+                <input type="text" matInput [matAutocomplete]="auto" formControlName="employeeId" />
+                <mat-autocomplete
+                  #auto="matAutocomplete"
+                  [displayWith]="displayEmployeeName"
+                  (optionSelected)="onChangeEmployees($event)"
+                >
+                  <mat-option [value]="null">{{ '::Select' | abpLocalization }}</mat-option>
+                  <mat-option [value]="employee" *ngFor="let employee of employees$ | async">
+                    {{ employee.displayName }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <app-multi-select-dropdown
+                [label]="'::OrderControl:Store' | abpLocalization"
+                [options]="storeList"
+                [idField]="'id'"
+                [nameField]="'storeName'"
+                [control]="form.get('stores')"
+              ></app-multi-select-dropdown>
+            </div>
+          </div>
+          <div class="mb-1">
+            {{ '::Payroll:DateRangeFiltering' | abpLocalization }}
+          </div>
+          <div class="form-group row">
+            <div class="col-md-4">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{ '::Payroll:From' | abpLocalization }}</mat-label>
+                <input matInput [matDatepicker]="fromDatePicker" formControlName="fromDate" />
+                <mat-hint>{{ '::Date:Hint' | abpLocalization }}</mat-hint>
+                <mat-datepicker-toggle matSuffix [for]="fromDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #fromDatePicker></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{ '::Payroll:To' | abpLocalization }}</mat-label>
+                <input matInput [matDatepicker]="toDatePicker" formControlName="toDate" />
+                <mat-hint>{{ '::Date:Hint' | abpLocalization }}</mat-hint>
+                <mat-datepicker-toggle matSuffix [for]="toDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #toDatePicker></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <button mat-raised-button color="primary" (click)="onDateRangeFiltering()">
+                <mat-icon>search</mat-icon>
+                {{ '::Search' | abpLocalization }}
+              </button>
+              <span style="padding-left: 10px"></span>
+              <button mat-raised-button color="warn" (click)="clearFiltering()">
+                <mat-icon>clear</mat-icon>
+                {{ '::Reset' | abpLocalization }}
+              </button>
+            </div>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+    <br />
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        <div class="w-100">
+          <div class="payroll-hours">
+            <div class="align-space-between">
+              <span>{{ '::Payroll:TotalNormalHours' | abpLocalization }}</span>
+              <span
+                ><span class="total-hours">{{ regularHours }}</span
+                >{{ '::Payroll:Hrs' | abpLocalization }}
+                <span class="total-hours">{{ regularMins }}</span
+                >{{ '::Payroll:Min' | abpLocalization }}</span
+              >
+            </div>
+          </div>
+          <div class="payroll-hours">
+            <div class="align-space-between">
+              <span>{{ '::Payroll:TotalOvertimeHours' | abpLocalization }}</span>
+              <span
+                ><span class="total-hours">{{ overtimeHours }}</span
+                >{{ '::Payroll:Hrs' | abpLocalization }}
+                <span class="total-hours">{{ overtimeMins }}</span
+                >{{ '::Payroll:Min' | abpLocalization }}</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <table
+          mat-table
+          [dataSource]="checkInOuts.items"
+          class="w-100 mat-elevation-z0"
+          matSort
+          (matSortChange)="changeSort($event)"
+        >
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>{{ '::Actions' | abpLocalization }}</th>
+            <td mat-cell *matCellDef="let element">
+              <button
+                color="accent"
+                *ngIf="hasEditPermission"
+                mat-raised-button
+                (click)="editPayroll(element.id)"
+              >
+                {{ '::Edit' | abpLocalization }}
+              </button>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="employeeId">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{ '::Payroll:Employee' | abpLocalization }}
+            </th>
+            <td mat-cell *matCellDef="let element">{{ element.displayName }}</td>
+          </ng-container>
+          <ng-container matColumnDef="currentTime">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{ '::Payroll:Date' | abpLocalization }}
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.currentTime | date: 'MM/dd/yyyy' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="departmentId">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{ '::TimeClock:Department' | abpLocalization }}
+            </th>
+            <td mat-cell *matCellDef="let element">{{ element.departmentName }}</td>
+          </ng-container>
+          <ng-container matColumnDef="shopId">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{ '::TimeClock:Location' | abpLocalization }}
+            </th>
+            <td mat-cell *matCellDef="let element">{{ element.storeName }}</td>
+          </ng-container>
+          <ng-container matColumnDef="checkinTime">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{ '::Menu:CheckIn' | abpLocalization }}
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.currentTime | shortTime }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="checkoutTime">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{ '::Menu:CheckOut' | abpLocalization }}
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.checkoutTime | shortTime }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="comment">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{ '::TimeClock:Comment' | abpLocalization }}
+            </th>
+            <td mat-cell *matCellDef="let element">{{ element.comment }}</td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="columns"></tr>
+          <tr mat-row *matRowDef="let row; columns: columns"></tr>
+
+          <tr class="mat-row no-data-row" *matNoDataRow>
+            <td class="mat-cell" [attr.colspan]="columns.length">
+              <app-empty-table-message></app-empty-table-message>
+            </td>
+          </tr>
+        </table>
+        <mat-paginator
+          [pageIndex]="list.page"
+          [length]="checkInOuts.totalCount"
+          [pageSize]="list.maxResultCount"
+          (page)="changePage($event)"
+        ></mat-paginator>
+      </mat-card-content>
+    </mat-card>
+  </mat-card-content>
+</mat-card>

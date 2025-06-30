@@ -1,0 +1,118 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title-group class="w-100">
+      <mat-card-title>{{ '::Menu:WireServiceSetup' | abpLocalization }}</mat-card-title>
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content class="mt-3">
+    <div class="row">
+      <div class="col-md-12">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::WireServiceSetup:WireService' | abpLocalization }}</mat-label>
+              <mat-select
+                formControlName="wireService"
+                (selectionChange)="onWireServiceChange($event)"
+              >
+                @for (wireService of wireServices; track wireService.key) {
+                  <mat-option [value]="wireService.value">{{
+                    '::Enum:WireService.' + wireService.value | abpLocalization
+                  }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::WireServiceSetup:HeadquarterCode' | abpLocalization }}</mat-label>
+              <input matInput formControlName="headquarterCode" />
+            </mat-form-field>
+          </div>
+          <div class="row" *ngIf="showAccountToken">
+            <div class="col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ '::WireServiceSetup:AccountToken' | abpLocalization }}</mat-label>
+                <textarea matInput formControlName="accountToken" readonly></textarea>
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <button mat-raised-button type="button" color="accent" (click)="generateToken()">
+                <mat-icon>settings_suggest</mat-icon>
+                {{ '::WireServiceSetup:GenerateAccessToken' | abpLocalization }}
+              </button>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100" *ngIf="showMemberCode">
+              <mat-label>{{ '::WireServiceSetup:MemberCode' | abpLocalization }}</mat-label>
+              <input matInput formControlName="memberCode" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100" *ngIf="showInterfaceId">
+              <mat-label>{{ '::WireServiceSetup:InterfaceId' | abpLocalization }}</mat-label>
+              <input matInput formControlName="interfaceId" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100" *ngIf="showSopCode">
+              <mat-label>{{ '::WireServiceSetup:ShopCode' | abpLocalization }}</mat-label>
+              <input matInput formControlName="shopCode" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::WireServiceSetup:Username' | abpLocalization }}</mat-label>
+              <input matInput formControlName="username" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::WireServiceSetup:Password' | abpLocalization }}</mat-label>
+              <input matInput formControlName="password" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::WireServiceSetup:CrossRefShopCode' | abpLocalization }}</mat-label>
+              <input matInput formControlName="crossRefShopCode" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{
+                '::WireServiceSetup:FloristAuthShopCode' | abpLocalization
+              }}</mat-label>
+              <input matInput formControlName="floristAuthShopCode" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-checkbox formControlName="autoForward" *ngIf="showAutoForward"
+              >{{ '::WireServiceSetup:AutoForward' | abpLocalization }}
+            </mat-checkbox>
+          </div>
+          <div class="col-md-6">
+            <mat-checkbox formControlName="confirmationReq" *ngIf="showConfirmationReq"
+              >{{ '::WireServiceSetup:ConfirmationReq' | abpLocalization }}
+            </mat-checkbox>
+          </div>
+          <div class="pt-2">
+            <button
+              *abpPermission="'ClientPortal.WireServiceSetup'"
+              mat-raised-button
+              color="primary"
+              type="submit"
+            >
+              <mat-icon>save</mat-icon>
+              {{ '::Save' | abpLocalization }}
+            </button>
+            <mat-checkbox class="ms-3" formControlName="applyForAllStore">{{
+              '::WireServiceSetup:ApplyForAllStore' | abpLocalization
+            }}</mat-checkbox>
+          </div>
+        </form>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

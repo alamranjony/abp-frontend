@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>{{ '::AddDeliverySlot' | abpLocalization }}</h2>
+<mat-card-content class="mt-1">
+  <mat-dialog-content [formGroup]="form">
+    <div class="row">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ '::DeliverySlotName' | abpLocalization }}</mat-label>
+        <input matInput formControlName="name" />
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-raised-button color="accent" (click)="close()">
+      <mat-icon>close</mat-icon>
+      {{ '::Cancel' | abpLocalization }}
+    </button>
+    <button mat-raised-button color="primary" (click)="save()">
+      <mat-icon>save</mat-icon>
+      {{ '::Save' | abpLocalization }}
+    </button>
+  </mat-dialog-actions>
+</mat-card-content>

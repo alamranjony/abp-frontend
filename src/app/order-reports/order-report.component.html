@@ -1,0 +1,90 @@
+<mat-card>
+  <mat-card-content>
+    <form [formGroup]="filterForm" (ngSubmit)="onReportGenerate()" class="py-3">
+      <div class="form-group row">
+        <div class="mb-2 mt-2">
+          {{ '::Payroll:DateRangeFiltering' | abpLocalization }}
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>{{ '::Payroll:From' | abpLocalization }}</mat-label>
+            <input matInput [matDatepicker]="fromDatePicker" formControlName="fromDate" />
+            <mat-hint>{{ '::Date:Hint' | abpLocalization }}</mat-hint>
+            <mat-datepicker-toggle matSuffix [for]="fromDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #fromDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>{{ '::Payroll:To' | abpLocalization }}</mat-label>
+            <input matInput [matDatepicker]="toDatePicker" formControlName="toDate" />
+            <mat-hint>{{ '::Date:Hint' | abpLocalization }}</mat-hint>
+            <mat-datepicker-toggle matSuffix [for]="toDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #toDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::OrderControl:OrderStatus' | abpLocalization }}</mat-label>
+            <mat-select formControlName="orderStatus">
+              <mat-option value="0">{{ '::All' | abpLocalization }}</mat-option>
+              <mat-option *ngFor="let orderStatus of orderStatus" [value]="orderStatus.value">{{
+                orderStatus.key
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-md-4 mt-2">
+          <app-multi-select-dropdown
+            [label]="'::Product.Type' | abpLocalization"
+            [options]="productInfo?.availableProductTypes"
+            [idField]="'id'"
+            [nameField]="'name'"
+            [control]="filterForm.get('productTypes')"
+          ></app-multi-select-dropdown>
+        </div>
+        <div class="col-md-4 mt-2">
+          <app-multi-select-dropdown
+            [label]="'::Product.Department' | abpLocalization"
+            [options]="productInfo?.availableDepartments"
+            [idField]="'id'"
+            [nameField]="'name'"
+            [control]="filterForm.get('productDepartments')"
+          ></app-multi-select-dropdown>
+        </div>
+        <div class="col-md-4 mt-2">
+          <app-multi-select-dropdown
+            [label]="'::OrderControl:Store' | abpLocalization"
+            [options]="storeList"
+            [idField]="'id'"
+            [nameField]="'storeName'"
+            [control]="filterForm.get('stores')"
+          ></app-multi-select-dropdown>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-md-9 mt-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::ValueTypes:Search' | abpLocalization }}</mat-label>
+            <input
+              matInput
+              type="text"
+              formControlName="keyword"
+              placeholder="{{ '::GenerateReport:Search' | abpLocalization }}"
+            />
+          </mat-form-field>
+        </div>
+        <div class="col-md-3 mt-2">
+          <button mat-raised-button color="primary" type="submit" class="me-2">
+            <mat-icon>summarize</mat-icon>
+            {{ '::GenerateReport' | abpLocalization }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

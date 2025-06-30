@@ -1,0 +1,32 @@
+<div class="login-container">
+  <div class="logo">
+    <img src="{{ logoUrl }}" alt="Logo" />
+  </div>
+
+  <form (ngSubmit)="onSubmit()">
+    <div class="mt-3">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ '::CustomLogin:UserName' | abpLocalization }}</mat-label>
+        <input matInput type="text" [(ngModel)]="username" name="username" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ '::CustomLogin:Password' | abpLocalization }}</mat-label>
+        <input matInput type="password" [(ngModel)]="password" name="password" required />
+      </mat-form-field>
+
+      <div class="checkbox-container">
+        <mat-checkbox [(ngModel)]="rememberMe" name="rememberMe">
+          {{ '::CustomLogin:RememberMe' | abpLocalization }}
+        </mat-checkbox>
+        <a routerLink="/forget-password" class="forgot-password">
+          {{ '::CustomLogin:ForgotPassword' | abpLocalization }}
+        </a>
+      </div>
+    </div>
+
+    <button mat-raised-button color="primary" class="mt-3" type="submit">
+      {{ '::CustomLogin:Login' | abpLocalization }}
+    </button>
+  </form>
+</div>

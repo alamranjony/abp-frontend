@@ -1,0 +1,124 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title-group>
+      <mat-card-title class="abp-card-title">
+        {{ '::Menu:WireServiceShops' | abpLocalization }}
+      </mat-card-title>
+      <div class="text-end col col-md-6">
+        <div class="text-lg-end pt-2">
+          <button
+            *abpPermission="'ClientPortal.WireServiceShops.CreateAndEdit'"
+            mat-raised-button
+            color="primary"
+            (click)="createWireServiceShop()"
+          >
+            <mat-icon>add</mat-icon>
+            <span>{{ '::WireServiceShop:NewWireServiceShop' | abpLocalization }}</span>
+          </button>
+        </div>
+      </div>
+    </mat-card-title-group>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="filter-section">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ '::Shop:WireServiceId' | abpLocalization }}</mat-label>
+        <mat-select
+          id="wireshop-wireService"
+          (selectionChange)="list.get()"
+          [(ngModel)]="wireServiceId"
+        >
+          <mat-option [value]="null">{{ '::Select' | abpLocalization }}</mat-option>
+          <mat-option [value]="wire.value" *ngFor="let wire of wireService">
+            {{ '::Enum:WireService.' + wire.value | abpLocalization }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="table-container">
+      <table
+        mat-table
+        [dataSource]="wireShop.items"
+        class="w-100 mat-elevation-z0"
+        matSort
+        (matSortChange)="changeSort($event)"
+      >
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>{{ '::Actions' | abpLocalization }}</th>
+          <td mat-cell *matCellDef="let element">
+            <button
+              mat-raised-button
+              color="primary"
+              [matMenuTriggerFor]="menu"
+              [matMenuTriggerData]="{ id: element.id }"
+            >
+              <mat-icon>settings</mat-icon>
+              {{ '::Actions' | abpLocalization }}
+              <mat-icon>expand_more</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="account">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::WireServiceShop:Account' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.account }}</td>
+        </ng-container>
+        <ng-container matColumnDef="userId">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::WireServiceShop:UserId' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.userId }}</td>
+        </ng-container>
+        <ng-container matColumnDef="wireServiceId">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::Shop:WireServiceId' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ '::Enum:WireService.' + element.wireServiceId | abpLocalization }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="isDefault">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::WireServiceShop:IsDefault' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.isDefault }}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns"></tr>
+
+        <tr class="mat-row no-data-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="columns.length">
+            <app-empty-table-message></app-empty-table-message>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <mat-paginator
+      [pageIndex]="list.page"
+      [length]="wireShop.totalCount"
+      [pageSize]="list.maxResultCount"
+      (page)="changePage($event)"
+    ></mat-paginator>
+  </mat-card-content>
+</mat-card>
+
+<mat-menu #menu="matMenu">
+  <ng-template matMenuContent let-id="id">
+    <button
+      mat-menu-item
+      (click)="editWireServiceShop(id)"
+      *abpPermission="'ClientPortal.WireServiceShops.CreateAndEdit'"
+    >
+      {{ '::Edit' | abpLocalization }}
+    </button>
+    <button
+      mat-menu-item
+      (click)="deleteWireServiceShop(id)"
+      *abpPermission="'ClientPortal.WireServiceShops.Delete'"
+    >
+      {{ '::Delete' | abpLocalization }}
+    </button>
+  </ng-template>
+</mat-menu>

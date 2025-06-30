@@ -1,0 +1,80 @@
+<mat-card>
+  <mat-card-header class="w-100">
+    <mat-card-title-group class="w-100 d-flex justify-content-between align-items-center">
+      <mat-card-title class="abp-card-title">
+        {{ '::Pos:MiscOrder' | abpLocalization }}
+      </mat-card-title>
+    </mat-card-title-group>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="miscOrderForm" (ngSubmit)="onSubmit()" class="py-3">
+      <div class="form-group row">
+        <div class="col-lg-6 col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Pos:MiscOrder:OrderTypeId' | abpLocalization }}</mat-label>
+            <mat-select
+              formControlName="orderTypeId"
+              (selectionChange)="onOrderTypeChange($event.value)"
+            >
+              <mat-option *ngFor="let orderType of miscOrderTypes" [value]="orderType.value">
+                {{ '::Enum:MiscOrderType:' + orderType.key | abpLocalization }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-lg-6 col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Pos:MiscOrder:ReasonTypeId' | abpLocalization }}</mat-label>
+            <mat-select formControlName="reasonId">
+              <mat-option *ngFor="let miscReason of miscReasons" [value]="miscReason.id">
+                {{ miscReason.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-lg-6 col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Pos:MiscOrder:EmployeeId' | abpLocalization }}</mat-label>
+            <input matInput class="form-control" formControlName="employeeId" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-lg-6 col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Pos:MiscOrder:Pin' | abpLocalization }}</mat-label>
+            <input matInput type="password" class="form-control" formControlName="pin" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-lg-6 col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Pos:MiscOrder:Amount' | abpLocalization }}</mat-label>
+            <input type="number" matInput class="form-control" formControlName="amount" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-lg-6 col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Pos:MiscOrder:Description' | abpLocalization }}</mat-label>
+            <textarea matInput formControlName="description"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <mat-card-actions align="end">
+        <button mat-raised-button color="primary" type="submit" [disabled]="loading">
+          <mat-icon>save</mat-icon>
+          {{ '::Save' | abpLocalization }}
+        </button>
+      </mat-card-actions>
+    </form>
+    <mat-icon class="custom-close-popup" mat-dialog-close color="primary">close</mat-icon>
+  </mat-card-content>
+</mat-card>

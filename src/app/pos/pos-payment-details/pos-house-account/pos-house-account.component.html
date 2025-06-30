@@ -1,0 +1,20 @@
+<mat-card class="pos-payment-options p-2 mb-2 pb-0" appearance="outlined">
+  <div class="p-2 card-container pb-0">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{ '::Pos:CustomerHouseAccount:Amount' | abpLocalization }}</mat-label>
+      <input
+        class="price-input"
+        matInput
+        [value]="remainingAmount || 0 | number: '1.2-2'"
+        readonly
+      />
+    </mat-form-field>
+  </div>
+
+  <div class="submit-button pb-2">
+    <button mat-raised-button color="primary" type="button" (click)="onAccept()">
+      <mat-icon>local_atm</mat-icon>
+      <span>{{ '::Pos:Accept' | abpLocalization }}</span>
+    </button>
+  </div>
+</mat-card>

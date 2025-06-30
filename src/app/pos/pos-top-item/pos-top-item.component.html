@@ -1,0 +1,16 @@
+<mat-grid-list [cols]="menuItems.length" rowHeight="50px" gutterSize="3px" class="top-menu">
+  @for (item of menuItems; track item.id) {
+    <mat-grid-tile
+      [colspan]="1"
+      [rowspan]="1"
+      matRipple
+      (click)="handleMenuItemClick(item.id)"
+      *abpPermission="item.permission ? item.permission : null"
+    >
+      <div class="menu-item-content">
+        <mat-icon>{{ item.icon }}</mat-icon>
+        <span class="menu-title">{{ item.title }}</span>
+      </div>
+    </mat-grid-tile>
+  }
+</mat-grid-list>

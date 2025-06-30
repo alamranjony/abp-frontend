@@ -1,0 +1,140 @@
+<div class="search-product-popup">
+  <h2 mat-dialog-title>{{ '::Pos:ProductSearchPopupTitle' | abpLocalization }}</h2>
+  <mat-dialog-content class="mat-typography" class="content">
+    <div class="row">
+      <div class="col-10">
+        <app-search
+          [placeHolder]="'::Pos:ProductSearchPopupListSearchPlaceholder' | abpLocalization"
+          (filterChange)="onSearch($event)"
+          [(filter)]="searchKey"
+        ></app-search>
+      </div>
+      <div class="col-2">
+        <mat-form-field appearance="outline" class="mw-100 py-3">
+          <mat-select
+            value="Name"
+            [(ngModel)]="sortColumn"
+            (selectionChange)="onSortSelectionChange()"
+          >
+            <mat-option value="Name" selected>Name</mat-option>
+            <mat-option value="ProductCode">Product Code</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <ng-container *ngIf="products.length > 0; else emptyTemplate">
+        <div class="col-3" *ngFor="let product of products">
+          <mat-card appearance="outlined">
+            <mat-card-content class="position-relative">
+              <div
+                class="low-stock-badge"
+                *ngIf="
+                  product.onHandQuantity - product.onOrderQuantity <= product.lowStockQuantiy &&
+                  product.onHandQuantity - product.onOrderQuantity &&
+                  !product.hasRecipes
+                "
+              >
+                {{ '::Pos:LowStock' | abpLocalization }}
+              </div>
+              <div
+                class="out-Of-stock-badge"
+                *ngIf="product.onHandQuantity - product.onOrderQuantity <= 0 && !product.hasRecipes"
+              >
+                {{ '::Pos:OutOfStock' | abpLocalization }}
+              </div>
+              <div class="product-container d-flex">
+                <div class="image-container-outer">
+                  <div class="image-container">
+                    <img
+                      src="{{ product.imageSrc }}"
+                      (error)="handleImageError($event)"
+                      alt="{{ product.name }}"
+                    />
+                  </div>
+                </div>
+
+                <div class="other-info">
+                  <div class="name text-truncate">{{ product.name }}</div>
+                  <div class="info text-truncate">
+                    <span>{{ product.productCode }}</span>
+                    <span [ngClass]="{ 'd-none': !product.isProductType }"
+                      >,{{ '::Pos:QOH' | abpLocalization }}
+                      <span>{{ product.onHandQuantity }}</span></span
+                    >
+                  </div>
+                  @if (!product.hasRecipes) {
+                    <div class="stock">
+                      {{ '::Pos:AvailableStock' | abpLocalization }} :
+                      @if (product.onHandQuantity - product.onOrderQuantity > 0) {
+                        {{ product.onHandQuantity - product.onOrderQuantity }}
+                      } @else {
+                        {{
+                          product.isOutOfStockSalesEnabled
+                            ? ('::Pos:AllowOutOfStockSale' | abpLocalization)
+                            : 0
+                        }}
+                      }
+                    </div>
+                  } @else {
+                    <div class="stockRecipe">
+                      {{ '::Pos:RecipeProduct' | abpLocalization }}
+                    </div>
+                  }
+                  <div
+                    class="base-price text-truncate"
+                    [ngClass]="{ 'd-none': !data.isProductType }"
+                  >
+                    {{ '::Pos:BasePricePrefix' | abpLocalization }}
+                    <span>${{ product.basePrice }}</span>
+                  </div>
+                  <div class="details text-truncate">
+                    {{ product.details }}
+                  </div>
+                </div>
+              </div>
+              <div class="button-container d-flex">
+                <button
+                  mat-raised-button
+                  color="accent"
+                  type="button"
+                  (click)="showProductDetails(product, true)"
+                  class="details-button"
+                >
+                  <mat-icon>read_more</mat-icon>
+                  <span>{{ '::Pos:ProdutDetailText' | abpLocalization }}</span>
+                </button>
+                <button
+                  mat-raised-button
+                  color="primary"
+                  type="button"
+                  class="ms-1"
+                  (click)="addToOrder(product)"
+                  [disabled]="isAddToOrderBtnDisabled"
+                >
+                  <mat-icon>{{ product.added ? 'autorenew' : 'shopping_cart_checkout' }}</mat-icon>
+                  <span>{{ product.added ? 'Add Again' : 'Add To Order' }}</span>
+                </button>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </ng-container>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-raised-button color="accent" type="button" mat-dialog-close>
+      <mat-icon>close</mat-icon>
+      <span>{{ '::Close' | abpLocalization }}</span>
+    </button>
+  </mat-dialog-actions>
+  <mat-icon class="custom-close-popup" mat-dialog-close color="primary">close</mat-icon>
+</div>
+
+<ng-template #emptyTemplate class="empty-state">
+  <div class="pos">
+    <div class="empty-icon-container">
+      <img src="../../../assets/images/demo/empty-cart.svg" alt="cart-is-empty" />
+    </div>
+  </div>
+</ng-template>

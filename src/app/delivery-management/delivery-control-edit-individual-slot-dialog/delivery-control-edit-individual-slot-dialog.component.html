@@ -1,0 +1,29 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title-group class="w-100 d-flex justify-content-between align-items-center">
+      <mat-card-title class="abp-card-title">
+        {{ '::EditDeliverySlot' | abpLocalization }}
+      </mat-card-title>
+    </mat-card-title-group>
+  </mat-card-header>
+
+  <mat-dialog-content>
+    <form [formGroup]="slotChangeForm">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ '::SelectSlot' | abpLocalization }}</mat-label>
+        <mat-select formControlName="slotControl">
+          <mat-option *ngFor="let slot of availableSlots" [value]="slot.id">
+            {{ slot.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="cancel()">{{ '::Cancel' | abpLocalization }}</button>
+    <button mat-raised-button color="primary" (click)="save()">
+      {{ '::Save' | abpLocalization }}
+    </button>
+  </mat-dialog-actions>
+</mat-card>

@@ -1,0 +1,71 @@
+<div class="driver-check-out-container row">
+  <mat-card>
+    <div class="col-md-6 mx-auto">
+      <mat-card-header>
+        <mat-card-title>{{ '::DriverCheckOut:PageTitle' | abpLocalization }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="mt-2">
+        <form [formGroup]="checkOutForm">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::DeliveryDate' | abpLocalization }}</mat-label>
+            <input
+              matInput
+              [matDatepicker]="deliveryDatePicker"
+              formControlName="deliveryDate"
+              (dateChange)="onDeliveryDateChange($event)"
+              required
+            />
+            <mat-datepicker-toggle matSuffix [for]="deliveryDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #deliveryDatePicker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::EmployeeId' | abpLocalization }}</mat-label>
+            <input matInput formControlName="employeeId" required />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Pin' | abpLocalization }}</mat-label>
+            <input matInput formControlName="pin" required />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Route:SelectVehicle' | abpLocalization }}</mat-label>
+            <mat-select
+              formControlName="vehicleId"
+              (selectionChange)="onVehicleSelect($event.value)"
+            >
+              <mat-option *ngFor="let vehicle of vehicles" [value]="vehicle.id">
+                {{ vehicle.vehicleNo }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Mileage' | abpLocalization }}</mat-label>
+            <input matInput formControlName="mileage" required />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::SelectTrip' | abpLocalization }}</mat-label>
+            <mat-select formControlName="tripId" (selectionChange)="onTripSelect($event)">
+              <mat-option *ngFor="let trip of trips" [value]="trip.id">
+                {{ trip.customTripId }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-card-actions align="end">
+            <button mat-raised-button class="me-1" color="accent" (click)="onReset()">
+              <mat-icon>close</mat-icon>
+              {{ '::Reset' | abpLocalization }}
+            </button>
+            <button mat-raised-button color="primary" (click)="onSubmit()">
+              <mat-icon>save</mat-icon>
+              {{ '::DriverCheckOut:CheckOutBtn' | abpLocalization }}
+            </button>
+          </mat-card-actions>
+        </form>
+      </mat-card-content>
+    </div>
+  </mat-card>
+</div>

@@ -1,0 +1,29 @@
+.blue-form-section {
+  background-color: #ffffff;
+  border: 1px solid #00796b;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.blue-form-section mat-form-field {
+  background-color: #ffffff;
+  margin-bottom: 0;
+}
+
+.blue-form-section mat-form-field .mat-form-field-wrapper {
+  padding-bottom: 0 !important;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.max-recipients-message {
+  color: #d32f2f;
+  font-size: 14px;
+}
+
+.validate-btn {
+  width: 100%;
+}

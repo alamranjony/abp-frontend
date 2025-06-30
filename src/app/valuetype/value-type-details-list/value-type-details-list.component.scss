@@ -1,0 +1,46 @@
+.centered {
+  text-align: center;
+}
+
+.justified {
+  text-align: justify;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+::ng-deep.mat-column-name {
+  width: 25%;
+  min-width: 25%;
+  max-width: 25%;
+}
+
+::ng-deep.mat-column-displayOrder {
+  width: 12%;
+  min-width: 12%;
+  max-width: 12%;
+}
+
+::ng-deep.mat-column-valueType {
+  width: 23%;
+  min-width: 23%;
+  max-width: 23%;
+}
+
+::ng-deep.mat-column-description {
+  width: 25%;
+  min-width: 25%;
+  max-width: 25%;
+}
+
+::ng-deep.mat-column-isPreselect {
+  width: 15%;
+  min-width: 15%;
+  max-width: 15%;
+}
+
+.no-data-row {
+  height: 300px;
+  display: flex;
+  justify-content: center;
+}

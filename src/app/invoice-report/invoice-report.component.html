@@ -1,0 +1,131 @@
+<mat-card>
+  <mat-card-header class="w-100 mb-2">
+    <mat-card-title-group class="w-100">
+      <mat-card-title>{{ '::Invoicing:Reports' | abpLocalization }}</mat-card-title>
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="filterForm" class="py-3">
+      <div class="form-group row justify-content-md-center">
+        <div class="col-md-3">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>{{ '::Payroll:From' | abpLocalization }}</mat-label>
+            <input matInput [matDatepicker]="fromDatePicker" formControlName="fromDate" />
+            <mat-hint>{{ '::Date:Hint' | abpLocalization }}</mat-hint>
+            <mat-datepicker-toggle matSuffix [for]="fromDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #fromDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>{{ '::Payroll:To' | abpLocalization }}</mat-label>
+            <input matInput [matDatepicker]="toDatePicker" formControlName="toDate" />
+            <mat-hint>{{ '::Date:Hint' | abpLocalization }}</mat-hint>
+            <mat-datepicker-toggle matSuffix [for]="toDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #toDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row justify-content-md-center mt-3">
+        <div class="col-auto mt-1">
+          <mat-label>{{ '::Invoicing:Step1' | abpLocalization }}</mat-label>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>{{ '::Invoicing:DailyInvoice' | abpLocalization }}</mat-label>
+            <input matInput />
+          </mat-form-field>
+        </div>
+        <div class="col-auto mt-1">
+          <mat-icon class="me-2 cursor-pointer" (click)="handleAction(step.Step1, actionType.Print)"
+            >print</mat-icon
+          >
+          <mat-icon class="cursor-pointer" (click)="handleAction(step.Step1, actionType.Pdf)"
+            >description</mat-icon
+          >
+        </div>
+      </div>
+
+      <div class="row justify-content-md-center mt-3">
+        <div class="col-auto mt-1">
+          <mat-label>{{ '::Invoicing:Step2' | abpLocalization }}</mat-label>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>{{ '::Invoicing:DailyInvoiceRegister' | abpLocalization }}</mat-label>
+            <input matInput />
+          </mat-form-field>
+        </div>
+        <div class="col-auto mt-1">
+          <mat-icon class="me-2 cursor-pointer" (click)="handleAction(step.Step2, actionType.Print)"
+            >print</mat-icon
+          >
+          <mat-icon class="cursor-pointer" (click)="handleAction(step.Step2, actionType.Pdf)"
+            >description</mat-icon
+          >
+        </div>
+      </div>
+
+      <div class="row justify-content-md-center mt-3">
+        <div class="col-auto mt-1">
+          <mat-label>{{ '::Invoicing:Step3' | abpLocalization }}</mat-label>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>{{ '::Invoicing:CreditCardSettlement' | abpLocalization }}</mat-label>
+            <input matInput />
+          </mat-form-field>
+        </div>
+        <div class="col-auto mt-1">
+          <mat-icon class="me-2 cursor-pointer" (click)="handleAction(step.Step3, actionType.Print)"
+            >print</mat-icon
+          >
+          <mat-icon class="cursor-pointer" (click)="handleAction(step.Step3, actionType.Pdf)"
+            >description</mat-icon
+          >
+        </div>
+      </div>
+
+      <div class="row justify-content-md-center mt-3">
+        <div class="col-auto mt-1">
+          <mat-label>{{ '::Invoicing:Step4' | abpLocalization }}</mat-label>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>{{ '::Invoicing:TransmitPhone' | abpLocalization }}</mat-label>
+            <input matInput />
+          </mat-form-field>
+        </div>
+        <div class="col-auto mt-1">
+          <mat-icon class="me-2 cursor-pointer" (click)="handleAction(step.Step4, actionType.Print)"
+            >print</mat-icon
+          >
+          <mat-icon class="cursor-pointer" (click)="handleAction(step.Step4, actionType.Pdf)"
+            >description</mat-icon
+          >
+        </div>
+      </div>
+
+      <div class="row justify-content-md-center mt-3">
+        <div class="col-auto mt-1">
+          <mat-label>{{ '::Invoicing:Step5' | abpLocalization }}</mat-label>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>{{ '::Invoicing:MarkOrdersPosted' | abpLocalization }}</mat-label>
+            <input matInput />
+          </mat-form-field>
+        </div>
+        <div class="col-auto mt-1">
+          <mat-icon class="me-2 cursor-pointer" (click)="handleAction(step.Step5, actionType.Print)"
+            >print</mat-icon
+          >
+          <mat-icon class="cursor-pointer" (click)="handleAction(step.Step5, actionType.Pdf)"
+            >description</mat-icon
+          >
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,44 @@
+<router-outlet></router-outlet>
+
+<abp-modal [(visible)]="isCopyRoleVisible" [busy]="modalBusy">
+  <ng-template #abpHeader>
+    <h3>{{ '::Role.Copy' | abpLocalization }}</h3>
+  </ng-template>
+
+  <ng-template #abpBody>
+    <form [formGroup]="form">
+      <div class="mt-2">
+        <label for="name"> {{ '::Role.Fields.Name' | abpLocalization }}</label
+        ><span> * </span>
+        <input id="name" type="text" class="form-control" formControlName="name" autofocus />
+      </div>
+      <div class="form-check mt-2">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="isDefault"
+          formControlName="isDefault"
+        />
+        <label class="form-check-label" for="isDefault">
+          {{ '::Role.Fields.IsDefault' | abpLocalization }}
+        </label>
+      </div>
+      <div class="form-check mt-2">
+        <input class="form-check-input" type="checkbox" id="isPublic" formControlName="isPublic" />
+        <label class="form-check-label" for="isPublic">
+          {{ '::Role.Fields.IsPublic' | abpLocalization }}
+        </label>
+      </div>
+    </form>
+  </ng-template>
+
+  <ng-template #abpFooter>
+    <button type="button" class="btn btn-outline-primary" abpClose>
+      {{ 'AbpUi::Cancel' | abpLocalization }}
+    </button>
+
+    <button class="btn btn-primary" (click)="save()" [disabled]="this.form.invalid">
+      <i class="fa fa-check"></i>{{ 'AbpUi::Save' | abpLocalization }}
+    </button>
+  </ng-template>
+</abp-modal>

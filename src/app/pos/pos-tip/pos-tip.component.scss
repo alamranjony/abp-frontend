@@ -1,0 +1,31 @@
+.add-tip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--primary-color);
+  border-radius: 0.25rem;
+  color: var(--primary-color);
+  font-weight: 500;
+  cursor: pointer;
+  height: 36px;
+  font-size: 14px;
+  background: #ffefe4;
+}
+
+.remove-tip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--danger);
+  border-radius: 0.25rem;
+  color: var(--danger);
+  font-weight: 500;
+  cursor: pointer;
+  height: 36px;
+  font-size: 14px;
+  background: #ffe6e6;
+}
+
+mat-icon {
+  margin-right: 8px;
+}

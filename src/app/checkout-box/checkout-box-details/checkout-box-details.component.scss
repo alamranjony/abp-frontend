@@ -1,0 +1,19 @@
+.table-container {
+  height: calc(100vh - 240px);
+  min-height: 300px;
+  overflow-y: auto;
+  width: 100%;
+  position: relative;
+  border-radius: 4px;
+}
+
+mat-card {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 100px);
+}
+
+.mat-toolbar-custom {
+  font-size: 1.25rem;
+  padding: 10px 16px;
+}

@@ -1,0 +1,625 @@
+<mat-card>
+  <mat-card-header class="w-100">
+    <mat-card-title-group class="w-100">
+      <mat-card-title class="abp-card-title">
+        {{ isAddMode ? ('::NewCustomer' | abpLocalization) : ('::EditCustomer' | abpLocalization) }}
+      </mat-card-title>
+    </mat-card-title-group>
+    <app-back-button [route]="'/customers'" tabindex="1"></app-back-button>
+  </mat-card-header>
+  <mat-card-content class="my-3">
+    <form [formGroup]="customerForm">
+      <mat-expansion-panel class="mb-3" expanded="true">
+        <mat-expansion-panel-header class="text-warning">
+          {{ '::Customer:PersonalDetails' | abpLocalization }}
+        </mat-expansion-panel-header>
+
+        <div class="form-group-row" *ngIf="this.isAddMode">
+          <div class="col-md-6 mb-2">
+            <mat-label> {{ '::Customer:EntryOption' | abpLocalization }}</mat-label>
+            <mat-radio-group
+              formControlName="entryOption"
+              (change)="onChangeEntryOption($event)"
+              tabindex="1"
+            >
+              <mat-radio-button [value]="false"
+                >{{ '::Customer:ManualEntry' | abpLocalization }}
+              </mat-radio-button>
+              <mat-radio-button [value]="true"
+                >{{ '::Customer:AutoGenerate' | abpLocalization }}
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-md-6 mb-1">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>{{ '::Customer:CustomerId' | abpLocalization }}</mat-label>
+              <input matInput formControlName="customerId" tabindex="2" />
+              <mat-error *ngIf="customerForm.get('customerId').hasError('invalidValue')">
+                {{ '::Customer:CustomerId:Invalid' | abpLocalization }}
+              </mat-error>
+              <mat-error *ngIf="customerForm.get('customerId').hasError('customerIdExist')">
+                {{ '::Customer:CustomerId:AlreadyExist' | abpLocalization }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-md-6">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>{{ '::Customer:Name' | abpLocalization }}</mat-label>
+              <input matInput formControlName="name" tabindex="3" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-md-6">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>{{ '::Customer:Address1' | abpLocalization }}</mat-label>
+              <input matInput formControlName="address1" tabindex="4" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>{{ '::Customer:Address2' | abpLocalization }}</mat-label>
+              <input matInput formControlName="address2" tabindex="9" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-md-6">
+            <mat-form-field
+              appearance="outline"
+              class="full-width"
+              [class.mb-2]="customerForm.get('countryId').hasError('invalidSelection')"
+            >
+              <mat-label>{{ '::Customer:CountryId' | abpLocalization }}</mat-label>
+              <input
+                tabindex="5"
+                matInput
+                type="text"
+                formControlName="countryId"
+                [matAutocomplete]="countryAutoGroup"
+              />
+              <mat-autocomplete
+                #countryAutoGroup="matAutocomplete"
+                [displayWith]="displayCountryName"
+              >
+                @for (country of filteredCountries | async; track country.id) {
+                  <mat-option [value]="country" (onSelectionChange)="onCountrySelected(country)"
+                    >{{ country.name }}
+                  </mat-option>
+                }
+              </mat-autocomplete>
+              <mat-error *ngIf="customerForm.get('countryId').hasError('invalidSelection')">
+                {{ '::Customer:CountryId:Invalid' | abpLocalization }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field
+              appearance="outline"
+              class="w-100"
+              [class.mb-2]="customerForm.get('stateProvinceId').hasError('invalidSelection')"
+            >
+              <mat-label>{{ '::Customer:StateProvinceId' | abpLocalization }}</mat-label>
+              <input
+                tabindex="10"
+                matInput
+                type="text"
+                formControlName="stateProvinceId"
+                [matAutocomplete]="stateProvinceAutoGroup"
+              />
+              <mat-autocomplete
+                #stateProvinceAutoGroup="matAutocomplete"
+                [displayWith]="displayStateProvinceName"
+              >
+                @for (stateProvince of filteredStateProvinces | async; track stateProvince.id) {
+                  <mat-option [value]="stateProvince">
+                    {{ stateProvince.name }}
+                  </mat-option>
+                }
+              </mat-autocomplete>
+              <mat-error *ngIf="customerForm.get('stateProvinceId').hasError('invalidSelection')">
+                {{ '::Customer:StateProvinceId:Invalid' | abpLocalization }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-md-6">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>{{ '::Customer:City' | abpLocalization }}</mat-label>
+              <input matInput formControlName="city" tabindex="6" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>{{ '::Customer:Zip' | abpLocalization }}</mat-label>
+              <input matInput formControlName="zip" tabindex="11" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-md-6">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>{{ '::Customer:Fax' | abpLocalization }}</mat-label>
+              <input matInput formControlName="fax" tabindex="7" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-label>{{ '::Customer:IsWholeSale' | abpLocalization }}</mat-label>
+            <mat-radio-group formControlName="isWholeSale" tabindex="12">
+              <mat-radio-button [value]="true"
+                >{{ '::Customer:Yes' | abpLocalization }}
+              </mat-radio-button>
+              <mat-radio-button [value]="false"
+                >{{ '::Customer:No' | abpLocalization }}
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-md-6">
+            <mat-label>{{ '::Customer:IsOptDirectoryMarketing' | abpLocalization }}</mat-label>
+            <div>
+              <mat-radio-group formControlName="isOptDirectoryMarketing" tabindex="8">
+                <mat-radio-button [value]="true"
+                  >{{ '::Customer:Yes' | abpLocalization }}
+                </mat-radio-button>
+                <mat-radio-button [value]="false"
+                  >{{ '::Customer:No' | abpLocalization }}
+                </mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </div>
+        </div>
+
+        <mat-expansion-panel class="my-3" expanded="true">
+          <mat-expansion-panel-header class="text-warning">
+            {{ '::Menu:EmailDirectory' | abpLocalization }}
+          </mat-expansion-panel-header>
+          <app-email-directory
+            tabindex="13"
+            [entityId]="this.id"
+            [entityName]="this.entityName"
+            (createdEmailDirectoriesEvent)="onHandleEmailCreation($event)"
+          >
+          </app-email-directory>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel class="my-3" expanded="true">
+          <mat-expansion-panel-header class="text-warning">
+            {{ '::Menu:PhoneDirectory' | abpLocalization }}
+          </mat-expansion-panel-header>
+          <app-phone-directory
+            tabindex="14"
+            [entityId]="this.id"
+            [entityName]="this.entityName"
+            (createdPhoneDirectoriesEvent)="onHandlePhoneCreation($event)"
+          ></app-phone-directory>
+        </mat-expansion-panel>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel class="mb-3" expanded="true">
+        <mat-expansion-panel-header class="text-warning">
+          {{ '::Customer:OtherDetails' | abpLocalization }}
+        </mat-expansion-panel-header>
+
+        <div class="form-group row">
+          <div class="col-md-6">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>{{ '::Customer:StatusValueId' | abpLocalization }}</mat-label>
+              <mat-select formControlName="statusValueId" tabindex="15">
+                <mat-option [value]="null">{{ '::Select' | abpLocalization }}</mat-option>
+                <mat-option
+                  *ngFor="let pValue of this.selectedCustomer.availableStatuses"
+                  [value]="pValue.id"
+                >
+                  {{ pValue.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-6">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>{{ '::Customer:CustomerAccountType' | abpLocalization }}</mat-label>
+              <mat-select formControlName="customerAccountType" tabindex="24">
+                <mat-option
+                  *ngFor="let option of customerAccountTypeOptions"
+                  [value]="option.value"
+                >
+                  {{ '::Enum:CustomerAccountType:' + option.value | abpLocalization }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-md-6">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>{{ '::Customer:AcctClassValueId' | abpLocalization }}</mat-label>
+              <mat-select formControlName="acctClassValueId" tabindex="16">
+                <mat-option [value]="null">{{ '::Select' | abpLocalization }}</mat-option>
+                <mat-option
+                  *ngFor="let pValue of this.selectedCustomer.availableAcctClasses"
+                  [value]="pValue.id"
+                >
+                  {{ pValue.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>{{ '::Customer:AcctManagerValueId' | abpLocalization }}</mat-label>
+              <mat-select formControlName="acctManagerValueId" tabindex="25">
+                <mat-option [value]="null">{{ '::Select' | abpLocalization }}</mat-option>
+                <mat-option *ngFor="let item of this.employees" [value]="item.id">
+                  {{ item.displayName }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-md-6">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>{{ '::Customer:StoreId' | abpLocalization }}</mat-label>
+              <mat-select formControlName="storeId" tabindex="17">
+                <mat-option [value]="null">{{ '::Select' | abpLocalization }}</mat-option>
+                <mat-option
+                  *ngFor="let pValue of this.selectedCustomer.availableStores"
+                  [value]="pValue.id"
+                >
+                  {{ pValue.storeFormatted }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>{{ '::Customer:TermValueId' | abpLocalization }}</mat-label>
+              <mat-select formControlName="termValueId" tabindex="26">
+                <mat-option [value]="null">{{ '::Select' | abpLocalization }}</mat-option>
+                <mat-option
+                  *ngFor="let pValue of this.selectedCustomer.availableTerms"
+                  [value]="pValue.id"
+                >
+                  {{ pValue.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-md-6">
+            <mat-label>{{ '::Customer:TaxExempt' | abpLocalization }}</mat-label>
+            <div>
+              <mat-radio-group formControlName="taxExempt" tabindex="18">
+                <mat-radio-button [value]="true"
+                  >{{ '::Customer:Yes' | abpLocalization }}
+                </mat-radio-button>
+                <mat-radio-button [value]="false"
+                  >{{ '::Customer:No' | abpLocalization }}
+                </mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </div>
+
+          <div class="col-md-6" *ngIf="customerForm.get('taxExempt')?.value">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>{{ '::Customer:TaxCertificate' | abpLocalization }}</mat-label>
+              <input matInput type="text" formControlName="taxCertificate" tabindex="27" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="form-group row mt-2">
+          <div class="col-md-6 d-flex align-items-center">
+            <mat-checkbox class="col-md-4 mb-3" tabindex="19" formControlName="hasDeliveryCharge">{{
+              '::Customer:HasDeliveryCharge' | abpLocalization
+            }}</mat-checkbox>
+            <mat-form-field class="col-md-8" appearance="outline">
+              <mat-label>{{ '::Customer:DeliveryCharge' | abpLocalization }}</mat-label>
+              <input matInput type="number" formControlName="deliveryCharge" />
+            </mat-form-field>
+          </div>
+          <div class="form-group row">
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::Customer:Discount' | abpLocalization }}</mat-label>
+                <input matInput type="number" formControlName="discount" tabindex="20" />
+                <span matSuffix class="me-2">%</span>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::Customer:DiscountOnWireout' | abpLocalization }}</mat-label>
+                <input matInput type="number" formControlName="discountOnWireout" tabindex="21" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label
+                  >{{ '::Customer:InvoicePaymentSchedulerValueId' | abpLocalization }}
+                </mat-label>
+                <mat-select formControlName="invoicePaymentSchedulerValueId" tabindex="28">
+                  <mat-option [value]="null">{{ '::Select' | abpLocalization }}</mat-option>
+                  <mat-option
+                    *ngFor="let pValue of this.selectedCustomer.availableInvoicePaymentSchedule"
+                    [value]="pValue.id"
+                  >
+                    {{ pValue.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label
+                  >{{ '::Customer:ArStatementInvoiceTypeValueId' | abpLocalization }}
+                </mat-label>
+                <mat-select formControlName="arStatementInvoiceTypeValueId" tabindex="22">
+                  <mat-option [value]="null">{{ '::Select' | abpLocalization }}</mat-option>
+                  <mat-option
+                    *ngFor="let pValue of this.selectedCustomer.availableARStatementInvoiceTypes"
+                    [value]="pValue.id"
+                  >
+                    {{ pValue.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::Customer:PriceSheetCodeValueId' | abpLocalization }}</mat-label>
+                <mat-select formControlName="priceSheetCodeValueId" tabindex="29">
+                  <mat-option [value]="null">{{ '::Select' | abpLocalization }}</mat-option>
+                  <mat-option
+                    *ngFor="let pValue of this.selectedCustomer.availablePriceSheetCodes"
+                    [value]="pValue.id"
+                  >
+                    {{ pValue.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::Customer:ReferredByValueId' | abpLocalization }}</mat-label>
+                <mat-select formControlName="referredByValueId" tabindex="23">
+                  <mat-option [value]="null">{{ '::Select' | abpLocalization }}</mat-option>
+                  <mat-option
+                    *ngFor="let pValue of this.selectedCustomer.availableReferredBy"
+                    [value]="pValue.id"
+                  >
+                    {{ pValue.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::Customer:CustomerReference' | abpLocalization }}</mat-label>
+                <input matInput formControlName="customerReference" tabindex="30" />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-md-12">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::Customer:Comment' | abpLocalization }}</mat-label>
+                <textarea matInput formControlName="comment" tabindex="31"></textarea>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+
+      <div *ngIf="customerForm.get('customerAccountType')?.value === CustomerAccountType.House">
+        <mat-expansion-panel class="mb-3" expanded="false">
+          <mat-expansion-panel-header class="text-warning">
+            {{ '::Customer:HouseAccountDetails' | abpLocalization }}
+          </mat-expansion-panel-header>
+
+          <div class="form-group row">
+            <div class="col-md-4">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::Customer:CreditLimit' | abpLocalization }}</mat-label>
+                <input matInput formControlName="creditLimit" tabindex="32" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-checkbox class="full-width" formControlName="lateFeeChargeable" tabindex="33">{{
+                '::Customer:LateFeeChargeable' | abpLocalization
+              }}</mat-checkbox>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::Customer:TermsCode' | abpLocalization }}</mat-label>
+                <mat-select formControlName="termsCodeId" tabindex="34">
+                  <mat-option *ngFor="let termsCode of termsCodes" [value]="termsCode.id">
+                    {{ termsCode.code }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <strong class="mb-1">{{ '::AccountDetails' | abpLocalization }}</strong>
+          <div class="form-group row">
+            <div class="col-md-6">
+              <div class="p-0">
+                {{ '::AccountOpenDate' | abpLocalization }}
+                <span class="pad-left">{{
+                  customerForm.get('accountOpenDate')?.value | date: 'MM/dd/yyyy'
+                }}</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-0">
+                {{ '::LastPurchaseDate' | abpLocalization }}
+                <span class="pad-left">{{
+                  customerForm.get('lastPurchaseDate')?.value | date: 'MM/dd/yyyy'
+                }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row mb-2">
+            <div class="col-md-6">
+              <div class="p-0">
+                {{ '::LastStatementDate' | abpLocalization }}
+                <span class="pad-left">{{
+                  customerForm.get('lastStatementDate')?.value | date: 'MM/dd/yyyy'
+                }}</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-0">
+                {{ '::LastPaymentDate' | abpLocalization }}
+                <span class="pad-left">{{
+                  customerForm.get('lastPaymentDate')?.value | date: 'MM/dd/yyyy' || 'N/A'
+                }}</span>
+              </div>
+            </div>
+          </div>
+
+          <strong class="mb-1"> {{ '::SalesDetails' | abpLocalization }}</strong>
+
+          <div class="form-group row">
+            <div class="col-md-6">
+              <div class="p-0">
+                {{ '::YTDSales' | abpLocalization }}
+                <span class="pad-left">{{ customerForm.get('ytdSales')?.value }}</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-0">
+                {{ '::YTDAmount' | abpLocalization }}
+                <span class="pad-left">{{ customerForm.get('ytdAmount')?.value | currency }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-md-6">
+              <div class="p-0">
+                {{ '::LYTDSales' | abpLocalization }}
+                <span class="pad-left">{{ customerForm.get('lytdSales')?.value }}</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-0">
+                {{ '::LYTDAmount' | abpLocalization }}
+                <span class="pad-left">{{ customerForm.get('lytdAmount')?.value | currency }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row mb-2">
+            <div class="col-md-6">
+              <div class="p-0">
+                {{ '::LifetimeSales' | abpLocalization }}
+                <span class="pad-left">{{ customerForm.get('lifeTimeSales')?.value }}</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-0">
+                {{ '::LifetimeSalesAmount' | abpLocalization }}
+                <span class="pad-left">{{
+                  customerForm.get('lifeTimeSalesAmount')?.value | currency
+                }}</span>
+              </div>
+            </div>
+          </div>
+
+          <strong class="mb-1">{{ '::PaymentsDetails' | abpLocalization }}</strong>
+
+          <div class="form-group row">
+            <div class="col-md-6">
+              <div class="p-0">
+                {{ '::YTDPayments' | abpLocalization }}
+                <span class="pad-left">{{
+                  customerForm.get('ytdPayments')?.value | currency
+                }}</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-0">
+                {{ '::LifetimePayments' | abpLocalization }}
+                <span class="pad-left">{{
+                  customerForm.get('lifetimePayments')?.value | currency
+                }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-md-6">
+              <div class="p-0">
+                {{ '::LYTDPayments' | abpLocalization }}
+                <span class="pad-left">{{
+                  customerForm.get('lytdPayments')?.value | currency
+                }}</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-0">
+                {{ '::LifetimeCreditLimit' | abpLocalization }}
+                <span class="pad-left">{{
+                  customerForm.get('lifeTimeCreditLimit')?.value | currency
+                }}</span>
+              </div>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </div>
+    </form>
+    <mat-card-actions align="end">
+      <button mat-raised-button class="me-1" color="accent" (click)="onCancel()" tabindex="35">
+        <mat-icon>close</mat-icon>
+        {{ '::Cancel' | abpLocalization }}
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        class="me-1"
+        type="submit"
+        (click)="onSaveClick()"
+        tabindex="36"
+      >
+        <mat-icon>save</mat-icon>
+        <span> {{ '::Save' | abpLocalization }}</span>
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        (click)="onSaveAndContinueClick()"
+        tabindex="37"
+      >
+        <mat-icon>save</mat-icon>
+        <span> {{ '::SaveAndContinue' | abpLocalization }}</span>
+      </button>
+    </mat-card-actions>
+  </mat-card-content>
+</mat-card>

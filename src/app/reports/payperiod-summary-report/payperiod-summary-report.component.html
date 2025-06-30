@@ -1,0 +1,59 @@
+<mat-card>
+  <mat-card-content>
+    <form [formGroup]="filterForm" (ngSubmit)="onReportGenerate()" class="py-3">
+      <div class="mb-3">
+        {{ '::Payroll:From' | abpLocalization }}:
+        <span class="date-time-frequency">{{ newFirstPayrollOfYear | date: 'MM/dd/yyyy' }}</span>
+        {{ '::Payroll:To' | abpLocalization }}:
+        <span class="date-time-frequency"> {{ todayDate | date: 'MM/dd/yyyy' }}</span>
+        {{ '::Payroll:PayPeriod' | abpLocalization }}:
+        <span class="date-time-frequency">{{ payrollFrequencyName }}</span>
+      </div>
+      <div class="form-group row">
+        <div class="col-md-3">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>{{ '::Payroll:PayPeriod' | abpLocalization }}</mat-label>
+            <mat-select
+              formControlName="payPeriodSlot"
+              (selectionChange)="onChangePayPeriodSlot($event)"
+            >
+              <mat-option *ngFor="let slot of payPeriodSlots" [value]="slot.value">{{
+                ('::Payroll:PayPeriod' | abpLocalization) +
+                  ': ' +
+                  (slot.startDate | date: 'MM/dd/yyyy') +
+                  ' ' +
+                  ('::Payroll:To' | abpLocalization) +
+                  ' ' +
+                  (slot.text | date: 'MM/dd/yyyy')
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <app-multi-select-dropdown
+            [label]="'::OrderControl:Store' | abpLocalization"
+            [options]="storeList"
+            [idField]="'id'"
+            [nameField]="'storeName'"
+            [control]="filterForm.get('stores')"
+          ></app-multi-select-dropdown>
+        </div>
+        <div class="col-md-3">
+          <app-multi-select-dropdown
+            [label]="'::Employee.Fields.Department' | abpLocalization"
+            [options]="departmentList"
+            [idField]="'id'"
+            [nameField]="'name'"
+            [control]="filterForm.get('departments')"
+          ></app-multi-select-dropdown>
+        </div>
+        <div class="col-md-3">
+          <button mat-raised-button color="primary" type="submit" class="me-2">
+            <mat-icon>summarize</mat-icon>
+            {{ '::GenerateReport' | abpLocalization }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

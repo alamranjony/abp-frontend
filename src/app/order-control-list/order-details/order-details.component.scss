@@ -1,0 +1,111 @@
+.icon {
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+.text {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.product-item {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.product-item img {
+  width: 100px;
+  height: auto;
+}
+
+.status-text {
+  font-size: 14px;
+  color: #fa7103;
+}
+
+.summary-card mat-card {
+  border-radius: 8px;
+  max-width: 550px;
+}
+
+.summary-card mat-card-content p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.card-header-bg {
+  background-color: #f5f5f5;
+  padding: 10px;
+  border-radius: 4px 4px 0 0;
+}
+
+.ivcr-btn {
+  margin-right: 1rem;
+}
+
+.deliveryBtn {
+  min-width: 230px;
+}
+
+.order-info p,
+.customer-info p {
+  margin-bottom: 4px;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.customer-info p {
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  font-size: 24px;
+  margin-right: 10px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.product-item {
+  width: 500px;
+}
+.summary-row strong {
+  min-width: 150px;
+  margin-right: 8rem;
+}
+
+.paidBtn {
+  min-width: 155px;
+}
+
+.highlighted {
+  border: 2px solid #3f51b5;
+  background-color: #f1f8ff;
+}
+
+.select-all-box {
+  position: relative;
+  width: 500px;
+}
+
+.select-all-box mat-checkbox {
+  position: absolute;
+  right: 10px;
+  bottom: 0.5px;
+}
+
+.card-checkbox {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+}
+
+.deliveredBtn {
+  min-width: 190px;
+}
+
+.mat-mdc-card-header {
+  padding: 0 !important;
+}

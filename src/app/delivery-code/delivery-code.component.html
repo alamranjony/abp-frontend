@@ -1,0 +1,123 @@
+<mat-card>
+  <mat-card-header class="w-100">
+    <mat-card-title-group>
+      <mat-card-title class="abp-card-title">
+        {{ '::Menu:DeliveryCodes' | abpLocalization }}
+      </mat-card-title>
+      <div class="text-end col col-md-6">
+        <div class="text-lg-end pt-2">
+          <button
+            *abpPermission="'ClientPortal.DeliveryCodes.CreateAndEdit'"
+            mat-raised-button
+            color="primary"
+            id="add-new"
+            (click)="addDeliveryCode()"
+          >
+            <mat-icon>add</mat-icon>
+            <span> {{ '::DeliveryCode:NewDeliveryCode' | abpLocalization }}</span>
+          </button>
+        </div>
+      </div>
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="filterForm">
+      <div class="row">
+        <div class="col-md-7">
+          <mat-form-field appearance="outline" class="w-100 py-3">
+            <mat-label>
+              {{ '::DeliveryCode.Code' | abpLocalization }}
+            </mat-label>
+            <input matInput formControlName="code" />
+            <mat-icon
+              matSuffix
+              *ngIf="filterForm.get('code').value"
+              style="cursor: pointer"
+              (click)="clearSearch()"
+              >clear
+            </mat-icon>
+            <mat-icon matSuffix *ngIf="!filterForm.get('code').value">search</mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="col-md-5 py-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::DeliveryCode.StatusCategory' | abpLocalization }}</mat-label>
+            <mat-select formControlName="statusCategory">
+              <mat-option [value]="0">{{ '::All' | abpLocalization }}</mat-option>
+              <mat-option *ngFor="let status of statusCategories" [value]="status.value"
+                >{{ status.text | abpLocalization }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+
+    <table
+      mat-table
+      [dataSource]="deliveryCodes.items"
+      class="w-100 mat-elevation-z0"
+      matSort
+      (matSortChange)="changeSort($event)"
+    >
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>{{ '::Actions' | abpLocalization }}</th>
+        <td mat-cell *matCellDef="let element">
+          <button
+            mat-raised-button
+            color="primary"
+            [matMenuTriggerFor]="menu"
+            [matMenuTriggerData]="{ id: element.id }"
+          >
+            <mat-icon>settings</mat-icon>
+            {{ '::Actions' | abpLocalization }}
+            <mat-icon>expand_more</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="code">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::DeliveryCode.Code' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.code }}</td>
+      </ng-container>
+      <ng-container matColumnDef="statusCategory">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::DeliveryCode.StatusCategoryName' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ '::Enum:' + element.statusCategoryName | abpLocalization }}
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns"></tr>
+
+      <tr class="mat-row no-data-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="columns.length">
+          <app-empty-table-message></app-empty-table-message>
+        </td>
+      </tr>
+    </table>
+    <mat-paginator
+      [pageIndex]="list.page"
+      [length]="deliveryCodes.totalCount"
+      [pageSize]="list.maxResultCount"
+      (page)="changePage($event)"
+    ></mat-paginator>
+  </mat-card-content>
+</mat-card>
+
+<mat-menu #menu="matMenu">
+  <ng-template matMenuContent let-id="id">
+    <button
+      *abpPermission="'ClientPortal.DeliveryCodes.CreateAndEdit'"
+      mat-menu-item
+      (click)="editDeliveryCode(id)"
+    >
+      {{ '::Edit' | abpLocalization }}
+    </button>
+    <button mat-menu-item (click)="delete(id)" *abpPermission="'ClientPortal.DeliveryCodes.Delete'">
+      {{ '::Delete' | abpLocalization }}
+    </button>
+  </ng-template>
+</mat-menu>

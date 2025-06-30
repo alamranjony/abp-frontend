@@ -1,0 +1,106 @@
+<div class="payment-details position-relative">
+  <h2 mat-dialog-title>{{ '::Pos:PaymentDetails' | abpLocalization }}</h2>
+  <mat-dialog-content class="mat-typography content"> </mat-dialog-content>
+
+  <div class="mb-2">
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title> {{ '::Pos:PaymentSummary' | abpLocalization }} </mat-panel-title>
+          <mat-panel-description>
+            {{ '::Pos:Refund:TotalPaid' | abpLocalization }}
+            {{ orderSummary.amountPaid | number: '1.2-2' }}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div class="row d-flex justify-content-end mt-1" *ngIf="isRefundBtnVisible">
+          <div class="col-md-2">
+            <button mat-raised-button color="warn" type="button" (click)="onClickRefundBtn()">
+              {{ '::Pos:Refund:RefundBtn' | abpLocalization }}
+            </button>
+          </div>
+        </div>
+
+        <mat-table [dataSource]="paymentHistories">
+          <!-- paymentMethod Column -->
+          <ng-container matColumnDef="paymentMethod">
+            <mat-header-cell *matHeaderCellDef
+              >{{ '::Pos:PaymentMethod' | abpLocalization }}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              {{ '::Enum:PaymentMethod:' + PaymentMethod[element.paymentMethod] | abpLocalization }}
+              @if (element.paymentMethod === PaymentMethod.Check) {
+                {{ '#: ' + element.checkNumber.slice(-4) }}
+              }
+              @if (element.paymentMethodId === PaymentMethod.GiftCard) {
+                {{ '#: ' + element.giftCardNumber }}
+              }
+            </mat-cell>
+          </ng-container>
+
+          <!-- Amount Column -->
+          <ng-container matColumnDef="Amount">
+            <mat-header-cell *matHeaderCellDef>
+              {{ '::Pos:Refund:Amount' | abpLocalization }}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{ element.amountCharged }} </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="paymentHistoryTableColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: paymentHistoryTableColumns"></mat-row>
+        </mat-table>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title> {{ '::Pos:RefundSummary' | abpLocalization }} </mat-panel-title>
+        <mat-panel-description>
+          {{ '::Pos:Refund:RefundedAmount' | abpLocalization }}
+          {{ totalRefundedAmount | number: '1.2-2' }}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <mat-table [dataSource]="refundHistories">
+        <ng-container matColumnDef="paymentMethod">
+          <mat-header-cell *matHeaderCellDef>
+            {{ '::Pos:PaymentMethod' | abpLocalization }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{ '::Enum:PaymentMethod:' + PaymentMethod[element.paymentMethod] | abpLocalization }}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="Amount">
+          <mat-header-cell *matHeaderCellDef>
+            {{ '::Pos:Refund:Amount' | abpLocalization }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{ element.amountCharged }} </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="refundHistoryTableColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: refundHistoryTableColumns"></mat-row>
+      </mat-table>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+  <mat-dialog-actions align="end">
+    <button mat-raised-button color="accent" type="button" mat-dialog-close>
+      <mat-icon>close</mat-icon>
+      <span>{{ '::Pos:Close' | abpLocalization }}</span>
+    </button>
+    <button
+      *ngIf="isDoneBtnVisible"
+      mat-raised-button
+      color="primary"
+      type="button"
+      (click)="updateOrderStatus()"
+    >
+      <mat-icon>done_all</mat-icon>
+      <span>{{ '::Pos:Done' | abpLocalization }}</span>
+    </button>
+  </mat-dialog-actions>
+
+  <mat-icon class="custom-close-popup" mat-dialog-close color="primary">close</mat-icon>
+</div>

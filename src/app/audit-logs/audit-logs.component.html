@@ -1,0 +1,135 @@
+<mat-card>
+  <mat-card-header class="mb-lg-3">
+    <mat-card-title-group>
+      <mat-card-title>
+        {{ '::Menu:AuditLogs' | abpLocalization }}
+      </mat-card-title>
+      <div class="text-end col col-md-6 row justify-content-end mx-0 gap-2">
+        <div class="col-auto px-0 pt-0">
+          <app-export-csv [apiUrl]="exportUrl" fileName="audit-logs" [fieldList]="exportFieldList">
+            ></app-export-csv
+          >
+        </div>
+      </div>
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="searchForm">
+      <div class="row">
+        <div class="form-group col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Logs:AuditType' | abpLocalization }}</mat-label>
+            <mat-select id="auditType-id" formControlName="systemKeyWord">
+              <mat-option [value]="null">{{
+                '::Logs:SelectAuditType' | abpLocalization
+              }}</mat-option>
+              <mat-option
+                *ngFor="let auditType of auditTypes$ | async"
+                [value]="auditType.systemKeyWord"
+              >
+                {{ auditType.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="form-group col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Logs:StartDate' | abpLocalization }}</mat-label>
+            <input
+              matInput
+              [matDatepicker]="startPicker"
+              id="startDate"
+              formControlName="startDate"
+              type="text"
+            />
+            <div matSuffix class="datepicker-toggle-wrapper">
+              <mat-datepicker-toggle [for]="startPicker"></mat-datepicker-toggle>
+              <mat-datepicker-toggle
+                *ngIf="searchForm.value['startDate'] !== null"
+                (click)="clearStartDate()"
+              >
+                <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+              </mat-datepicker-toggle>
+            </div>
+            <mat-datepicker #startPicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="form-group col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Logs:EndDate' | abpLocalization }}</mat-label>
+            <input
+              matInput
+              [matDatepicker]="endPicker"
+              id="endDate"
+              formControlName="endDate"
+              type="text"
+            />
+            <div matSuffix class="datepicker-toggle-wrapper">
+              <mat-datepicker-toggle [for]="endPicker"></mat-datepicker-toggle>
+              <mat-datepicker-toggle
+                *ngIf="searchForm.value['endDate'] !== null"
+                (click)="clearEndDate()"
+              >
+                <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+              </mat-datepicker-toggle>
+            </div>
+            <mat-datepicker #endPicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+    <table
+      mat-table
+      [dataSource]="auditLogs.items"
+      matSort
+      (matSortChange)="changeSort($event)"
+      class="mat-elevation-z0"
+    >
+      <ng-container matColumnDef="auditType">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::Logs:AuditType' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let row">{{ row.auditType }}</td>
+      </ng-container>
+      <ng-container matColumnDef="comment">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::Logs:Comment' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let row">{{ row.comment }}</td>
+      </ng-container>
+      <ng-container matColumnDef="ipAddress">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::Logs:IpAddress' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let row">{{ row.ipAddress }}</td>
+      </ng-container>
+      <ng-container matColumnDef="creationTime">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::Logs:CreationTime' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let row">{{ row.creationTime | date }}</td>
+      </ng-container>
+      <ng-container matColumnDef="userName">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ '::Logs:Field:UserName' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let row">{{ row.userName }}</td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+      <tr class="mat-row no-data-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+          <app-empty-table-message></app-empty-table-message>
+        </td>
+      </tr>
+    </table>
+    <mat-paginator
+      [pageIndex]="list.page"
+      [length]="auditLogs.totalCount"
+      [pageSize]="list.maxResultCount"
+      (page)="changePage($event)"
+    >
+    </mat-paginator>
+  </mat-card-content>
+</mat-card>

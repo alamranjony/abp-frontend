@@ -1,0 +1,54 @@
+.pos-payment-options {
+  border: 1px solid var(--primary-color);
+  background-color: #fffbf6;
+}
+
+.swipe-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.process-card-button {
+  margin-left: 10px;
+}
+
+.card-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+  font-size: 14px;
+  color: var(--primary-color);
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.card-divider::after,
+.card-divider::before {
+  content: '';
+  width: 400px;
+  margin: 0 10px;
+  display: block;
+  height: 1px;
+  background-color: var(--primary-color);
+}
+
+.card-container {
+  width: 80%;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.half-width {
+  width: 49%;
+}
+
+.submit-button {
+  width: 80%;
+  margin: auto;
+  text-align: right;
+}

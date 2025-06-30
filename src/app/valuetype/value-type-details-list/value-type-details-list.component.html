@@ -1,0 +1,137 @@
+<mat-card>
+  <mat-card-header class="w-100">
+    <mat-card-title-group class="w-100">
+      <mat-card-title class="d-md-flex align-items-center">
+        <button mat-icon-button (click)="onBack()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        {{ title ? title : '' }} {{ '::Value:List' | abpLocalization }}
+      </mat-card-title>
+      <div class="text-end col col-md-6 row justify-content-end mx-0 gap-2">
+        <div class="col-auto px-0 pt-0">
+          <button
+            mat-raised-button
+            color="primary"
+            *abpPermission="'ClientPortal.Values'"
+            id="create"
+            class="btn btn-primary"
+            type="button"
+            (click)="createValue()"
+          >
+            <mat-icon>add</mat-icon>
+            <span>{{ '::NewValue' | abpLocalization }}</span>
+          </button>
+        </div>
+      </div>
+    </mat-card-title-group>
+    <div class="ms-2">
+      <app-back-button [route]="'/valuetypes'"></app-back-button>
+    </div>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-table
+      [dataSource]="values.items"
+      class="w-100"
+      matSort
+      (matSortChange)="changeSort($event)"
+    >
+      <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: columns"></mat-row>
+
+      <!--   Actions Column   -->
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef>
+          {{ '::Actions' | abpLocalization }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <button
+            mat-raised-button
+            color="primary"
+            [matMenuTriggerFor]="menu"
+            [matMenuTriggerData]="{ id: element.id }"
+          >
+            <mat-icon>settings</mat-icon>
+            {{ '::Actions' | abpLocalization }}
+            <mat-icon>expand_more</mat-icon>
+          </button> </mat-cell
+        >>
+      </ng-container>
+
+      <!--   Name Column   -->
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::Name' | abpLocalization }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.name }} </mat-cell>>
+      </ng-container>
+      <!--   Display Order Column   -->
+      <ng-container matColumnDef="displayOrder">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::DisplayOrder' | abpLocalization }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.displayOrder }}
+        </mat-cell>
+      </ng-container>
+      <!--   Value Type Column   -->
+      <ng-container matColumnDef="valueType">
+        <mat-header-cell *matHeaderCellDef>
+          {{ '::ValueType' | abpLocalization }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.valueType }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="description">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::Description' | abpLocalization }}
+        </mat-header-cell>
+        <mat-cell
+          *matCellDef="let element"
+          [ngClass]="{
+            centered: !element.description,
+            justified: element.description,
+          }"
+        >
+          {{ element.description ?? '-' }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="isPreSelect">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::IsPreSelect' | abpLocalization }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <mat-icon *ngIf="element.isPreSelect; else crossIcon" class="text-success"
+            >check_circle</mat-icon
+          >
+          <ng-template #crossIcon>
+            <mat-icon class="text-danger">cancel</mat-icon>
+          </ng-template>
+        </mat-cell>
+      </ng-container>
+
+      <tr class="mat-row no-data-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="columns.length">
+          <app-empty-table-message></app-empty-table-message>
+        </td>
+      </tr>
+    </mat-table>
+    <mat-paginator
+      [length]="values.totalCount"
+      [pageSize]="list.maxResultCount"
+      (page)="changePage($event)"
+    ></mat-paginator>
+  </mat-card-content>
+</mat-card>
+<mat-menu #menu="matMenu">
+  <ng-template matMenuContent let-id="id">
+    <button *abpPermission="'ClientPortal.Values'" mat-menu-item (click)="editValue(id)">
+      {{ '::Edit' | abpLocalization }}
+    </button>
+    <button *abpPermission="'ClientPortal.Values'" mat-menu-item (click)="delete(id)">
+      {{ '::Delete' | abpLocalization }}
+    </button>
+  </ng-template>
+</mat-menu>

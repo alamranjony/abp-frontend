@@ -1,0 +1,347 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{ '::Store:StoreDetails' | abpLocalization }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="my-3">
+    <form [formGroup]="storeForm" (ngSubmit)="save()">
+      <div class="form-group row">
+        <div class="col-md-6">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::Store:StoreName' | abpLocalization }}</mat-label>
+            <input matInput formControlName="storeName" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::Store:StoreCode' | abpLocalization }}</mat-label>
+            <mat-select
+              formControlName="storeCode"
+              (selectionChange)="onStoreSelectionChange($event)"
+            >
+              @for (store of stores; track store.id) {
+                <mat-option [value]="store.storeCode">
+                  {{ store.storeCode }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-md-6">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::Store:ContactName' | abpLocalization }}</mat-label>
+            <input matInput formControlName="contactName" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::Store:Email' | abpLocalization }}</mat-label>
+            <input matInput formControlName="email" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-md-6">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::Store:AddressLine1' | abpLocalization }}</mat-label>
+            <input matInput formControlName="addressLine1" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::Store:AddressLine2' | abpLocalization }}</mat-label>
+            <input matInput formControlName="addressLine2" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-md-6">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::Store:City' | abpLocalization }}</mat-label>
+            <input matInput formControlName="city" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::Store:ZipCode' | abpLocalization }}</mat-label>
+            <input matInput formControlName="zipCode" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::Store:Latitude' | abpLocalization }}</mat-label>
+            <input matInput formControlName="latitude" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::Store:Longitude' | abpLocalization }}</mat-label>
+            <input matInput formControlName="longitude" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-md-6">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::Store:CountryId' | abpLocalization }}</mat-label>
+            <mat-select (selectionChange)="onChangeCountry($event)" formControlName="countryId">
+              <mat-option *ngFor="let country of countries" [value]="country.id"
+                >{{ country.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::Store:ProvinceId' | abpLocalization }}</mat-label>
+            <mat-select formControlName="provinceId">
+              <mat-option *ngFor="let state of stateProvinces" [value]="state.id"
+                >{{ state.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-md-6">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::Store:Phone' | abpLocalization }}</mat-label>
+            <input matInput formControlName="phone" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::Store:Manager' | abpLocalization }}</mat-label>
+            <mat-select formControlName="managerId">
+              <mat-option *ngFor="let item of employees" [value]="item.id"
+                >{{ item.displayName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-md-6">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::Store:TimeZone' | abpLocalization }}</mat-label>
+            <mat-select formControlName="timeZone">
+              <mat-option *ngFor="let option of timeZones" [value]="option.value">
+                {{ option.text }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::Store:FaxNumber' | abpLocalization }}</mat-label>
+            <input matInput formControlName="faxNumber" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-md-6">
+          <mat-radio-group formControlName="isAddOnMasDirectory">
+            <div>
+              <mat-label>{{ '::Store:IsAddOnMasDirectory' | abpLocalization }}</mat-label>
+            </div>
+            <div class="radio-buttons-container">
+              <mat-radio-button id="isAddOnMasDirectory-true" [value]="true"
+                >{{ '::Store:Yes' | abpLocalization }}
+              </mat-radio-button>
+              <mat-radio-button id="isAddOnMasDirectory-false" [value]="false"
+                >{{ '::Store:No' | abpLocalization }}
+              </mat-radio-button>
+            </div>
+          </mat-radio-group>
+        </div>
+        <div class="col-md-6">
+          <mat-radio-group formControlName="isPrimaryStore">
+            <div>
+              <mat-label>{{ '::Store:IsPrimaryStore' | abpLocalization }}</mat-label>
+            </div>
+            <div class="radio-buttons-container">
+              <mat-radio-button id="isPrimaryStore-true" [value]="true"
+                >{{ '::Store:Yes' | abpLocalization }}
+              </mat-radio-button>
+              <mat-radio-button id="isPrimaryStore-false" [value]="false"
+                >{{ '::Store:No' | abpLocalization }}
+              </mat-radio-button>
+            </div>
+          </mat-radio-group>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-md-6">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::Store:SalesTax' | abpLocalization }}</mat-label>
+            <input matInput type="number" formControlName="salesTax" />
+            <span matSuffix class="me-1">%</span>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-radio-group formControlName="isTrackInventory">
+            <div>
+              <mat-label>{{ '::Store:IsTrackInventory' | abpLocalization }}</mat-label>
+            </div>
+            <div class="radio-buttons-container">
+              <mat-radio-button id="isTrackInventory-true" [value]="true"
+                >{{ '::Store:Yes' | abpLocalization }}
+              </mat-radio-button>
+              <mat-radio-button id="isTrackInventory-false" [value]="false"
+                >{{ '::Store:No' | abpLocalization }}
+              </mat-radio-button>
+            </div>
+          </mat-radio-group>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-md-6">
+          <mat-radio-group formControlName="timeFormateId">
+            <div>
+              <mat-label>{{ '::Store:TimeFormat' | abpLocalization }}</mat-label>
+            </div>
+            <div class="radio-buttons-container">
+              <mat-radio-button id="timeFormateId-12" [value]="12"
+                >{{ '::Store:TwelveHours' | abpLocalization }}
+              </mat-radio-button>
+              <mat-radio-button id="timeFormateId-24" [value]="24"
+                >{{ '::Store:TwentyFourHours' | abpLocalization }}
+              </mat-radio-button>
+            </div>
+          </mat-radio-group>
+        </div>
+        <div class="col-md-6">
+          <mat-radio-group formControlName="dateTimeFormate">
+            <div>
+              <mat-label>{{ '::Store:DateFormat' | abpLocalization }}</mat-label>
+            </div>
+            <div class="radio-buttons-container">
+              <mat-radio-button id="dateTimeFormate-mm" [value]="'MM/DD/YYYY'"
+                >{{ '::Store:AmericanDateFormat' | abpLocalization }}
+              </mat-radio-button>
+              <mat-radio-button id="dateTimeFormate-yy" [value]="'YYYY/MM/DD'"
+                >{{ '::Store:IsoDateFormat' | abpLocalization }}
+              </mat-radio-button>
+            </div>
+          </mat-radio-group>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-md-6">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::Store:FacebookUrl' | abpLocalization }}</mat-label>
+            <input matInput formControlName="facebookUrl" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::Store:TwitterUrl' | abpLocalization }}</mat-label>
+            <input matInput formControlName="twitterUrl" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-md-6">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::Store:PinterestUrl' | abpLocalization }}</mat-label>
+            <input matInput formControlName="pinterestUrl" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-md-6">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::Store:ReceiptFooterNote' | abpLocalization }}</mat-label>
+            <textarea matInput formControlName="receiptFooterNote"></textarea>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-label>{{ '::Store:Logo' | abpLocalization }}</mat-label>
+          <div class="mt-2">
+            <input
+              type="file"
+              accept="image/jpeg, image/png, image/gif"
+              (change)="onFileChange($event)"
+            />
+            <div *ngIf="hasImage" class="mt-2">
+              <img [src]="imageUrl" alt="Logo" class="responsive-image" />
+            </div>
+            <div *ngIf="!hasImage" class="mt-2">
+              <p>{{ '::Store:NoImage' | abpLocalization }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <mat-card class="example-card" appearance="outlined">
+        <mat-card-header>
+          <mat-card-title>{{ '::Hours' | abpLocalization }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="mt-2">
+          <div class="form-group row">
+            <div formArrayName="storeWorkHours">
+              <div
+                *ngFor="let workHour of storeWorkHourControls; let i = index"
+                [formGroupName]="i"
+              >
+                <div class="form-group row mb-2">
+                  <div class="col-md-3">
+                    <mat-form-field class="full-width" appearance="outline">
+                      <mat-label>{{ '::Store:Day' | abpLocalization }}</mat-label>
+                      <input matInput readonly formControlName="dayName" />
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-3">
+                    <mat-form-field class="full-width" appearance="outline">
+                      <mat-label>{{ '::Store:OpenTime' | abpLocalization }}</mat-label>
+                      <input matInput type="time" formControlName="startTime" />
+                      <mat-hint>HH:MM AM/PM</mat-hint>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-3">
+                    <mat-form-field class="full-width" appearance="outline">
+                      <mat-label>{{ '::Store:CloseTime' | abpLocalization }}</mat-label>
+                      <input matInput type="time" formControlName="endTime" />
+                      <mat-hint>HH:MM AM/PM</mat-hint>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-2">
+                    <mat-label>{{ '::Store:IsClosed' | abpLocalization }}</mat-label>
+                    <mat-radio-group formControlName="isClose">
+                      <mat-radio-button id="isClose-true" [value]="true"
+                        >{{ '::Store:Yes' | abpLocalization }}
+                      </mat-radio-button>
+                      <mat-radio-button id="isClose-false" [value]="false"
+                        >{{ '::Store:No' | abpLocalization }}
+                      </mat-radio-button>
+                    </mat-radio-group>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </form>
+
+    <mat-card-actions align="end">
+      <button mat-raised-button color="primary" (click)="save()">
+        <mat-icon>save</mat-icon>
+        {{ '::Save' | abpLocalization }}
+      </button>
+    </mat-card-actions>
+  </mat-card-content>
+</mat-card>

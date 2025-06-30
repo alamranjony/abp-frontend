@@ -1,0 +1,14 @@
+.sms-template-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.actions {
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+mat-dialog-content {
+  padding-bottom: 20px;
+}

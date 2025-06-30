@@ -1,0 +1,113 @@
+<mat-card>
+  <mat-card-header class="w-100 mb-2">
+    <mat-card-title-group class="w-100">
+      <mat-card-title>{{
+        '::BatchHouseAccountPayment:CardSummary' | abpLocalization
+      }}</mat-card-title>
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="cardPaymentProcessingForm">
+      <div class="form-group row">
+        <div class="col-md-4 d-flex justify-content-between">
+          <mat-form-field class="w-75" appearance="outline">
+            <mat-label>{{ '::BatchHouseAccountPayment:AccountNo' | abpLocalization }}</mat-label>
+            <input matInput formControlName="customerNo" />
+          </mat-form-field>
+          <div class="w-20">
+            <button type="button" mat-raised-button color="primary" (click)="onClickSearchBtn()">
+              <mat-icon>search</mat-icon>
+              <span>{{ '::Search' | abpLocalization }}</span>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::BatchHouseAccountPayment:CustomerName' | abpLocalization }}</mat-label>
+            <input matInput [value]="customerBalanceInfoDto?.name" [disabled]="true" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::BatchHouseAccountPayment:Address' | abpLocalization }}</mat-label>
+            <input matInput [value]="customerBalanceInfoDto?.address" [disabled]="true" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-md-4">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{
+              '::BatchHouseAccountPayment:AccountBalance' | abpLocalization
+            }}</mat-label>
+            <input matInput [value]="customerBalanceInfoDto?.balance" [disabled]="true" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{
+              '::BatchHouseAccountPayment:AppliedAmount' | abpLocalization
+            }}</mat-label>
+            <input matInput formControlName="totalAppliedAmount" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{
+              '::BatchHouseAccountPayment:LeftOverAmount' | abpLocalization
+            }}</mat-label>
+            <input matInput [value]="leftOverAmount" [disabled]="true" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-md-4">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{
+              '::BatchHouseAccountPayment:PaymentAmount' | abpLocalization
+            }}</mat-label>
+            <input matInput formControlName="paymentAmount" type="number" />
+            <mat-error
+              *ngIf="cardPaymentProcessingForm.get('paymentAmount').hasError('maxExceeded')"
+            >
+              {{ '::BatchHouseAccountPayment:PaymentAmountExceeded' | abpLocalization }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::BatchHouseAccountPayment:Note' | abpLocalization }}</mat-label>
+            <input matInput formControlName="note" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4">
+          <button
+            type="button"
+            mat-raised-button
+            color="primary"
+            (click)="openPaymentDialog()"
+            *ngIf="!isEditMode"
+          >
+            <mat-icon>payment</mat-icon>
+            <span>{{ '::BatchHouseAccountPayment:MakePayment' | abpLocalization }}</span>
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <div>
+      <app-invoices
+        [financialTransactionItems]="financialTransactionItems"
+        [isEditMode]="isEditMode"
+        [paymentAmount]="paymentAmount"
+        [paymentCompleted]="paymentCompleted"
+        (selectedInvoicesChange)="saveInvoices($event)"
+        (unApplyInvoiceChange)="unApplyInvoice($event)"
+      ></app-invoices>
+    </div>
+  </mat-card-content>
+</mat-card>

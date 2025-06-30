@@ -1,0 +1,22 @@
+<h5 mat-dialog-title>
+  {{ '::WireService:RejectMessage' | abpLocalization }}
+</h5>
+
+<mat-dialog-content class="mt-2">
+  <mat-form-field appearance="outline" class="full-width">
+    <textarea matInput [(ngModel)]="rejectMessage" rows="5"></textarea>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="accent" type="button" (click)="onClose()">
+    <mat-icon>close</mat-icon>
+    {{ '::Close' | abpLocalization }}
+  </button>
+  <button mat-raised-button color="primary" type="button" (click)="rejectOrder()">
+    <mat-icon>save</mat-icon>
+    {{ '::Reject' | abpLocalization }}
+  </button>
+</mat-dialog-actions>
+
+<mat-icon class="custom-close-popup" mat-dialog-close color="primary">close</mat-icon>

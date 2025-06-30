@@ -1,0 +1,135 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$ClientPortal-primary: mat.define-palette(mat.$orange-palette, 800, 500, 900);
+$ClientPortal-accent: mat.define-palette(mat.$deep-orange-palette, 500, 600, 700);
+
+// The warn palette is optional (defaults to red).
+$ClientPortal-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$ClientPortal-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $ClientPortal-primary,
+      accent: $ClientPortal-accent,
+      warn: $ClientPortal-warn,
+    ),
+    typography: mat.define-typography-config(),
+    density: 0,
+  )
+);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($ClientPortal-theme);
+
+/* You can add global styles to this file, and also import other style files */
+
+:root .lpx-theme-dark {
+  --lpx-logo: url('/assets/images/logo/logo-light.svg');
+  --lpx-logo-icon: url('/assets/images/logo/icon.svg');
+}
+
+:root .lpx-theme-light {
+  --lpx-logo: url('/assets/images/logo/logo-dark.svg');
+  --lpx-logo-icon: url('/assets/images/logo/icon.svg');
+}
+
+:root {
+  --lpx-theme-light-bg: url('/assets/images/login/login-bg-img-light.svg');
+  --lpx-theme-dim-bg: url('/assets/images/login/login-bg-img-dim.svg');
+  --lpx-theme-dark-bg: url('/assets/images/login/login-bg-img-dark.svg');
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.checkbox-section {
+  margin: 12px 0;
+}
+
+.donut {
+  display: inline-block;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #7983ff;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: donut-spin 1.2s linear infinite;
+
+  &.centered {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+abp-validation-error {
+  display: none;
+}
+
+mat-error {
+  position: relative;
+  top: -2px;
+  left: -12px;
+}
+
+.mr-2 {
+  margin-right: 2px;
+}
+
+#heartland-frame-cardNumber,
+#heartland-frame-cardExpiration,
+#heartland-frame-cardCvv {
+  height: 40px !important;
+  width: 100% !important;
+}
+
+.generate-gift-card-button {
+  width: 245px;
+}
+
+.mat-mdc-dialog-surface.mdc-dialog__surface {
+  overflow: hidden;
+}
+
+.customer-card .mat-mdc-tab-body-content.ng-trigger.ng-trigger-translateTab {
+  overflow: hidden !important;
+}
+.mat-mdc-paginator-outer-container {
+  height: 40px;
+}
+.no-data-row {
+  height: 300px;
+}

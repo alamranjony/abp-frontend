@@ -1,0 +1,146 @@
+<mat-card class="pos-discount p-2 mb-2" appearance="outlined">
+  <div class="items-in-cart">
+    <div class="cart-text">{{ '::Pos:ItemsInCart' | abpLocalization }}</div>
+    <div class="cart-amount">{{ (orderSummary$ | async)?.totalSubOrdersCount }}</div>
+  </div>
+  <mat-card class="p-2 mat-price-container mb-2" appearance="outlined">
+    <div class="price-container">
+      <div class="price-tag">{{ '::Pos:SubTotal' | abpLocalization }}</div>
+      <div class="price">
+        <span class="price-currency">$</span>
+        <mat-form-field class="price-input-field" appearance="outline">
+          <input
+            class="price-input"
+            matInput
+            type="text"
+            [value]="(orderSummary$ | async)?.subTotal ?? 0 | number: '0.2-2'"
+            disabled
+          />
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="price-container">
+      <div class="price-tag">{{ '::Pos:DeliveryCharges' | abpLocalization }}</div>
+      <div class="price">
+        <span class="price-currency">$</span>
+        <mat-form-field class="price-input-field" appearance="outline">
+          <input
+            class="price-input"
+            matInput
+            type="text"
+            [value]="deliveryFeeTotal$ | async | number: '0.2-2'"
+            disabled
+          />
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="price-container">
+      <div class="price-tag">{{ '::Pos:OrderItemColum:Discount' | abpLocalization }}</div>
+      <div class="price">
+        <span class="price-currency">$</span>
+        <mat-form-field class="price-input-field" appearance="outline">
+          <input
+            class="price-input"
+            matInput
+            type="text"
+            [value]="(orderSummary$ | async)?.totalDiscount ?? 0 | number: '0.2-2'"
+            disabled
+          />
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="price-container">
+      <div class="price-tag">{{ '::Pos:Tax' | abpLocalization }}</div>
+      <div class="price">
+        <span class="price-currency">$</span>
+        <mat-form-field class="price-input-field" appearance="outline">
+          <input
+            class="price-input"
+            matInput
+            type="text"
+            [value]="totalSalesTax | number: '1.2-2'"
+            disabled
+          />
+        </mat-form-field>
+      </div>
+    </div>
+
+    @if ((orderSummary$ | async)?.tipAmount) {
+      <div class="price-container">
+        <div class="price-tag">
+          {{ '::Pos:Tip' | abpLocalization }}
+          ({{ this.tipType ?? '' }})
+        </div>
+        <div class="price">
+          <span class="price-currency">$</span>
+          <mat-form-field class="price-input-field" appearance="outline">
+            <input
+              class="price-input"
+              matInput
+              type="text"
+              [value]="(orderSummary$ | async)?.tipAmount | number: '1.2-2'"
+              disabled
+            />
+          </mat-form-field>
+        </div>
+      </div>
+    }
+  </mat-card>
+  <mat-form-field class="mb-2" appearance="outline">
+    <mat-label>{{ '::Pos:OrderItemColum:DiscountCode' | abpLocalization }}</mat-label>
+    <input
+      type="text"
+      [placeholder]="'::Pos:DiscountCodePlaceholder' | abpLocalization"
+      aria-label="Number"
+      matInput
+      [matAutocomplete]="auto"
+      [(ngModel)]="discountCodeInput"
+      (ngModelChange)="onDiscountCodeChange()"
+      [readonly]="isDiscountCodeInputFieldVisible$ | async"
+    />
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
+      <mat-option *ngFor="let option of filteredDiscounts" [value]="option.discountCode">{{
+        option.discountCode
+      }}</mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+  <span class="discount mb-2">
+    <label>{{ '::Pos:OrderItemColum:Discount' | abpLocalization }}</label>
+    <div class=".price-tag">{{ discountType }}</div>
+    <span class="d-flex">
+      <mat-form-field class="discount-amount" appearance="outline">
+        <input
+          matInput
+          type="number"
+          [value]="(selectedDiscount$ | async)?.discountAmount ?? 0 | number: '0.2-2'"
+          [readonly]="true"
+        />
+      </mat-form-field>
+
+      <!-- Angular Material Select for Currency/Percentage -->
+      <mat-form-field class="discount-currency" appearance="outline">
+        <mat-select
+          value="$"
+          [value]="
+            (selectedDiscount$ | async)?.discountType === discountTypeEnum.Amount ? '$' : '%'
+          "
+          disabled
+        >
+          <mat-option value="$" selected>$</mat-option>
+          <mat-option value="%">%</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </span>
+  </span>
+
+  <div class="amount-info">
+    <div class="amount-payable">
+      <div>{{ '::Pos:AmountPayable' | abpLocalization }}</div>
+      <div>$ {{ (amountPayable$ | async) ?? 0 | number: '0.2-2' }}</div>
+    </div>
+    <div class="amount-pay">
+      <div>{{ '::Pos:AmountPaid' | abpLocalization }}</div>
+      <div>$ {{ amountPaid$ | async }}</div>
+    </div>
+  </div>
+</mat-card>

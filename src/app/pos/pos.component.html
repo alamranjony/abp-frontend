@@ -1,0 +1,45 @@
+<div class="pos">
+  <div class="row">
+    <mat-card class="pos-left">
+      <div class="pt-2 ps-2">
+        <app-pos-top-item></app-pos-top-item>
+        <app-pos-top-bar></app-pos-top-bar>
+        <div class="mb-3 position-relative overflow-auto table-container">
+          <app-pos-added-item></app-pos-added-item>
+        </div>
+      </div>
+    </mat-card>
+    <mat-card class="pos-right">
+      <div class="pt-1 pe-1">
+        <app-pos-customer></app-pos-customer>
+        <app-pos-sale-order-type></app-pos-sale-order-type>
+        <app-pos-discount></app-pos-discount>
+        <app-pos-due></app-pos-due>
+        <app-pos-tip></app-pos-tip>
+        <app-pos-payment></app-pos-payment>
+        <button
+          *ngIf="!(isOrderToBeRefunded$ | async)"
+          class="w-100 mb-2"
+          mat-raised-button
+          color="primary"
+          type="button"
+          (click)="onSave()"
+        >
+          <mat-icon>save</mat-icon>
+          <span>Save</span>
+        </button>
+        <button
+          *ngIf="isOrderToBeRefunded$ | async"
+          class="w-100 mb-2"
+          mat-raised-button
+          color="primary"
+          type="button"
+          (click)="onClickRefundBtn()"
+        >
+          <mat-icon>undo</mat-icon>
+          <span>Refund</span>
+        </button>
+      </div>
+    </mat-card>
+  </div>
+</div>

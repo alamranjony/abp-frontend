@@ -1,0 +1,53 @@
+@use '@angular/material' as mat;
+
+.mat-mdc-table {
+  table-layout: fixed;
+}
+
+mat-form-field {
+  @include mat.form-field-density(-2);
+}
+
+.mat-datepicker-toggle {
+  display: inline-flex;
+}
+
+.mat-column-level {
+  width: 12%;
+  min-width: 12%;
+  max-width: 12%;
+}
+
+.mat-column-shortMessage {
+  width: 25%;
+  min-width: 25%;
+  max-width: 25%;
+}
+
+.mat-column-fullMessage {
+  width: 25%;
+  min-width: 25%;
+  max-width: 25%;
+}
+
+.mat-column-ipAddress {
+  width: 18%;
+  min-width: 18%;
+  max-width: 18%;
+}
+
+.mat-column-timeStamp {
+  width: 20%;
+  min-width: 20%;
+  max-width: 20%;
+}
+
+.mat-mdc-row .mat-mdc-cell {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.mat-mdc-row:hover .mat-mdc-cell {
+  background-color: rgba(0, 0, 0, 0.05);
+  font-weight: 500;
+}

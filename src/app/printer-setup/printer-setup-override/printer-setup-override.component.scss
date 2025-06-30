@@ -1,0 +1,37 @@
+.empty-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+::ng-deep .mat-column-printJobType,
+::ng-deep .mat-column-overrideType,
+::ng-deep .mat-column-overrideValue {
+  width: 13%;
+  min-width: 100px;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+::ng-deep .mat-column-orderPrinter,
+::ng-deep .mat-column-threePanelCardPrinter,
+::ng-deep .mat-column-fourPanelCardPrinter,
+::ng-deep .mat-column-allInOneCardPrinter {
+  width: 12.75%;
+  min-width: 100px;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+::ng-deep .mat-column-actions {
+  width: 10%;
+  min-width: 80px;
+}
+
+::ng-deep table.mat-table {
+  table-layout: fixed;
+  width: 100%;
+}

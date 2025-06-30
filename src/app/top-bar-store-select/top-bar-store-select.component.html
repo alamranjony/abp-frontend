@@ -1,0 +1,13 @@
+<mat-form-field appearance="outline" class="store-select">
+  <mat-select
+    [formControl]="selectedStore"
+    (selectionChange)="onStoreChange($event)"
+    panelClass="store-select-panel"
+  >
+    @for (store of stores; track store.id) {
+      <mat-option [value]="store.id" matTooltip="{{ store.storeName }}">{{
+        store.storeName
+      }}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>

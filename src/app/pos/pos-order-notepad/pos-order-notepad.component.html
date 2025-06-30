@@ -1,0 +1,133 @@
+<mat-card>
+  <mat-card-header class="w-100">
+    <mat-card-title-group class="w-100 d-flex justify-content-between align-items-center">
+      <mat-card-title class="abp-card-title">
+        {{ '::Pos:NotePad' | abpLocalization }}
+      </mat-card-title>
+    </mat-card-title-group>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="filterForm" (ngSubmit)="onSearch()" class="py-3">
+      <div class="form-group row">
+        <div class="col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Pos:NotePadKeyword' | abpLocalization }}</mat-label>
+            <input matInput formControlName="keyword" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Pos:Source' | abpLocalization }}</mat-label>
+            <mat-select formControlName="noteType">
+              <mat-option value="all">{{ '::All' | abpLocalization }}</mat-option>
+              <mat-option *ngFor="let noteType of orderNoteType" [value]="noteType.value">
+                {{ '::Enum:OrderNoteType.' + noteType.value | abpLocalization }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <button mat-raised-button color="primary" type="submit" class="me-2">
+            <mat-icon>search</mat-icon>
+            {{ '::Search' | abpLocalization }}
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <table
+      mat-table
+      [dataSource]="orderNotes.items"
+      matSort
+      (matSortChange)="changeSort($event)"
+      class="w-100"
+    >
+      <ng-container matColumnDef="orderNumber">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::Pos:NotepadOrderNumber' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.orderNumber }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="creationTime">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::Pos:NotepadCreationTime' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.creationTime | date: 'MM/dd/yyyy HH:mm' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="userName">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ '::Pos:NotepadUserName' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.userName }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="note">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::Pos:NotepadNotes' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.note }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="orderNoteType">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::Pos:NotepadNoteType' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ '::Enum:OrderNoteType.' + element.orderNoteType | abpLocalization }}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let myRowData; columns: columns"></tr>
+    </table>
+
+    <mat-paginator
+      [pageIndex]="list.page"
+      [length]="orderNotes.totalCount"
+      [pageSize]="list.maxResultCount"
+      (page)="changePage($event)"
+    ></mat-paginator>
+
+    <div>
+      <div class="col-md-12">
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>{{ '::Pos:NotePadManualEntry' | abpLocalization }}</mat-label>
+          <textarea matInput [(ngModel)]="noteMessage" style="height: 100px"></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <mat-dialog-actions align="end">
+      <button mat-raised-button color="accent" type="button" mat-dialog-close>
+        <mat-icon>close</mat-icon>
+        {{ '::Close' | abpLocalization }}
+      </button>
+      <button
+        class="process-card-button"
+        mat-raised-button
+        color="primary"
+        type="button"
+        (click)="addNote()"
+      >
+        <mat-icon>save</mat-icon>
+        {{ '::Pos:NotePadCustomNoteAdd' | abpLocalization }}
+      </button>
+      <button class="process-card-button" mat-raised-button color="primary" type="button">
+        <mat-icon>download</mat-icon>
+        {{ '::Export' | abpLocalization }}
+      </button>
+      <button class="process-card-button" mat-raised-button color="primary" type="button">
+        <mat-icon>print</mat-icon>
+        {{ '::Print' | abpLocalization }}
+      </button>
+    </mat-dialog-actions>
+
+    <mat-icon class="custom-close-popup" mat-dialog-close color="primary">close</mat-icon>
+  </mat-card-content>
+</mat-card>

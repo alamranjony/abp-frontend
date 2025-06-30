@@ -1,0 +1,99 @@
+<div class="tab-content">
+  <form (ngSubmit)="sendMessage()" [formGroup]="form">
+    <div class="row col-md-12">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{
+          '::CommunicationBox:SendMessage:SelectWireService' | abpLocalization
+        }}</mat-label>
+        <mat-select (selectionChange)="onChangeWireService($event)" formControlName="wireService">
+          <mat-option *ngFor="let wireService of wireServices" [value]="wireService.value">
+            {{ '::Enum:WireService.' + wireService.value | abpLocalization }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="form.get('wireService')?.hasError('required') && form.get('wireService')?.touched"
+        >
+          {{ '::CommunicationBox:SendMessage:WireServiceRequired' | abpLocalization }}
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="row col-md-12">
+      <mat-form-field appearance="outline" class="full-width">
+        <input type="hidden" formControlName="selectedShops" />
+        <mat-label>{{ '::CommunicationBox:SendMessage:SelectShop' | abpLocalization }}</mat-label>
+        <mat-chip-grid #chipGrid formControlName="selectedShops" required ngDefaultControl>
+          @for (shop of selectedShops(); track shop.id) {
+            <mat-chip-row [removable]="true" (removed)="removeShop(shop)">
+              {{ shop.shopCode }} – {{ shop.name }}
+              <button matChipRemove>
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip-row>
+          }
+        </mat-chip-grid>
+
+        <input
+          #shopInput
+          matInput
+          placeholder="Enter Shop Codes or Names"
+          formControlName="shopQuery"
+          [disabled]="form.get('shopQuery').disabled"
+          [matAutocomplete]="auto"
+          [matChipInputFor]="chipGrid"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          [matChipInputAddOnBlur]="false"
+          (focus)="onShopFocus()"
+        />
+
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onShopSelected($event)">
+          <mat-option *ngIf="isLoading()" disabled>
+            <div class="loading-wrapper">
+              <mat-spinner diameter="24"></mat-spinner>
+              {{ '::Loading' | abpLocalization }}
+            </div>
+          </mat-option>
+
+          @for (shop of filteredShops$ | async; track shop.id) {
+            <mat-option [value]="shop"> {{ shop.shopCode }} – {{ shop.name }} </mat-option>
+          }
+
+          <mat-option
+            *ngIf="(filteredShops$ | async)?.length === 0 && !isLoading() && hasFetchedInitial"
+            disabled
+          >
+            {{ '::NoResultsFound' | abpLocalization }}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-error *ngIf="form.get('selectedShops')?.invalid && form.get('selectedShops')?.touched">
+          {{ '::CommunicationBox:SendMessage:ShopRequired' | abpLocalization }}
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="row col-md-12">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ '::CommunicationBox:SendMessage:Message' | abpLocalization }}</mat-label>
+        <textarea formControlName="message" matInput rows="6"></textarea>
+        <mat-error
+          *ngIf="form.get('message')?.hasError('required') && form.get('message')?.touched"
+        >
+          {{ '::CommunicationBox:SendMessage:Message:Required' | abpLocalization }}
+        </mat-error>
+        <mat-error *ngIf="form.get('message')?.hasError('minlength')">
+          {{ '::CommunicationBox:SendMessage:Message:MinLength5' | abpLocalization }}
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="actions">
+      <button (click)="close()" mat-raised-button type="button">
+        {{ '::Close' | abpLocalization }}
+      </button>
+      <button color="primary" mat-raised-button type="submit">
+        {{ '::Send' | abpLocalization }}
+      </button>
+    </div>
+  </form>
+</div>

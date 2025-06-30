@@ -1,0 +1,286 @@
+<div class="order-details-container mb-2">
+  <mat-card-header class="w-100">
+    <mat-card-title-group class="w-100">
+      <mat-card-title class="abp-card-title">
+        {{ '::OrderDetails:OrderSummaryDetails' | abpLocalization }}
+      </mat-card-title>
+    </mat-card-title-group>
+
+    @if (isEligibleForRefund) {
+      <button
+        type="button"
+        class="ivcr-btn"
+        mat-raised-button
+        color="primary"
+        (click)="refundCompletedOrder()"
+        *abpPermission="'ClientPortal.Orders.CreditOrder'"
+      >
+        <span>{{ '::OrderControl:RefundBtn' | abpLocalization }}</span>
+      </button>
+    }
+
+    @if (isOrderEligibleForIVCR) {
+      <button
+        type="button"
+        class="ivcr-btn"
+        mat-raised-button
+        color="primary"
+        *abpPermission="'ClientPortal.Orders.CreditOrder'"
+        (click)="refundPostedOrder()"
+      >
+        <span>{{ '::OrderControl:IVCRBtn' | abpLocalization }}</span>
+      </button>
+    }
+
+    @if (isOrderEligibleForSWCR) {
+      <button
+        type="button"
+        class="ivcr-btn"
+        mat-raised-button
+        color="primary"
+        (click)="refundPostedOrder()"
+        *abpPermission="'ClientPortal.Orders.CreditOrder'"
+      >
+        <span>{{ '::OrderControl:SWCR' | abpLocalization }}</span>
+      </button>
+    }
+
+    @if (orderDetails?.order?.orderStatus === orderStatus.InProgress) {
+      <button
+        mat-raised-button
+        color="warn"
+        class="deliveryBtn me-2"
+        type="button"
+        (click)="markProblematicDelivery(orderDetails?.order?.id)"
+        *abpPermission="'ClientPortal.Orders.CreateRedeliveryOrder'"
+      >
+        <mat-icon>report_problem</mat-icon>
+        <span>{{ '::OrderDetails:MarkDeliveryProblem' | abpLocalization }}</span>
+      </button>
+    }
+
+    @if (orderDetails && !orderDetails?.order?.parentOrderId) {
+      <ng-container *abpPermission="'ClientPortal.Orders.CreateReplacementOrder'">
+        <button
+          *ngIf="!orderDetails?.order?.replacementReasonValueId"
+          type="button"
+          class="deliveryBtn me-2"
+          mat-raised-button
+          color="primary"
+          (click)="openReplacementDialog()"
+        >
+          <mat-icon>find_replace</mat-icon>
+          <span>{{ '::OrderControl:MarkReplacement' | abpLocalization }}</span>
+        </button>
+
+        <button
+          *ngIf="
+            orderDetails?.order?.replacementReasonValueId &&
+            orderDetails?.order?.orderStatus !== orderStatus.Complete
+          "
+          type="button"
+          class="deliveryBtn me-2"
+          mat-raised-button
+          color="primary"
+          (click)="onReplacement()"
+        >
+          <mat-icon>replay</mat-icon>
+          <span>{{ '::OrderControl:MakeReplacement' | abpLocalization }}</span>
+        </button>
+      </ng-container>
+    }
+
+    @if (orderDetails?.order?.paymentStatus === paymentStatus.Unpaid) {
+      <button
+        mat-raised-button
+        color="primary"
+        class="paidBtn me-2"
+        type="button"
+        (click)="markOrderPaid(orderDetails?.order?.id)"
+        *abpPermission="'ClientPortal.Orders.CompleteUnPaidOrder'"
+      >
+        <mat-icon>paid</mat-icon>
+        <span>{{ '::OrderDetails:MarkAsPaid' | abpLocalization }}</span>
+      </button>
+    }
+
+    @if (isShowDeliveredAndAllCheckBoxButton()) {
+      <button
+        mat-raised-button
+        color="primary"
+        class="deliveredBtn me-2"
+        type="button"
+        (click)="openDeliveryDetailsDialogue()"
+        *abpPermission="'ClientPortal.Orders.CompleteWillCallOrder'"
+      >
+        <mat-icon>done</mat-icon>
+        <span>{{ '::OrderDetails:MarkAsDelivered' | abpLocalization }}</span>
+      </button>
+    }
+
+    <app-back-button [route]="'/order-control-list'"></app-back-button>
+  </mat-card-header>
+</div>
+
+<mat-card class="order-details-card">
+  @if (!isOrderDetailsCallComplete) {
+    <div class="d-flex justify-content-center">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  } @else {
+    <mat-card-content>
+      <div class="row mb-1">
+        <div class="col-md-7">
+          <div class="card-left">
+            <h4>{{ '::OrderControl:OrderDetails.OrderInformation' | abpLocalization }}</h4>
+            <div class="order-info">
+              <p>
+                <strong>{{ '::Customer:OrderHistory.OrderId' | abpLocalization }} : </strong>
+                {{ orderDetails.order.orderNumber }}
+              </p>
+              <p>
+                <strong>{{ '::OrderControl:OrderDetails.Ordered' | abpLocalization }} : </strong>
+                {{ orderDetails.orderedDate | date }}
+              </p>
+              <p>
+                <strong>{{ '::OrderControl:OrderDetails.EnteredBy' | abpLocalization }} : </strong>
+                {{ orderDetails.employeeName }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-5">
+          <div class="card-right">
+            <h4>{{ '::OrderControl:OrderDetails.CustomerInformation' | abpLocalization }}</h4>
+            <div class="customer-info">
+              <p>
+                <mat-icon class="icon">person</mat-icon>
+                <span class="iconDetails">{{ orderDetails.customerName ?? '-' }}</span>
+              </p>
+              <p>
+                <mat-icon class="icon">phone</mat-icon>
+                <span class="iconDetails">{{ orderDetails.customerPhoneNumber ?? '-' }}</span>
+              </p>
+              <p>
+                <mat-icon class="icon">location_on</mat-icon>
+                <span class="iconDetails">{{ orderDetails.customerAddress ?? '-' }}</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-7">
+          <div class="select-all-box" *ngIf="isShowDeliveredAndAllCheckBoxButton()">
+            <mat-checkbox [(ngModel)]="selectAll" (change)="toggleSelectAll()"> </mat-checkbox>
+          </div>
+          <div class="product-list">
+            <div *ngFor="let item of mappedSubOrders" class="mb-3">
+              <mat-card
+                class="product-item position-relative"
+                [ngClass]="{
+                  highlighted: selectedSubOrderIds.includes(item.subOrder.id),
+                }"
+              >
+                <mat-checkbox
+                  *ngIf="isShowCheckbox(item.subOrder.id)"
+                  class="card-checkbox"
+                  [checked]="selectedSubOrderIds.includes(item.subOrder.id)"
+                  (change)="toggleSubOrderSelection(item.subOrder.id)"
+                >
+                </mat-checkbox>
+
+                <p class="status-text">
+                  {{ '::Customer:OrderHistory.OrderStatus' | abpLocalization }} :
+                  {{
+                    '::Enum:SubOrderDeliveryStatus.' + item.subOrder.deliveryStatus
+                      | abpLocalization
+                  }}
+                </p>
+
+                <div class="d-flex align-items-start">
+                  <img
+                    mat-card-md-image
+                    [src]="item.product.imageSrc"
+                    (error)="handleImageError($event)"
+                    [alt]="item.product.name"
+                  />
+                  <div class="ms-3">
+                    <p class="product-name mb-1">{{ item.product.name }}</p>
+                    <p class="product-description mb-0">{{ item.product.description }}</p>
+                  </div>
+                </div>
+              </mat-card>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-5">
+          <div class="summary-card">
+            <mat-card>
+              <mat-card-header class="card-header-bg mb-1">
+                <mat-card-title>{{ '::Pos:PaymentDetails' | abpLocalization }}</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div>
+                  <div class="d-flex mb-1 summary-row">
+                    <strong>{{ '::Pos:ItemsInCart' | abpLocalization }}</strong>
+                    {{ orderDetails.totalItemsInCart }}
+                  </div>
+                  <div class="d-flex mb-1 summary-row">
+                    <strong>{{ '::OrderControl:OrderDetails.SubTotal' | abpLocalization }}</strong>
+                    {{ orderDetails.subTotal | currency }}
+                  </div>
+                  <div class="d-flex mb-1 summary-row">
+                    <strong>{{ '::Pos:DeliveryFee' | abpLocalization }}</strong>
+                    {{ orderDetails.deliveryFeeTotal | currency }}
+                  </div>
+                  <div class="d-flex mb-1 summary-row">
+                    <strong>
+                      {{ '::Pos:Discount' | abpLocalization }}
+                      {{ orderDetails.discountType ? '(' + orderDetails.discountType + ')' : '' }}
+                    </strong>
+                    {{ orderDetails.discountTotal | currency }}
+                  </div>
+                  <div class="d-flex mb-1 summary-row">
+                    <strong>{{ '::Store:SalesTax' | abpLocalization }}</strong>
+                    {{ orderDetails.taxTotal | currency }}
+                  </div>
+                  <div class="d-flex mb-1 summary-row">
+                    <strong>{{
+                      '::OrderControl:OrderDetails.AmountPaid' | abpLocalization
+                    }}</strong>
+                    {{ orderDetails.amountPaid | currency }}
+                  </div>
+                  <div class="d-flex mb-1 summary-row">
+                    <strong>{{ '::OrderControl:OrderDetails.AmountDue' | abpLocalization }}</strong>
+                    {{ orderDetails.amountDue | currency }}
+                  </div>
+                  <div class="d-flex mb-1 summary-row">
+                    <strong>
+                      {{ '::Tip:TipAmount' | abpLocalization }}
+                      {{ orderDetails.tipType ? '(' + orderDetails.tipType + ')' : '' }}
+                    </strong>
+                    {{ orderDetails.tipAmount | currency }}
+                  </div>
+                  <div class="d-flex mb-1 summary-row">
+                    <strong>{{ '::Report:Filter:PaymentMethod' | abpLocalization }} </strong>
+                    {{ orderDetails.paymentMethods ?? '-' }}
+                  </div>
+                  <div class="d-flex summary-row" *ngIf="orderDetails.hasUsedCreditCard">
+                    <strong>{{ '::CorporateSetting.CreditCardFee' | abpLocalization }} </strong>
+                    {{ orderDetails.creditCardFee | currency }}
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  }
+</mat-card>

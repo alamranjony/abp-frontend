@@ -1,0 +1,124 @@
+<div class="customer-list">
+  <h2 mat-dialog-title>{{ '::Customer.SearchCustomerPopUpTitle' | abpLocalization }}</h2>
+  <mat-dialog-content class="mat-typography" class="content">
+    <div class="row">
+      <div class="col-12">
+        <app-search
+          [placeHolder]="'::Customer.SearchPlaceholder' | abpLocalization"
+          (filterChange)="search($event)"
+          [(filter)]="filter"
+        ></app-search>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="table-container">
+          <table
+            mat-table
+            [dataSource]="customerPaginatedResult.items"
+            matSort
+            (matSortChange)="changeSort($event)"
+            class="mat-elevation-z8"
+          >
+            <!-- Name Column -->
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                {{ '::Customer.Table.Name' | abpLocalization }}
+              </th>
+              <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+            </ng-container>
+
+            <!-- Customer ID Column -->
+            <ng-container matColumnDef="customerId">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                {{ '::Customer.Table.CustomerId' | abpLocalization }}
+              </th>
+              <td mat-cell *matCellDef="let element">{{ element.customerId }}</td>
+            </ng-container>
+
+            <!-- Phone Column -->
+            <ng-container matColumnDef="phone">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ '::Customer.Table.Phone' | abpLocalization }}
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngFor="let phoneDirectory of element.phoneDirectories">
+                  {{ phoneDirectory.phoneNumber }}<br />
+                </ng-container>
+              </td>
+            </ng-container>
+
+            <!-- Address Column -->
+            <ng-container matColumnDef="address1">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                {{ '::Customer.Table.Address' | abpLocalization }}
+              </th>
+              <td mat-cell *matCellDef="let element">{{ element.address1 }}</td>
+            </ng-container>
+
+            <!-- Zip Column -->
+            <ng-container matColumnDef="zip">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                {{ '::Customer.Table.Zip' | abpLocalization }}
+              </th>
+              <td mat-cell *matCellDef="let element">{{ element.zip }}</td>
+            </ng-container>
+
+            <!-- Select Column -->
+            <ng-container matColumnDef="select">
+              <th mat-header-cell *matHeaderCellDef>{{ '::Customer.Select' | abpLocalization }}</th>
+              <td mat-cell *matCellDef="let element">
+                <button
+                  mat-raised-button
+                  color="primary"
+                  type="button"
+                  (click)="showCustomerDetails(element)"
+                >
+                  <mat-icon>done_outline</mat-icon>
+                  <span>{{ '::Customer.Select' | abpLocalization }}</span>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+            <tr class="mat-row no-data-row" *matNoDataRow>
+              <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+                <app-empty-table-message></app-empty-table-message>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Pagination Controls with dynamic page size options -->
+        <mat-paginator
+          [length]="customerPaginatedResult.totalCount"
+          [pageSize]="list.maxResultCount"
+          (page)="changePage($event)"
+        ></mat-paginator>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button
+      mat-raised-button
+      color="primary"
+      type="button"
+      (click)="showAddCustomerPopUp()"
+      [disabled]="
+        this.orderSummary?.orderType === orderType.PO ||
+        this.orderSummary?.orderType === orderType.DO
+      "
+    >
+      <mat-icon>person_add</mat-icon>
+      <span>{{ '::Customer.AddNew' | abpLocalization }}</span>
+    </button>
+    <button mat-raised-button color="accent" type="button" mat-dialog-close (click)="close()">
+      <mat-icon>close</mat-icon>
+      <span>{{ '::Close' | abpLocalization }}</span>
+    </button>
+  </mat-dialog-actions>
+  <mat-icon class="custom-close-popup" mat-dialog-close color="primary">close</mat-icon>
+</div>

@@ -1,0 +1,113 @@
+<mat-card>
+  <mat-card-content>
+    <form [formGroup]="filterForm" (ngSubmit)="onReportGenerate()" class="py-3">
+      <div class="form-group row">
+        <div class="mb-2 mt-2">
+          {{ '::Payroll:DateRangeFiltering' | abpLocalization }}
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>{{
+              '::SalesVarianceBySalesRepReport:DateColumn1' | abpLocalization
+            }}</mat-label>
+            <mat-date-range-input
+              [formGroup]="filterForm.get('firstColumnDateRangeGroup')"
+              [rangePicker]="picker1"
+            >
+              <input matStartDate formControlName="fromDate" />
+              <input matEndDate formControlName="toDate" />
+            </mat-date-range-input>
+            <mat-hint>{{ '::Date:HintRange' | abpLocalization }}</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker1></mat-date-range-picker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>{{
+              '::SalesVarianceBySalesRepReport:DateColumn2' | abpLocalization
+            }}</mat-label>
+            <mat-date-range-input
+              [formGroup]="filterForm.get('secondColumnDateRangeGroup')"
+              [rangePicker]="picker2"
+            >
+              <input matStartDate formControlName="fromDate" />
+              <input matEndDate formControlName="toDate" />
+            </mat-date-range-input>
+            <mat-hint>{{ '::Date:HintRange' | abpLocalization }}</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker2></mat-date-range-picker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>{{
+              '::SalesVarianceBySalesRepReport:DateColumn3' | abpLocalization
+            }}</mat-label>
+            <mat-date-range-input
+              [formGroup]="filterForm.get('thirdColumnDateRangeGroup')"
+              [rangePicker]="picker3"
+            >
+              <input matStartDate formControlName="fromDate" />
+              <input matEndDate formControlName="toDate" />
+            </mat-date-range-input>
+            <mat-hint>{{ '::Date:HintRange' | abpLocalization }}</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker3></mat-date-range-picker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>{{
+              '::SalesVarianceBySalesRepReport:DateColumn4' | abpLocalization
+            }}</mat-label>
+            <mat-date-range-input
+              [formGroup]="filterForm.get('fourthColumnDateRangeGroup')"
+              [rangePicker]="picker4"
+            >
+              <input matStartDate formControlName="fromDate" />
+              <input matEndDate formControlName="toDate" />
+            </mat-date-range-input>
+            <mat-hint>{{ '::Date:HintRange' | abpLocalization }}</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker4"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker4></mat-date-range-picker>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="form-group row mt-2">
+        <div class="col-md-3">
+          <app-multi-select-dropdown
+            [label]="'::SalesVariance:ExcludeEmployees' | abpLocalization"
+            [options]="employeeList"
+            [idField]="'employeeId'"
+            [nameField]="'displayName'"
+            [control]="filterForm.get('employees')"
+          ></app-multi-select-dropdown>
+        </div>
+        <div class="col-md-3">
+          <app-multi-select-dropdown
+            [label]="'::OrderControl:Store' | abpLocalization"
+            [options]="storeList"
+            [idField]="'id'"
+            [nameField]="'storeName'"
+            [control]="filterForm.get('stores')"
+          ></app-multi-select-dropdown>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>{{
+              '::SalesVarianceBySalesRepReport:TotalMdse' | abpLocalization
+            }}</mat-label>
+            <input matInput type="number" formControlName="mdseOrTotal" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <button mat-raised-button color="primary" type="submit" class="me-2">
+            <mat-icon>summarize</mat-icon>
+            {{ '::GenerateReport' | abpLocalization }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

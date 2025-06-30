@@ -1,0 +1,61 @@
+<h2 mat-dialog-title>
+  {{ '::Recipe.AddExistingProduct' | abpLocalization }}
+</h2>
+<mat-card-content>
+  <mat-dialog-content>
+    <form [formGroup]="form" class="product-dialog-form">
+      <div class="row">
+        <mat-form-field class="example-full-width" appearance="outline">
+          <mat-label>{{ '::Recipe.ProductCode' | abpLocalization }}</mat-label>
+          <input type="text" matInput formControlName="productCode" [matAutocomplete]="auto" />
+          <mat-error *ngIf="form.controls['productCode'].hasError('invalidOption')">
+            {{ '::Recipe.ProductCode.Invalid' | abpLocalization }}
+          </mat-error>
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option
+              *ngFor="let option of filteredOptions$ | async"
+              [value]="option.productCode"
+            >
+              {{ option.productCode }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::Recipe.BasePrice' | abpLocalization }}</mat-label>
+          <input matInput formControlName="basePrice" type="number" />
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::Recipe.Quantity' | abpLocalization }}</mat-label>
+          <input matInput formControlName="quantity" type="number" />
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::Recipe.TotalPrice' | abpLocalization }}</mat-label>
+          <input matInput formControlName="totalPrice" type="number" readonly />
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::Recipe.Comments' | abpLocalization }}</mat-label>
+          <textarea matInput formControlName="comments"></textarea>
+        </mat-form-field>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="actions">
+    <button mat-raised-button color="accent" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+      {{ '::Close' | abpLocalization }}
+    </button>
+    <button mat-raised-button color="primary" (click)="onSave()">
+      <mat-icon>save</mat-icon>
+      {{ '::Save' | abpLocalization }}
+    </button>
+  </mat-dialog-actions>
+</mat-card-content>

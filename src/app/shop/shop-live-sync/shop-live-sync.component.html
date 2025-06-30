@@ -1,0 +1,51 @@
+<mat-card>
+  <mat-card-header class="w-100">
+    <mat-card-title class="abp-card-title">
+      {{ '::Shop:LiveSync' | abpLocalization }}
+    </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-md-6 mt-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Shop:AvailableDate' | abpLocalization }}</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="availabilityDate" />
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6 mt-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Shop:ZipCode' | abpLocalization }}</mat-label>
+            <input matInput type="number" formControlName="zipCode" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6 mt-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Store:City' | abpLocalization }}</mat-label>
+            <input matInput type="text" formControlName="city" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6 mt-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::StateProvince' | abpLocalization }}</mat-label>
+            <input matInput type="text" formControlName="state" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <mat-card-actions align="end" class="mt-3">
+        <button mat-raised-button color="primary" type="submit" [disabled]="formGroup.invalid">
+          <mat-icon>search</mat-icon>
+          {{ '::Search' | abpLocalization }}
+        </button>
+      </mat-card-actions>
+    </form>
+  </mat-card-content>
+</mat-card>

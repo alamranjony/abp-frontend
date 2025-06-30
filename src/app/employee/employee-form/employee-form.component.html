@@ -1,0 +1,466 @@
+<mat-card>
+  <mat-card-header class="w-100">
+    <mat-card-title-group class="w-100">
+      <mat-card-title class="abp-card-title">
+        {{
+          isAddMode ? ('::Employee.New' | abpLocalization) : ('::Employee.Edit' | abpLocalization)
+        }}
+      </mat-card-title>
+    </mat-card-title-group>
+    <app-back-button [route]="'/employees'" tabindex="1"></app-back-button>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="employeeForm">
+      <div class="my-3">
+        <div class="mb-2">
+          <h4 class="text-warning">{{ '::Employee.PersonalDetails' | abpLocalization }}</h4>
+        </div>
+        <div class="row">
+          <div class="col-lg-5 col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::Employee.Fields.FirstName' | abpLocalization }}</mat-label>
+              <input matInput formControlName="firstName" required tabindex="1" />
+            </mat-form-field>
+          </div>
+          <div class="col-lg-5 col-md-6 offset-lg-2">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::Employee.Fields.MiddleName' | abpLocalization }}</mat-label>
+              <input matInput class="form-control" formControlName="middleName" tabindex="9" />
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-5 col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::Employee.Fields.LastName' | abpLocalization }}</mat-label>
+              <input matInput class="form-control" formControlName="lastName" tabindex="2" />
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-5 col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::Employee.Fields.Address1' | abpLocalization }}</mat-label>
+              <input matInput formControlName="address1" tabindex="3" />
+            </mat-form-field>
+          </div>
+          <div class="col-lg-5 col-md-6 offset-lg-2">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::Employee.Fields.Address2' | abpLocalization }}</mat-label>
+              <input matInput formControlName="address2" tabindex="10" />
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-5 col-md-6">
+            <app-dropdown
+              [tabIndex]="4"
+              [label]="'::Employee.Fields.Country' | abpLocalization"
+              [options]="countries"
+              [displayField]="'name'"
+              [valueField]="'id'"
+              [control]="employeeForm.get('countryId')"
+              (selectionChangeEvent)="onChangeCountry($event)"
+            >
+            </app-dropdown>
+          </div>
+          <div class="col-lg-5 col-md-6 offset-lg-2">
+            <app-dropdown
+              [tabIndex]="11"
+              [label]="'::Employee.Fields.StateProvince' | abpLocalization"
+              [options]="filteredStateProvinces"
+              [displayField]="'name'"
+              [valueField]="'id'"
+              [control]="employeeForm.get('stateProvinceId')"
+            >
+            </app-dropdown>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-5 col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::Employee.Fields.City' | abpLocalization }}</mat-label>
+              <input matInput formControlName="city" tabindex="5" />
+            </mat-form-field>
+          </div>
+          <div class="col-lg-5 col-md-6 offset-lg-2">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::Employee.Fields.Zipcode' | abpLocalization }}</mat-label>
+              <input matInput formControlName="zipcode" tabindex="12" />
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-5 col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::Employee.Fields.PhoneNumberType' | abpLocalization }}</mat-label>
+              <mat-select formControlName="phoneNumberType" tabindex="6">
+                <mat-option
+                  *ngFor="let numberType of phoneNumberTypeOptions"
+                  [value]="numberType.value"
+                  >{{ '::Enum:NumberType.' + numberType.value | abpLocalization }}</mat-option
+                >
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-lg-5 col-md-6 offset-lg-2">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::Employee.Fields.PhoneNumber' | abpLocalization }}</mat-label>
+              <input matInput formControlName="phoneNumber" tabindex="13" />
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-5 col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::Employee.Fields.Email' | abpLocalization }}</mat-label>
+              <input matInput formControlName="email" tabindex="7" />
+            </mat-form-field>
+            <mat-error
+              class="ps-2 pb-2"
+              *ngIf="employeeForm.get('email')?.hasError('emailExists')"
+              >{{ '::EmailAlreadyExistsError' | abpLocalization }}</mat-error
+            >
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-5 col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::Employee.Fields.HireDate' | abpLocalization }}</mat-label>
+              <input
+                matInput
+                [matDatepicker]="hireDatePicker"
+                formControlName="hireDate"
+                tabindex="8"
+              />
+              <div matSuffix class="datepicker-toggle-wrapper">
+                <mat-datepicker-toggle [for]="hireDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker-toggle
+                  *ngIf="employeeForm.value['hireDate'] !== null"
+                  (click)="clearHireDate()"
+                >
+                  <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+                </mat-datepicker-toggle>
+              </div>
+              <mat-datepicker #hireDatePicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-lg-5 col-md-6 offset-lg-2">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::Employee.Fields.TerminationDate' | abpLocalization }}</mat-label>
+              <input
+                tabindex="14"
+                matInput
+                [matDatepicker]="terminationDatePicker"
+                formControlName="terminationDate"
+              />
+              <div matSuffix class="datepicker-toggle-wrapper">
+                <mat-datepicker-toggle [for]="terminationDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker-toggle
+                  *ngIf="employeeForm.value['terminationDate'] !== null"
+                  (click)="clearTerminationDate()"
+                >
+                  <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+                </mat-datepicker-toggle>
+              </div>
+              <mat-datepicker #terminationDatePicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Employee.Fields.Comment' | abpLocalization }}</mat-label>
+            <textarea
+              tabindex="15"
+              matInput
+              cdkTextareaAutosize
+              #autosize="cdkTextareaAutosize"
+              cdkAutosizeMinRows="1"
+              cdkAutosizeMaxRows="5"
+              formControlName="comment"
+            ></textarea>
+          </mat-form-field>
+        </div>
+        <div class="my-3">
+          <div class="mb-2">
+            <h4 class="text-warning">{{ '::Employee.OtherDetails' | abpLocalization }}</h4>
+          </div>
+          <div class="row">
+            <div class="col-lg-5 col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ '::Employee.Fields.Status' | abpLocalization }}</mat-label>
+                <mat-select formControlName="statusValueId" tabindex="16">
+                  <mat-option *ngFor="let status of statusValues" [value]="status.id">{{
+                    status.name
+                  }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-lg-5 col-md-6 offset-lg-2">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ '::Employee.Fields.Role' | abpLocalization }}</mat-label>
+                <mat-select formControlName="roleValueId" tabindex="19">
+                  <mat-option *ngFor="let status of roles" [value]="status.id">{{
+                    status.name
+                  }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-5 col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ '::Employee.Fields.Location' | abpLocalization }}</mat-label>
+                <mat-select formControlName="locationId" tabindex="17">
+                  <mat-option *ngFor="let store of stores" [value]="store.id">{{
+                    store.storeName
+                  }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-lg-5 col-md-6 offset-lg-2">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ '::Employee.Fields.Department' | abpLocalization }}</mat-label>
+                <mat-select formControlName="departmentValueId" tabindex="20">
+                  <mat-option *ngFor="let deptValue of departmentValues" [value]="deptValue.id">{{
+                    deptValue.name
+                  }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-5 col-md-6">
+              <mat-checkbox formControlName="isEmployeeOrderReview" tabindex="18">{{
+                '::Employee.Fields.OrderReview' | abpLocalization
+              }}</mat-checkbox>
+            </div>
+            <div class="col-lg-5 col-md-6 offset-lg-2">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{ '::Employee.Fields.PayoutAmount' | abpLocalization }}</mat-label>
+                <input
+                  tabindex="21"
+                  matInput
+                  type="number"
+                  class="example-right-align"
+                  formControlName="payoutAmount"
+                />
+                <span matTextSuffix>$</span>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="my-3">
+          <div class="mb-2">
+            <h4 class="text-warning">
+              {{ '::Employee.UserDetails' | abpLocalization }}
+            </h4>
+          </div>
+          <div class="row">
+            <div class="col-lg-5 col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ '::Employee.Fields.UserName' | abpLocalization }}</mat-label>
+                <input matInput formControlName="userName" [readonly]="!isAddMode" tabindex="22" />
+              </mat-form-field>
+              <mat-error
+                class="ps-2 pb-2"
+                *ngIf="employeeForm.get('userName')?.hasError('userNameExists')"
+                >{{ '::UsernameAlreadyExistsError' | abpLocalization }}</mat-error
+              >
+            </div>
+            <div class="col-lg-5 col-md-6 offset-lg-2" *ngIf="!isAddMode">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ '::Employee.Fields.DisplayName' | abpLocalization }}</mat-label>
+                <input
+                  matInput
+                  formControlName="displayName"
+                  [readonly]="!isAddMode"
+                  tabindex="28"
+                />
+              </mat-form-field>
+              <mat-error
+                class="ps-2 pb-2"
+                *ngIf="employeeForm.get('userName')?.hasError('userNameExists')"
+                >{{ '::UsernameAlreadyExistsError' | abpLocalization }}</mat-error
+              >
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-5 col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ '::Employee.Fields.Password' | abpLocalization }}</mat-label>
+                <input
+                  matInput
+                  tabindex="23"
+                  formControlName="password"
+                  [type]="hidePassword ? 'password' : 'text'"
+                />
+                <button
+                  mat-icon-button
+                  matSuffix
+                  (click)="togglePasswordVisibility($event)"
+                  [attr.aria-label]="'Hide password'"
+                  [attr.aria-pressed]="hidePassword"
+                >
+                  <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+
+                <div>
+                  <small *ngIf="employeeForm.errors?.alphanumeric">
+                    Must contain at least one alphanumeric character.
+                  </small>
+                  <small *ngIf="employeeForm.errors?.numeric"
+                    >Must contain at least one numeric character.</small
+                  >
+                  <small *ngIf="employeeForm.errors?.specialCharacter">
+                    Must contain at least one special character.
+                  </small>
+                </div>
+              </mat-form-field>
+              <mat-error class="ms-2" *ngIf="password?.errors?.pattern && password?.touched">
+                {{ '::PasswordError' | abpLocalization }}
+              </mat-error>
+              <mat-error class="ms-2" *ngIf="password?.errors?.minlength && password?.touched">
+                {{ '::PasswordLengthError' | abpLocalization }}
+              </mat-error>
+            </div>
+            <div class="col-lg-5 col-md-6 offset-lg-2">
+              <mat-form-field appearance="outline" class="w-100" validationContainer>
+                <mat-label>{{ '::Employee.Fields.ConfirmPassword' | abpLocalization }}</mat-label>
+                <input
+                  tabindex="29"
+                  matInput
+                  formControlName="confirmPassword"
+                  [type]="hideConfirmPassword ? 'password' : 'text'"
+                  [errorStateMatcher]="passwordStateMatcher"
+                />
+                <button
+                  mat-icon-button
+                  matSuffix
+                  (click)="toggleConfirmPasswordVisibility($event)"
+                  [attr.aria-label]="'Hide confirm password'"
+                  [attr.aria-pressed]="hideConfirmPassword"
+                >
+                  <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+                <mat-error *ngIf="employeeForm.getError('passwordMismatch')">{{
+                  '::EmployeePasswordMismatchError' | abpLocalization
+                }}</mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-5 col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ '::Employee.Fields.EmployeeId' | abpLocalization }}</mat-label>
+                <input
+                  matInput
+                  formControlName="employeeId"
+                  [readonly]="!isAddMode"
+                  tabindex="24"
+                />
+              </mat-form-field>
+              <mat-error
+                class="ps-2 pb-2"
+                *ngIf="employeeForm.get('employeeId')?.hasError('employeeIdExists')"
+                >{{ '::EmployeeIdAlreadyExistsError' | abpLocalization }}</mat-error
+              >
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-5 col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ '::Employee.Fields.Pin' | abpLocalization }}</mat-label>
+                <input
+                  matInput
+                  formControlName="pin"
+                  [type]="hidePin ? 'password' : 'text'"
+                  tabindex="25"
+                />
+                <button
+                  mat-icon-button
+                  matSuffix
+                  (click)="togglePinVisibility($event)"
+                  [attr.aria-label]="'Hide password'"
+                  [attr.aria-pressed]="hidePin"
+                >
+                  <mat-icon>{{ hidePin ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+              </mat-form-field>
+              <mat-error class="ms-2" *ngIf="pin?.errors?.maxlength && pin?.touched">
+                {{ '::PinExceededError' | abpLocalization }}
+              </mat-error>
+            </div>
+            <div class="col-lg-5 col-md-6 offset-lg-2">
+              <mat-form-field appearance="outline" class="w-100" validationContainer>
+                <mat-label>{{ '::Employee.Fields.ConfirmPin' | abpLocalization }}</mat-label>
+                <input
+                  tabindex="30"
+                  matInput
+                  formControlName="confirmPin"
+                  [type]="hideConfirmPin ? 'password' : 'text'"
+                  [errorStateMatcher]="pinStateMatcher"
+                />
+                <button
+                  mat-icon-button
+                  matSuffix
+                  (click)="toggleConfirmPinVisibility($event)"
+                  [attr.aria-label]="'Hide password'"
+                  [attr.aria-pressed]="hideConfirmPin"
+                >
+                  <mat-icon>{{ hideConfirmPin ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+                <mat-error *ngIf="employeeForm.getError('pinMismatch')">{{
+                  '::EmployeePinMismatchError' | abpLocalization
+                }}</mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-5 col-md-6">
+              <mat-form-field appearance="outline" class="w-100" validationContainer>
+                <mat-label>{{ '::Employee.Fields.ContactPersonName' | abpLocalization }}</mat-label>
+                <input matInput formControlName="contactPersonName" tabindex="26" />
+              </mat-form-field>
+            </div>
+            <div class="col-lg-5 col-md-6 offset-lg-2">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{
+                  '::Employee.Fields.ContactPersonPhone' | abpLocalization
+                }}</mat-label>
+                <input matInput formControlName="contactPersonPhone" tabindex="30" />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-5 col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{
+                  '::Employee.Fields.ContactPersonRelation' | abpLocalization
+                }}</mat-label>
+                <mat-select formControlName="contactPersonRelationValueId" tabindex="27">
+                  <mat-option
+                    *ngFor="let relationValue of contactRelationValues"
+                    [value]="relationValue.id"
+                    >{{ relationValue.name }}</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <mat-card-actions align="end">
+      <button mat-raised-button class="me-1" color="accent" (click)="onCancel()" tabindex="31">
+        <mat-icon>close</mat-icon>
+        {{ '::Employee.Cancel' | abpLocalization }}
+      </button>
+      <button mat-raised-button color="primary" (click)="save()" [disabled]="loading" tabindex="32">
+        <mat-icon>save</mat-icon>
+        {{ '::Save' | abpLocalization }}
+      </button>
+    </mat-card-actions>
+  </mat-card-content>
+</mat-card>

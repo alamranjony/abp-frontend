@@ -1,0 +1,159 @@
+<mat-card>
+  <mat-card-header class="w-100">
+    <mat-card-title-group class="w-100 d-flex justify-content-between align-items-center">
+      <mat-card-title class="abp-card-title">{{
+        '::Menu:IndividualHouseAccountPayment' | abpLocalization
+      }}</mat-card-title>
+      <div class="button-group d-flex">
+        <button
+          *abpPermission="'ClientPortal.SinglePayment.CreateAndEdit'"
+          id="create"
+          mat-raised-button
+          color="primary"
+          type="button"
+          [routerLink]="['create']"
+          class="me-2"
+        >
+          <mat-icon>add</mat-icon>
+          <span>{{ '::IndividualPayment.New' | abpLocalization }}</span>
+        </button>
+      </div>
+    </mat-card-title-group>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="row mt-2">
+      <div class="col-lg-6 col-md-6">
+        <app-search
+          placeHolder="Search by invoice no"
+          (filterChange)="onSearch($event)"
+          [(filter)]="filter"
+        />
+      </div>
+
+      <div class="col-lg-6 col-md-6">
+        <mat-form-field appearance="outline" class="w-100 py-3">
+          <mat-label>{{ '::IndividualPayment.Fields.CustomerId' | abpLocalization }}</mat-label>
+          <mat-select
+            [(ngModel)]="selectedCustomerId"
+            name="customerId"
+            (selectionChange)="onCustomerSelectionChanges($event.value)"
+          >
+            <mat-option *ngFor="let customer of customers" [value]="customer.id">
+              {{ customer.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <mat-table
+      [dataSource]="payments.items"
+      class="w-100"
+      matSort
+      (matSortChange)="changeSort($event)"
+      class="individual-payment-table"
+    >
+      <ng-container matColumnDef="transactionDate">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::IndividualPayment.Fields.TransactionDate' | abpLocalization }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.transactionDate | date: 'MM/dd/yyyy' }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="customerName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::IndividualPayment.Fields.CustomerName' | abpLocalization }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.customerName }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="invoiceNo">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::IndividualPayment.Fields.InvoiceNo' | abpLocalization }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.transactionNumber }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="paymentTypeId">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::IndividualPayment.Fields.PaymentType' | abpLocalization }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.paymentTypeName }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="amount">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::IndividualPayment.Fields.Amount' | abpLocalization }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.amount }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="note">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::IndividualPayment.Fields.Note' | abpLocalization }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.note }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef>
+          {{ '::Actions' | abpLocalization }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <button
+            class="action-btn"
+            mat-raised-button
+            color="primary"
+            [matMenuTriggerFor]="menu"
+            [matMenuTriggerData]="{ id: element.id, detailId: element.detailId }"
+          >
+            <mat-icon>settings</mat-icon>
+            {{ '::Actions' | abpLocalization }}
+            <mat-icon>expand_more</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: columns"></mat-row>
+
+      <tr class="mat-row no-data-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="columns.length">
+          <app-empty-table-message></app-empty-table-message>
+        </td>
+      </tr>
+    </mat-table>
+    <mat-paginator
+      [pageIndex]="list.page"
+      [length]="payments.totalCount"
+      [pageSize]="list.maxResultCount"
+      (page)="changePage($event)"
+    >
+    </mat-paginator>
+  </mat-card-content>
+</mat-card>
+
+<mat-menu #menu="matMenu">
+  <ng-template matMenuContent let-id="id" let-detailId="detailId">
+    <button
+      *abpPermission="'ClientPortal.SinglePayment.CreateAndEdit'"
+      mat-menu-item
+      [routerLink]="['edit', id]"
+    >
+      {{ '::Edit' | abpLocalization }}
+    </button>
+  </ng-template>
+</mat-menu>

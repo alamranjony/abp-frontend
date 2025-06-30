@@ -1,0 +1,141 @@
+<h2 mat-dialog-title>{{ '::NewGiftCard' | abpLocalization }}</h2>
+<mat-card-content>
+  <mat-dialog-content>
+    <form [formGroup]="form" class="form-container">
+      <div class="row">
+        <div class="col-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::GiftCardType' | abpLocalization }} </mat-label>
+            <mat-select id="giftcard-type" formControlName="giftCardType">
+              <mat-option [value]="giftCardType.value" *ngFor="let giftCardType of giftCardTypes">
+                {{ giftCardType.key }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::GiftCardNumber' | abpLocalization }}</mat-label>
+            <input type="text" matInput formControlName="cardNumber" />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Reason' | abpLocalization }}</mat-label>
+            <mat-select formControlName="reasonValueId">
+              <mat-option *ngFor="let pValue of reasonValues" [value]="pValue.id">
+                {{ pValue.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::ExpirationDate' | abpLocalization }}</mat-label>
+            <input
+              matInput
+              [matDatepicker]="expirationDatePicker"
+              formControlName="expirationDate"
+              [min]="minDate"
+            />
+            <mat-datepicker-toggle matSuffix [for]="expirationDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #expirationDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::GiftCardStatus' | abpLocalization }} </mat-label>
+            <mat-select id="giftcard-status-type" formControlName="giftCardStatus">
+              <mat-option [value]="null">Select a status type</mat-option>
+              <mat-option [value]="status.value" *ngFor="let status of giftCardStatus">
+                {{ status.key }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Balance' | abpLocalization }} </mat-label>
+            <input type="number" matInput formControlName="balance" />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::GiftCard.CustomerName' | abpLocalization }} </mat-label>
+            <input type="text" matInput formControlName="customerName" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-checkbox formControlName="isBulkEntry">{{
+            '::GiftCard:BulkEntry' | abpLocalization
+          }}</mat-checkbox>
+        </div>
+      </div>
+
+      @if (form.get('isBulkEntry')?.value) {
+        <div class="row">
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::Pos:Quantity' | abpLocalization }}</mat-label>
+              <input matInput type="number" formControlName="qty" />
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3">
+            <button
+              type="button"
+              mat-raised-button
+              color="primary"
+              (click)="generateNumbers()"
+              class="generate-gift-card-button"
+            >
+              {{ '::GenerateNumbers' | abpLocalization }}
+            </button>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <mat-form-field class="w-100">
+              <mat-label>{{ '::GiftCardNumbers' | abpLocalization }}</mat-label>
+              <mat-chip-grid #chipGrid [formControl]="cardNumbersControl">
+                <mat-chip-row
+                  *ngFor="let cardNumber of cardNumbersControl.value"
+                  (removed)="removeCardNumbers(cardNumber)"
+                >
+                  {{ cardNumber }}
+                  <button matChipRemove>
+                    <mat-icon>cancel</mat-icon>
+                  </button>
+                </mat-chip-row>
+              </mat-chip-grid>
+              <input
+                placeholder="{{ '::GiftCard:AddCustomGiftCardNumber' | abpLocalization }}"
+                [matChipInputFor]="chipGrid"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                (matChipInputTokenEnd)="addCardNumber($event)"
+              />
+            </mat-form-field>
+          </div>
+        </div>
+      }
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-raised-button mat-dialog-close color="accent">
+      {{ '::Close' | abpLocalization }}
+      <mat-icon>close</mat-icon>
+    </button>
+    <button mat-raised-button color="primary" (click)="onSave()">
+      {{ '::Save' | abpLocalization }}
+      <mat-icon>save</mat-icon>
+    </button>
+  </mat-dialog-actions>
+</mat-card-content>

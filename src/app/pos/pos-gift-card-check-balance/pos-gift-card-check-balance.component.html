@@ -1,0 +1,52 @@
+<h2 mat-dialog-title>{{ '::Pos:GiftCardCheckBalance' | abpLocalization }}</h2>
+
+<div class="swipeHeader">
+  <h6 class="swipeCard">{{ '::Pos:GiftCardSwipe' | abpLocalization }}</h6>
+</div>
+
+<div class="p-2 card-container pb-0">
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>{{ '::Pos:GiftCardNumber' | abpLocalization }}</mat-label>
+    <input matInput type="text" [(ngModel)]="giftCardNumber" />
+  </mat-form-field>
+</div>
+
+<p *ngIf="noGiftCardFound" class="mat-body giftCard-Error">
+  {{ '::GiftCard:GiftCardNotFoundException' | abpLocalization }}
+</p>
+
+<p *ngIf="giftCardRequired" class="mat-body giftCard-Error">
+  {{ '::Pos:GiftCardRequired' | abpLocalization }}
+</p>
+
+<div *ngIf="giftCard" class="giftCardResult">
+  <p class="mat-body giftCard-Success">
+    {{ '::Pos:GiftCardCustomerName' | abpLocalization }} {{ giftCard.customerName }}
+  </p>
+  <p class="mat-body giftCard-Success">
+    {{ '::Pos:CurrentGiftCardBalance' | abpLocalization }} {{ giftCard.balance | currency }}
+  </p>
+  <p class="mat-body giftCard-Success">
+    {{ '::Pos:GiftCardExpirationDate' | abpLocalization }}
+    {{ giftCard.expirationDate ? (giftCard.expirationDate | date) : '-' }}
+  </p>
+</div>
+
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="accent" type="button" (click)="onClose()">
+    <mat-icon>close</mat-icon>
+    {{ '::Close' | abpLocalization }}
+  </button>
+  <button
+    class="process-card-button"
+    mat-raised-button
+    color="primary"
+    type="button"
+    (click)="submitGiftCard()"
+  >
+    <mat-icon>save</mat-icon>
+    {{ '::Pos:Submit' | abpLocalization }}
+  </button>
+</mat-dialog-actions>
+
+<mat-icon class="custom-close-popup" mat-dialog-close color="primary">close</mat-icon>

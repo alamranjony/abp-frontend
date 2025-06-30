@@ -1,0 +1,84 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      {{ '::Menu:DeliveryChargeAdjustmentSettings' | abpLocalization }}
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="form">
+      <div class="row mt-2">
+        <div class="col-md-6">
+          <mat-checkbox formControlName="isEnabled" class="w-100">
+            {{
+              '::DisplayName:ClientPortal.DeliveryChargeAdjustmentSettings.IsEnabled'
+                | abpLocalization
+            }}
+          </mat-checkbox>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>
+              {{
+                '::DisplayName:ClientPortal.DeliveryChargeAdjustmentSettings.PriceAdjustment'
+                  | abpLocalization
+              }}
+            </mat-label>
+            <input type="number" matInput formControlName="priceAdjustment" />
+            <span matSuffix>$</span>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <mat-radio-group class="radio-button-group" formControlName="isIncreaseNow">
+            <mat-radio-button [value]="true">
+              {{ '::DeliveryChargeAdjustment:ChargeNow' | abpLocalization }}
+            </mat-radio-button>
+            <mat-radio-button [value]="false">
+              {{ '::DeliveryChargeAdjustment:ChargeLater' | abpLocalization }}
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+      <div class="row mt-2" *ngIf="!form.get('isIncreaseNow').value">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>
+              {{
+                '::DisplayName:ClientPortal.DeliveryChargeAdjustmentSettings.StartDate'
+                  | abpLocalization
+              }}
+            </mat-label>
+            <input matInput [matDatepicker]="pickerStart" formControlName="startDate" />
+            <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
+            <mat-datepicker #pickerStart></mat-datepicker>
+            <mat-hint>{{ '::Date:Hint' | abpLocalization }}</mat-hint>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>
+              {{
+                '::DisplayName:ClientPortal.DeliveryChargeAdjustmentSettings.EndDate'
+                  | abpLocalization
+              }}
+            </mat-label>
+            <input matInput [matDatepicker]="pickerEnd" formControlName="endDate" />
+            <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+            <mat-datepicker #pickerEnd></mat-datepicker>
+            <mat-hint>{{ '::Date:Hint' | abpLocalization }}</mat-hint>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="mt-3 float-end">
+        <button mat-raised-button color="primary" (click)="saveDeliveryChargeAdjustmentSettings()">
+          <mat-icon>save</mat-icon>
+          {{ '::Save' | abpLocalization }}
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

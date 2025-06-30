@@ -1,0 +1,20 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      {{ '::Customer:CustomerBalanceDetails:CustomerPayableDetails' | abpLocalization }}
+    </mat-card-title>
+  </mat-card-header>
+  <hr />
+  <mat-card-content>
+    <div class="balance-details-row" *ngFor="let detail of balanceDetails">
+      <div class="row align-items-center">
+        <div class="col col-md-6 text-start">
+          <strong>{{ detail.label | abpLocalization }}</strong>
+        </div>
+        <div class="col col-md-6 text-end">
+          <strong>$ {{ detail.value | number: '1.2-2' }}</strong>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

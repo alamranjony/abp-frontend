@@ -1,0 +1,139 @@
+.price-container,
+.items-in-cart {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.cart-text {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.cart-amount {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background-color: Var(--primary-color);
+  color: #fff;
+  line-height: 1;
+  font-weight: 500;
+  border-radius: 50%;
+  margin-right: 2px;
+}
+
+.mat-price-container {
+  border: 1px solid var(--primary-color);
+  background-color: #fffbf6;
+}
+
+.price-tag {
+  font-weight: 500;
+  width: 130px;
+}
+
+.price-input-field {
+  width: 130px;
+  border: 1px solid var(--primary-color);
+  border-radius: 0.25rem;
+  box-shadow:
+    inset -8px 8px 15px -12px rgba(255, 153, 0, 0.32),
+    inset 8px -8px 15px -12px rgba(255, 153, 0, 0.32);
+  height: 34px;
+  line-height: 1;
+}
+
+.price-currency {
+  padding-right: 10px;
+}
+
+.price-input {
+  color: var(--primary-color) !important;
+}
+
+.price-container {
+  font-weight: 500;
+}
+
+.price-container:last-child {
+  margin-bottom: 0;
+}
+
+.discount {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.discount-currency {
+  width: 60px;
+}
+
+.discount-amount {
+  width: 150px;
+}
+
+.discount label {
+  color: var(--primary-color);
+  font-weight: 500;
+  margin-right: 10px;
+}
+
+.amount-info {
+  width: calc(100% + 1.5rem);
+  margin-left: -0.75rem;
+  padding: 0.75rem 0.75rem 0;
+  border-top: 1px solid var(--mdc-outlined-card-outline-color);
+}
+
+.amount-pay,
+.amount-payable {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 500;
+  color: var(--primary-color);
+}
+
+@media (max-width: 1800px) {
+  .price-input-field {
+    width: 110px;
+  }
+}
+
+@media (max-width: 1680px) {
+  .price-input-field {
+    width: 90px;
+  }
+
+  .price-tag {
+    width: 100px;
+  }
+
+  .price-currency {
+    padding-right: 4px;
+  }
+
+  .discount-amount {
+    width: 100px;
+  }
+}
+
+@media (max-width: 1550px) {
+  .price-tag {
+    width: 63px;
+    font-size: 12px;
+  }
+
+  .discount-amount {
+    width: 85px;
+  }
+
+  .discount label {
+    font-weight: 500;
+    margin-right: 5px;
+    font-size: 12px;
+  }
+}

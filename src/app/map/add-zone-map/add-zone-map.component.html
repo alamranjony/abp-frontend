@@ -1,0 +1,60 @@
+<div id="map" style="height: 500px; width: 100%; margin-bottom: 20px"></div>
+<div class="coordinates-container">
+  <div class="button-container" *ngIf="isPolygonDrawn">
+    <button
+      *abpPermission="'ClientPortal.DeliveryZones.Delete'"
+      mat-raised-button
+      color="primary"
+      class="btn-delete-polygon"
+      (click)="deletePolygonProgrammatically(false)"
+    >
+      <mat-icon>delete</mat-icon>
+      {{ '::DeletePolygon' | abpLocalization }}
+    </button>
+    <button
+      *abpPermission="'ClientPortal.DeliveryZones.Delete'"
+      mat-raised-button
+      color="primary"
+      (click)="deletePolygonProgrammatically(true)"
+    >
+      <mat-icon>delete</mat-icon>
+      {{ '::DeletePolygonWithCoordinates' | abpLocalization }}
+    </button>
+    <button
+      *ngIf="drawOnMapEnabled && coordinates && coordinates.length > 0"
+      mat-flat-button
+      color="accent"
+      type="button"
+      class="my-2 ms-2"
+      (click)="generateMap()"
+      id="generate-map-btn"
+    >
+      {{ '::GenerateMap' | abpLocalization }}
+    </button>
+  </div>
+  <ng-container *ngIf="drawOnMapEnabled">
+    <div *ngFor="let coord of coordinates; let i = index" class="coordinate-row">
+      <mat-form-field appearance="outline" class="coordinate-field lat-margin">
+        <mat-label>{{ '::Latitude' | abpLocalization }} {{ i + 1 }}</mat-label>
+        <input
+          matInput
+          id="lat-{{ i }}"
+          type="text"
+          [value]="coord.latitude | number: '1.4-4'"
+          readonly
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="coordinate-field">
+        <mat-label>{{ '::Longitude' | abpLocalization }} {{ i + 1 }}</mat-label>
+        <input
+          matInput
+          id="lon-{{ i }}"
+          type="text"
+          [value]="coord.longitude | number: '1.4-4'"
+          readonly
+        />
+      </mat-form-field>
+    </div>
+  </ng-container>
+</div>

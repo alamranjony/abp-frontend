@@ -1,0 +1,108 @@
+<mat-card>
+  <mat-card-header class="w-100">
+    <mat-card-title-group class="w-100">
+      <mat-card-title class="abp-card-title">{{
+        '::TermsCode:ListPageTitle' | abpLocalization
+      }}</mat-card-title>
+      <button
+        *abpPermission="'ClientPortal.TermsCode.CreateAndEdit'"
+        id="create"
+        mat-raised-button
+        color="primary"
+        (click)="addTermsCode()"
+      >
+        <i class="fa fa-plus mr-1"></i>
+        <span>{{ '::TermsCode:AddNewBtn' | abpLocalization }}</span>
+      </button>
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content>
+    <app-search
+      [placeHolder]="'::TermsCode:Search' | abpLocalization"
+      (filterChange)="search($event)"
+      [(filter)]="filter"
+    ></app-search>
+
+    <table
+      mat-table
+      [dataSource]="termsCodePaginatedResult.items"
+      matSort
+      (matSortChange)="changeSort($event)"
+      class="w-100"
+    >
+      <ng-container matColumnDef="code">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::TermsCode:Fields:Code' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.code }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="netDueDays">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::TermsCode:Fields:NetDueDays' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.netDueDays }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="agingBucket">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::TermsCode:Fields:AgingBucket' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.agingBucket + ' +' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="lateChargePercentage">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::TermsCode:Fields:LateChargePercentage' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.lateChargePercentage }}</td>
+      </ng-container>
+      <ng-container matColumnDef="minimumLateChargeAmount">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::TermsCode:Fields:MinimumLateChargeAmount' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.minimumLateChargeAmount }}</td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>{{ '::Actions' | abpLocalization }}</th>
+        <td mat-cell *matCellDef="let element">
+          <button
+            mat-raised-button
+            color="primary"
+            [matMenuTriggerFor]="menu"
+            [matMenuTriggerData]="{ id: element.id }"
+          >
+            <mat-icon>settings</mat-icon>
+            {{ '::Actions' | abpLocalization }}
+            <mat-icon>expand_more</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let myRowData; columns: columns"></tr>
+
+      <tr class="mat-row no-data-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="columns.length">
+          <app-empty-table-message></app-empty-table-message>
+        </td>
+      </tr>
+    </table>
+    <mat-paginator
+      [pageIndex]="list.page"
+      [length]="termsCodePaginatedResult.totalCount"
+      [pageSize]="list.maxResultCount"
+      (page)="changePage($event)"
+    ></mat-paginator>
+  </mat-card-content>
+</mat-card>
+
+<mat-menu #menu="matMenu">
+  <ng-template matMenuContent let-id="id">
+    <button
+      *abpPermission="'ClientPortal.TermsCode.CreateAndEdit'"
+      mat-menu-item
+      (click)="editTermsCodeById(id)"
+    >
+      {{ '::Edit' | abpLocalization }}
+    </button>
+  </ng-template>
+</mat-menu>

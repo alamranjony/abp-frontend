@@ -1,0 +1,32 @@
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.employee-name {
+  display: block;
+  overflow: hidden;
+  float: left;
+  width: 50%;
+  text-align: left;
+}
+
+.current-time {
+  display: block;
+  overflow: hidden;
+  float: left;
+  width: 50%;
+  text-align: right;
+}
+
+.close-modal-card {
+  border-radius: 5px;
+  background-color: #eeebd5;
+  padding: 25px;
+}
+
+.close-modal-display-name {
+  border-bottom: dotted 1px skyblue;
+  margin-bottom: 15px;
+}

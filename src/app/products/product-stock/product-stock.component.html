@@ -1,0 +1,59 @@
+<mat-card-content>
+  <table mat-table [dataSource]="productStocks" class="w-100">
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>{{ '::Actions' | abpLocalization }}</th>
+      <td mat-cell *matCellDef="let element">
+        <div *ngIf="editRowId !== element.storeId">
+          <button mat-icon-button color="primary" type="button" (click)="startEdit(element)">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </div>
+        <div *ngIf="editRowId === element.storeId">
+          <button mat-icon-button color="primary" type="button" (click)="saveEdit(element.storeId)">
+            <mat-icon>save</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="accent"
+            class="btn-outline-accent"
+            type="button"
+            (click)="cancelEdit()"
+          >
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </div>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="storeName">
+      <th mat-header-cell *matHeaderCellDef>{{ '::Store:StoreName' | abpLocalization }}</th>
+      <td mat-cell *matCellDef="let element">{{ element.storeName }}</td>
+    </ng-container>
+    <ng-container matColumnDef="onHandQuantity">
+      <th mat-header-cell *matHeaderCellDef>{{ '::Product.On-Hand' | abpLocalization }}</th>
+      <td mat-cell *matCellDef="let element; let i = index">
+        <ng-container *ngIf="editRowId === element.storeId; else readModeOnHandQuantity">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Product.On-Hand' | abpLocalization }}</mat-label>
+            <input matInput [formControl]="rowFormGroup[i].get('onHandQuantity')" type="number" />
+          </mat-form-field>
+        </ng-container>
+        <ng-template #readModeOnHandQuantity>{{ element.onHandQuantity }}</ng-template>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="onOrderQuantity">
+      <th mat-header-cell *matHeaderCellDef>{{ '::Product.On-Order' | abpLocalization }}</th>
+      <td mat-cell *matCellDef="let element; let i = index">
+        <ng-container *ngIf="editRowId === element.storeId; else readModeOnOrderQuantity">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Product.On-Order' | abpLocalization }}</mat-label>
+            <input matInput [formControl]="rowFormGroup[i].get('onOrderQuantity')" type="number" />
+          </mat-form-field>
+        </ng-container>
+        <ng-template #readModeOnOrderQuantity>{{ element.onOrderQuantity }}</ng-template>
+      </td>
+    </ng-container>
+    <!-- Row Definitions -->
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr mat-row *matRowDef="let row; columns: columns"></tr>
+  </table>
+</mat-card-content>

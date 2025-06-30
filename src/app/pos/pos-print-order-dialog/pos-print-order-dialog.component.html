@@ -1,0 +1,49 @@
+<mat-card>
+  <mat-card-header class="w-100">
+    <mat-card-title-group class="w-100">
+      <mat-card-title class="abp-card-title">
+        {{ '::Print' | abpLocalization }}
+      </mat-card-title>
+    </mat-card-title-group>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="row align-items-center">
+      <div class="col-10">
+        <mat-form-field appearance="outline" class="w-100 mt-2">
+          <mat-label>{{ '::PrintOptions' | abpLocalization }}</mat-label>
+          <mat-select [(ngModel)]="selectedOption">
+            <mat-option [value]="0">{{ '::PrintOptions:Select' | abpLocalization }}</mat-option>
+            <mat-option *ngFor="let option of printOptions" [value]="option.value">
+              {{ '::Enum:PrintOptions.' + option.value | abpLocalization }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-2 d-flex align-items-center">
+        <mat-checkbox [(ngModel)]="sendEmail" class="me-2"></mat-checkbox>
+        <label class="m-0">{{ '::SendTestEmailBtn' | abpLocalization }}</label>
+      </div>
+    </div>
+
+    <mat-dialog-actions align="end">
+      <button
+        class="process-card-button"
+        mat-raised-button
+        color="primary"
+        type="button"
+        (click)="onConfirm()"
+      >
+        <mat-icon>save</mat-icon>
+        {{ '::Pos:Confirm' | abpLocalization }}
+      </button>
+      <button mat-raised-button color="accent" type="button" mat-dialog-close>
+        <mat-icon>close</mat-icon>
+        {{ '::Close' | abpLocalization }}
+      </button>
+    </mat-dialog-actions>
+
+    <mat-icon class="custom-close-popup" mat-dialog-close color="primary">close</mat-icon>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,252 @@
+<mat-toolbar class="mat-toolbar-custom">
+  <span class="mat-title">{{ '::CheckoutBoxDetails:Details' | abpLocalization }}</span>
+</mat-toolbar>
+<mat-card>
+  <mat-card-header class="w-100">
+    <mat-card-title-group class="w-100 d-flex justify-content-between align-items-center">
+      <mat-card-title>
+        {{
+          categoryType
+            ? ('::Enum:CategoryType.' + categoryType | abpLocalization)
+            : ('::CheckoutBoxDetails:Details' | abpLocalization)
+        }}
+      </mat-card-title>
+
+      <div class="button-group d-flex">
+        @if (
+          categoryType === category.HospitalOrdersForRoomVerification ||
+          categoryType === category.FuneralTimeVerification ||
+          categoryType === category.EmployeeOrdersReview ||
+          categoryType === category.OnHoldOrders ||
+          categoryType === category.InternetOrdersToBeCleaned ||
+          categoryType === category.UnapprovedCreditCards ||
+          categoryType === category.FringeOrders ||
+          categoryType === category.SpecialHandlingOrders ||
+          categoryType === category.FraudCheck ||
+          categoryType === category.DeliveryProblems ||
+          categoryType === category.CustomerServiceProblem ||
+          categoryType === category.CustomerServicePendingCorrespondence
+        ) {
+          <button
+            *abpPermission="'ClientPortal.CheckoutBox.Release'"
+            mat-raised-button
+            color="primary"
+            type="button"
+            class="me-1"
+            (click)="releaseOrder(categoryType)"
+          >
+            <mat-icon>launch</mat-icon>
+            <span>{{ '::CheckoutBox:Release' | abpLocalization }}</span>
+          </button>
+        }
+
+        @if (categoryType === category.PendingWireOuts) {
+          <button
+            *abpPermission="'ClientPortal.CheckoutBox.SendOrder'"
+            mat-raised-button
+            color="primary"
+            type="button"
+            class="me-1"
+          >
+            <mat-icon>send</mat-icon>
+            <span>{{ '::CheckoutBox:Send' | abpLocalization }}</span>
+          </button>
+        }
+        @if (categoryType !== category.PendingWireOuts) {
+          <app-export-csv
+            *abpPermission="'ClientPortal.CheckoutBox.Export'"
+            [apiUrl]="exportUrl"
+            [fileName]="csvFileName"
+            [fieldList]="exportFieldList"
+            [hasQueryParams]="true"
+            [queryParams]="{ categoryType: categoryType, storeIds: stores }"
+            [isCustomMethodWithParam]="true"
+            [displayColumnList]="displayNameForExportedColumns"
+          >
+          </app-export-csv>
+        }
+        @if (categoryType === category.GeneralMessages) {
+          <button
+            *abpPermission="'ClientPortal.CheckoutBox.Delete'"
+            mat-raised-button
+            color="warn"
+            type="button"
+            class="me-1"
+          >
+            <mat-icon>delete</mat-icon>
+            <span>{{ '::Delete' | abpLocalization }}</span>
+          </button>
+        }
+        <button
+          *abpPermission="'ClientPortal.CheckoutBox.Print'"
+          mat-raised-button
+          class="me-1"
+          color="accent"
+        >
+          <mat-icon>print</mat-icon>
+          {{ '::Print' | abpLocalization }}
+        </button>
+        <button mat-raised-button class="me-1" color="accent" (click)="onCancel()">
+          <mat-icon>arrow_back</mat-icon>
+          {{ '::BackToList' | abpLocalization }}
+        </button>
+      </div>
+    </mat-card-title-group>
+  </mat-card-header>
+
+  <mat-card-content class="mt-2">
+    <div class="table-container">
+      <table mat-table [dataSource]="checkoutBoxDetails" class="w-100">
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox
+              (change)="toggleSelectAll($event)"
+              [checked]="isAllSelected()"
+              [indeterminate]="isSomeSelected()"
+            >
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-checkbox (change)="toggleSelection(element)" [checked]="isSelected(element)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="orderNumber" *ngIf="displayedColumns.has('orderNumber')">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ '::CheckoutBox:OrderNumber' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.orderNumber }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="occasionCode" *ngIf="displayedColumns.has('occasionCode')">
+          <th mat-header-cell *matHeaderCellDef>{{ '::Occasion' | abpLocalization }}</th>
+          <td mat-cell *matCellDef="let element">
+            {{ '::Enum:OccasionCode.' + element.occasionCode | abpLocalization }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="deliveryDate" *ngIf="displayedColumns.has('deliveryDate')">
+          <th mat-header-cell *matHeaderCellDef>{{ '::DeliveryDate' | abpLocalization }}</th>
+          <td mat-cell *matCellDef="let element">{{ element.deliveryDate | date }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="city" *ngIf="displayedColumns.has('city')">
+          <th mat-header-cell *matHeaderCellDef>{{ '::Delivery:City' | abpLocalization }}</th>
+          <td mat-cell *matCellDef="let element">{{ element.city }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="state" *ngIf="displayedColumns.has('state')">
+          <th mat-header-cell *matHeaderCellDef>{{ '::CheckoutBox:State' | abpLocalization }}</th>
+          <td mat-cell *matCellDef="let element">{{ element.state }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="recipientName" *ngIf="displayedColumns.has('recipientName')">
+          <th mat-header-cell *matHeaderCellDef>{{ '::RecipientName' | abpLocalization }}</th>
+          <td mat-cell *matCellDef="let element">{{ element.recipientName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="employeeName" *ngIf="displayedColumns.has('employeeName')">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ '::SalesRepReport:EmployeeName' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.employeeName ?? '-' }}</td>
+        </ng-container>
+
+        <ng-container
+          matColumnDef="productDescription"
+          *ngIf="displayedColumns.has('productDescription')"
+        >
+          <th mat-header-cell *matHeaderCellDef>
+            {{ '::Reports:ProductSalesComparisons:ProductDescription' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.productDescription }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="orderAmount" *ngIf="displayedColumns.has('orderAmount')">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ '::Reports:CancelledOrderReport:orderAmount' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.orderAmount | currency }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="control" *ngIf="displayedColumns.has('control')">
+          <th mat-header-cell *matHeaderCellDef>{{ '::CheckoutBox:Control' | abpLocalization }}</th>
+          <td mat-cell *matCellDef="let element">{{ element.controlNo ?? '-' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="wireService" *ngIf="displayedColumns.has('wireService')">
+          <th mat-header-cell *matHeaderCellDef>{{ '::Product.WireService' | abpLocalization }}</th>
+          <td mat-cell *matCellDef="let element">
+            {{ '::Enum:WireService.' + element.wireService | abpLocalization }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="florist" *ngIf="displayedColumns.has('florist')">
+          <th mat-header-cell *matHeaderCellDef>{{ '::CheckoutBox:Florist' | abpLocalization }}</th>
+          <td mat-cell *matCellDef="let element">{{ element.florist ?? '-' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="messageType" *ngIf="displayedColumns.has('messageType')">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ '::WireServiceMessage:MessageType' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.messageType }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="messageText" *ngIf="displayedColumns.has('messageText')">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ '::CheckoutBox:MessageText' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.messageText ?? '-' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="shopCode" *ngIf="displayedColumns.has('shopCode')">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ '::Shop:ShopCode' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.shopCode ?? '-' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="orderStatus" *ngIf="displayedColumns.has('orderStatus')">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ '::EmployeeSettings.Status' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ '::Enum:OrderStatus.' + element.orderStatus | abpLocalization }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="reason" *ngIf="displayedColumns.has('reason')">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ '::Reason' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.reason ?? '-' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>{{ '::Actions' | abpLocalization }}</th>
+          <td mat-cell *matCellDef="let element">
+            <button
+              mat-raised-button
+              color="primary"
+              type="button"
+              class="me-2"
+              (click)="openInOrderEntry(element.orderId)"
+              *abpPermission="'ClientPortal.CheckoutBox.Edit'"
+            >
+              <mat-icon>edit</mat-icon>
+              {{ '::CheckoutBox:EditOrder' | abpLocalization }}
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+
+      <div *ngIf="checkoutBoxDetails?.length === 0" class="text-center py-4">
+        {{ '::CheckoutBox:NoDataFound' | abpLocalization }}
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

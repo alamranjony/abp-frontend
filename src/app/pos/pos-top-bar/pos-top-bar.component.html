@@ -1,0 +1,35 @@
+<div class="pos-top-bar align-items-center">
+  <div class="search-bar d-flex">
+    <mat-form-field
+      appearance="outline"
+      [ngClass]="{ 'w-75': isGenericUser, 'w-100': !isGenericUser, 'me-2': isGenericUser }"
+    >
+      <input
+        matInput
+        (keyup.enter)="onEnterPressed($event)"
+        placeholder="{{ '::Pos:SearchProductByCode' | abpLocalization }}"
+        #searchKeyRef
+      />
+      <button
+        matSuffix
+        mat-icon-button
+        aria-label="Search"
+        (click)="showProductList(searchKeyRef.value)"
+      >
+        <mat-icon>search</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <mat-form-field *ngIf="isGenericUser" appearance="outline" class="w-25">
+      <input
+        matInput
+        (keyup.enter)="onEnterPressedForEmployeeId()"
+        [(ngModel)]="employeeId"
+        placeholder="{{ '::Pos:EnterEmployeeId' | abpLocalization }}"
+      />
+      <button matSuffix mat-icon-button (click)="onEnterPressedForEmployeeId()">
+        <mat-icon>save</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+</div>

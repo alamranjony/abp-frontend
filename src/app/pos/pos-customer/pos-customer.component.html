@@ -1,0 +1,61 @@
+<mat-card class="pos-customer p-2 mb-2" appearance="outlined">
+  <div class="title pb-2" color="var(--primary)">Customer</div>
+  <mat-form-field *ngIf="showFormField" appearance="outline" class="w-100">
+    <input
+      matInput
+      placeholder="{{ '::Customer.SearchPlaceholder' | abpLocalization }}"
+      [(ngModel)]="searchText"
+      (keyup.enter)="showCustomerList()"
+      [disabled]="orderSummary?.orderType === orderType.PU"
+    />
+    <button
+      matSuffix
+      mat-icon-button
+      aria-label="Search"
+      (click)="showCustomerList()"
+      [disabled]="orderSummary?.orderType === orderType.PU"
+    >
+      <mat-icon>search</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <mat-card *ngIf="!showFormField" appearance="outlined" class="added-customer">
+    <mat-card-content class="position-relative">
+      <div class="item">
+        <mat-icon class="item-icon" matTooltip="Customer Name" color="primary">person</mat-icon
+        ><span class="item-text">{{ selectedCustomer.name }}</span>
+      </div>
+
+      <div class="item">
+        <mat-icon class="item-icon" matTooltip="Customer Address" color="primary"
+          >location_on</mat-icon
+        >
+        <span class="item-text">
+          {{ selectedCustomer.address1 }},{{ selectedCustomer.address2 }},{{
+            selectedCustomer.city
+          }},{{ selectedCustomer.stateProvince }},{{ selectedCustomer.country }},{{
+            selectedCustomer.zip
+          }}
+        </span>
+      </div>
+
+      <div class="item">
+        <mat-icon class="item-icon" matTooltip="Customer Phone" color="primary">phone</mat-icon
+        ><span class="item-text">{{ phoneNumber }}</span>
+      </div>
+
+      <div class="item">
+        <mat-icon class="item-icon" matTooltip="Customer Email" color="primary">email</mat-icon
+        ><span class="item-text">{{ email }}</span>
+      </div>
+      <div class="action-button">
+        <mat-icon class="edit" matTooltip="Edit" color="primary" (click)="editCustomer()"
+          >edit</mat-icon
+        >
+        <mat-icon class="delete" matTooltip="Delete" color="warn" (click)="deleteCustomer()"
+          >delete</mat-icon
+        >
+      </div>
+    </mat-card-content>
+  </mat-card>
+</mat-card>

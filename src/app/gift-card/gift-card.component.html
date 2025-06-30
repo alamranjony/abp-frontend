@@ -1,0 +1,221 @@
+<mat-card>
+  <mat-card-header class="w-100">
+    <mat-card-title-group class="w-100 d-flex justify-content-between align-items-center">
+      <mat-card-title class="abp-card-title">{{
+        '::Menu:GiftCard' | abpLocalization
+      }}</mat-card-title>
+      <div class="button-group d-flex">
+        <button
+          *abpPermission="'ClientPortal.GiftCards.CreateAndEdit'"
+          id="create"
+          mat-raised-button
+          color="primary"
+          type="button"
+          class="me-2"
+          (click)="createGiftCard()"
+        >
+          <mat-icon>add</mat-icon>
+          <span>{{ '::NewGiftCard' | abpLocalization }}</span>
+        </button>
+        <button
+          *abpPermission="'ClientPortal.GiftCards.Export'"
+          mat-raised-button
+          color="accent"
+          class="me-2"
+          type="button"
+          (click)="exportCsv()"
+        >
+          <i class="fa fa-file-csv mr-1"></i>
+          <span>{{ '::DownloadCSV' | abpLocalization }}</span>
+        </button>
+        <button
+          *abpPermission="'ClientPortal.GiftCards.Export'"
+          mat-raised-button
+          color="accent"
+          class="me-2"
+          type="button"
+          (click)="downloadPdf()"
+        >
+          <i class="fa fa-file-pdf mr-1"></i>
+          <span>{{ '::DownloadPDF' | abpLocalization }}</span>
+        </button>
+        <button
+          *abpPermission="'ClientPortal.GiftCards.Delete'"
+          mat-raised-button
+          color="warn"
+          type="button"
+          (click)="deleteSelected()"
+          [disabled]="selectedGiftCards.length === 0"
+        >
+          <mat-icon>delete</mat-icon>
+          <span>{{ '::DeleteSelected' | abpLocalization }}</span>
+        </button>
+      </div>
+    </mat-card-title-group>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="filterForm" (ngSubmit)="onFilter()" class="py-3">
+      <div class="form-group row">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::GiftCardNumber' | abpLocalization }}</mat-label>
+            <input matInput formControlName="giftCardNumber" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Status' | abpLocalization }}</mat-label>
+            <mat-select formControlName="giftCardStatus">
+              <mat-option value="all">{{ '::All' | abpLocalization }}</mat-option>
+              <mat-option *ngFor="let status of statusTypes" [value]="status.value">{{
+                status.key
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::GiftCardType' | abpLocalization }}</mat-label>
+            <mat-select formControlName="giftCardType">
+              <mat-option value="all">{{ '::All' | abpLocalization }}</mat-option>
+              <mat-option *ngFor="let type of giftCardTypes" [value]="type.value">{{
+                type.key
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Balance' | abpLocalization }}</mat-label>
+            <input matInput formControlName="openBalance" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end mt-3">
+        <button mat-raised-button color="primary" type="submit" class="me-2">
+          <mat-icon>search</mat-icon>
+          {{ '::Filter' | abpLocalization }}
+        </button>
+        <button mat-raised-button color="warn" type="button" (click)="onResetFilters()">
+          <mat-icon>clear</mat-icon>
+          {{ '::Reset' | abpLocalization }}
+        </button>
+      </div>
+    </form>
+
+    <table
+      mat-table
+      [dataSource]="giftCard.items"
+      class="w-100"
+      matSort
+      (matSortChange)="changeSort($event)"
+    >
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let myRowData; columns: columns"></tr>
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox
+            (change)="toggleSelectAll($event)"
+            [checked]="isAllSelected()"
+            [indeterminate]="isSomeSelected()"
+          >
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <mat-checkbox (change)="toggleSelection(element)" [checked]="isSelected(element)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>{{ '::Actions' | abpLocalization }}</th>
+        <td mat-cell *matCellDef="let element">
+          <button
+            mat-raised-button
+            color="primary"
+            [matMenuTriggerFor]="menu"
+            [matMenuTriggerData]="{ id: element.id }"
+          >
+            <mat-icon>settings</mat-icon>
+            {{ '::Actions' | abpLocalization }}
+            <mat-icon>expand_more</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="cardNumber">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::GiftCardNumber' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.cardNumber }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="expirationDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::ExpirationDate' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.expirationDate | date }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="balance">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::Balance' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.balance | currency }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="giftCardType">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::GiftCardType' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ '::Enum:GiftType.' + element.giftCardType | abpLocalization }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="giftCardStatus">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::Status' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ '::Enum:GiftCardStatus.' + element.giftCardStatus | abpLocalization }}
+        </td>
+      </ng-container>
+
+      <tr class="mat-row no-data-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="columns.length">
+          <app-empty-table-message></app-empty-table-message>
+        </td>
+      </tr>
+    </table>
+    <mat-paginator
+      [pageIndex]="list.page"
+      [length]="giftCard.totalCount"
+      [pageSize]="list.maxResultCount"
+      (page)="changePage($event)"
+    >
+    </mat-paginator>
+  </mat-card-content>
+</mat-card>
+
+<mat-menu #menu="matMenu">
+  <ng-template matMenuContent let-id="id">
+    <button
+      *abpPermission="'ClientPortal.GiftCards.CreateAndEdit'"
+      mat-menu-item
+      (click)="editGiftCard(id)"
+    >
+      {{ '::Edit' | abpLocalization }}
+    </button>
+    <button *abpPermission="'ClientPortal.GiftCards.Delete'" mat-menu-item (click)="delete(id)">
+      {{ '::Delete' | abpLocalization }}
+    </button>
+  </ng-template>
+</mat-menu>

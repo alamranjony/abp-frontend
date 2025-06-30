@@ -1,0 +1,17 @@
+<mat-card class="pos-customer p-2 mb-2" appearance="outlined">
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>Sale Order Type</mat-label>
+    <mat-select
+      [(ngModel)]="selectedOrderType"
+      (selectionChange)="onOrderTypeSelectionChange()"
+      [disabled]="isOrderTypeDisabled(selectedOrderType)"
+    >
+      <mat-option
+        *ngFor="let orderType of orderTypes"
+        [value]="orderType.value"
+        [disabled]="isOrderTypeDisabled(orderType.value)"
+        >{{ '::Enum:OrderType:' + orderType.key | abpLocalization }}</mat-option
+      >
+    </mat-select>
+  </mat-form-field>
+</mat-card>

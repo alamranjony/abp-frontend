@@ -1,0 +1,48 @@
+.custom-form-field {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  padding: 16px;
+  position: relative;
+  margin: 10px auto;
+}
+
+.custom-label {
+  position: absolute;
+  top: -8px;
+  left: 8px;
+  background-color: white;
+  padding: 0 4px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.table-container {
+  max-height: 200px;
+  overflow: auto;
+}
+
+.mat-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.mat-header-cell,
+.mat-cell {
+  padding: 8px 16px;
+}
+
+.mat-header-row {
+  background-color: #f5f5f5;
+}
+
+.row.gx-2 {
+  margin-left: 0 !important;
+}
+
+.has-error {
+  margin-bottom: 0.5em;
+}
+
+textarea {
+  min-height: 100px;
+}

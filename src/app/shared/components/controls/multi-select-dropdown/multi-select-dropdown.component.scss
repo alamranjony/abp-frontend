@@ -1,0 +1,12 @@
+.w-100 {
+  width: 100%;
+}
+.chip-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+mat-chip {
+  max-width: 100%;
+  white-space: nowrap;
+}

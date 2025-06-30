@@ -1,0 +1,160 @@
+<h2 mat-dialog-title>
+  {{ (data ? '::WireServiceMessage:Edit' : '::WireServiceMessage:Add') | abpLocalization }}
+</h2>
+
+<mat-card-content>
+  <mat-dialog-content>
+    <form [formGroup]="form" class="row">
+      <input formControlName="storeId" hidden="hidden" matInput />
+
+      <div [class.has-error]="form.get('wireService').invalid" class="col-md-12">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::WireServiceMessage:WireService' | abpLocalization }}</mat-label>
+          <mat-select (selectionChange)="onWireServiceChange($event)" formControlName="wireService">
+            <mat-option [value]="0"> {{ '::Select' | abpLocalization }}</mat-option>
+            <mat-option *ngFor="let wireService of wireServiceOptions" [value]="wireService.value">
+              {{ wireService.key }}
+            </mat-option>
+          </mat-select>
+          <span *ngIf="form.get('wireService').hasError('invalidWireService')" matError>
+            {{ '::WireServiceMessage:WireService:Invalid' | abpLocalization }}
+          </span>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="selectedWireService" class="col-md-12">
+        <div class="custom-form-field">
+          <label class="custom-label">{{ '::WireServiceMessage:Shops' | abpLocalization }}</label>
+
+          <mat-form-field appearance="outline" class="w-100 mt-2 px-3">
+            <mat-label>{{ '::WireServiceMessage:SearchShopCodes' | abpLocalization }}</mat-label>
+            <input (input)="applyFilter($event)" matInput />
+          </mat-form-field>
+
+          <div class="table-container">
+            <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+              <ng-container matColumnDef="select">
+                <mat-header-cell *matHeaderCellDef>
+                  <mat-checkbox
+                    (change)="$event ? toggleAll() : null"
+                    [checked]="isAllSelected()"
+                    [indeterminate]="!isAllSelected() && someSelected"
+                  >
+                  </mat-checkbox>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                  <mat-checkbox
+                    (change)="$event ? selection.toggle(row) : null"
+                    (click)="$event.stopPropagation()"
+                    [checked]="selection.isSelected(row)"
+                  >
+                  </mat-checkbox>
+                </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="item">
+                <mat-header-cell *matHeaderCellDef>
+                  {{ '::WireServiceMessage:ShopCodes' | abpLocalization }}
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{ row }}</mat-cell>
+              </ng-container>
+
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            </mat-table>
+          </div>
+
+          <small>
+            <mat-error *ngIf="hasShopSelectionError">
+              {{ '::WireServiceMessage:MustSelectAtLeast1Shop' | abpLocalization }}
+            </mat-error>
+          </small>
+        </div>
+      </div>
+
+      <div [class.has-error]="form.get('wireService').invalid" class="col-md-12">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::WireServiceMessage:MessageType' | abpLocalization }}</mat-label>
+          <mat-select formControlName="messageType">
+            <mat-option [value]="0">{{ '::Select' | abpLocalization }}</mat-option>
+            <mat-option *ngFor="let messageType of messageTypes" [value]="messageType.value">
+              {{ messageType.key }}
+            </mat-option>
+          </mat-select>
+          <span *ngIf="form.get('messageType').hasError('invalidMessageType')" matError>
+            {{ '::WireServiceMessage:MessageType:Invalid' | abpLocalization }}
+          </span>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-12 row gx-2">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::WireServiceMessage:FromDate' | abpLocalization }}</mat-label>
+            <input [matDatepicker]="fromDatePicker" formControlName="fromDate" matInput />
+            <mat-datepicker-toggle [for]="fromDatePicker" matSuffix></mat-datepicker-toggle>
+            <mat-datepicker #fromDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::WireServiceMessage:ToDate' | abpLocalization }}</mat-label>
+            <input [matDatepicker]="toDatePicker" formControlName="toDate" matInput />
+            <mat-datepicker-toggle [for]="toDatePicker" matSuffix></mat-datepicker-toggle>
+            <mat-datepicker #toDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::WireServiceMessage:DateType' | abpLocalization }}</mat-label>
+          <mat-select formControlName="dateType">
+            <mat-option *ngFor="let dateType of dateTypeOptions" [value]="dateType.value">
+              {{ dateType.key }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-12 row gx-2">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::WireServiceMessage:MinAmount' | abpLocalization }}</mat-label>
+            <input type="number" formControlName="minAmount" matInput />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::WireServiceMessage:MaxAmount' | abpLocalization }}</mat-label>
+            <input type="number" formControlName="maxAmount" matInput />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::WireServiceMessage:Message' | abpLocalization }}</mat-label>
+          <textarea formControlName="message" matInput></textarea>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="!data" class="col-md-6">
+        <mat-checkbox formControlName="applyForAllStore"
+          >{{ '::WireServiceMessage:ApplyForAllStore' | abpLocalization }}
+        </mat-checkbox>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="actions">
+    <button (click)="onClose()" color="accent" mat-raised-button>
+      {{ '::Close' | abpLocalization }}
+      <mat-icon>close</mat-icon>
+    </button>
+    <button (click)="onSave()" color="primary" mat-raised-button>
+      {{ '::Save' | abpLocalization }}
+      <mat-icon>save</mat-icon>
+    </button>
+  </mat-dialog-actions>
+</mat-card-content>

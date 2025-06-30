@@ -1,0 +1,29 @@
+.radio-button-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.mat-radio-button {
+  margin: 8px 0;
+}
+
+mat-checkbox {
+  margin-left: -8px;
+}
+
+span[matSuffix] {
+  margin-right: 16px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}

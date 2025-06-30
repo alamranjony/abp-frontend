@@ -1,0 +1,217 @@
+<mat-card>
+  <mat-card-content>
+    <div class="row mb-2" *abpPermission="'ClientPortal.Design.AssignOrder'">
+      <div class="col-md-3">
+        <mat-form-field appearance="outline" class="w-100 m-0">
+          <mat-label>{{ '::DesignerOrderControl:SubOrderNumber' | abpLocalization }}</mat-label>
+          <input
+            matInput
+            type="text"
+            name="subOrderNo"
+            [(ngModel)]="subOrderNo"
+            (keydown.enter)="onAssign(subOrderNo)"
+            appBarcodeScanner
+            (barcodeDetected)="onAssign($event)"
+          />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ '::Payroll:DateRangeFiltering' | abpLocalization }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <form [formGroup]="filterForm" (ngSubmit)="onSearch()">
+          <div class="form-group row">
+            <div class="col-md-3">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{ '::Payroll:From' | abpLocalization }}</mat-label>
+                <input matInput [matDatepicker]="fromDatePicker" formControlName="fromDate" />
+                <mat-hint>{{ '::Date:Hint' | abpLocalization }}</mat-hint>
+                <mat-datepicker-toggle matSuffix [for]="fromDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #fromDatePicker></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{ '::Payroll:To' | abpLocalization }}</mat-label>
+                <input matInput [matDatepicker]="toDatePicker" formControlName="toDate" />
+                <mat-hint>{{ '::Date:Hint' | abpLocalization }}</mat-hint>
+                <mat-datepicker-toggle matSuffix [for]="toDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #toDatePicker></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ '::DesignerOrderControl:DesignStatus' | abpLocalization }}</mat-label>
+                <mat-select formControlName="designStatus">
+                  <mat-option value="0">{{ '::All' | abpLocalization }}</mat-option>
+                  <mat-option
+                    *ngFor="let designStatus of designStatuses"
+                    [value]="designStatus.value"
+                    >{{ designStatus.key }}</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3">
+              <app-multi-select-dropdown
+                [label]="'::DesignerOrderControl:Assignee' | abpLocalization"
+                [options]="employees?.items"
+                [idField]="'employeeId'"
+                [nameField]="'displayName'"
+                [control]="filterForm.get('assignedEmployees')"
+              ></app-multi-select-dropdown>
+            </div>
+
+            <div class="d-flex align-items-center gap-2 mt-2">
+              <div class="flex-grow-1">
+                <mat-form-field appearance="outline" class="w-100 m-0">
+                  <mat-label>{{ '::ValueTypes:Search' | abpLocalization }}</mat-label>
+                  <input
+                    matInput
+                    type="text"
+                    formControlName="keyword"
+                    placeholder="{{ '::DesignerOrderControl:Search' | abpLocalization }}"
+                  />
+                </mat-form-field>
+              </div>
+              <div class="d-flex align-items-center gap-2" style="margin-bottom: 1.34375em">
+                <button mat-raised-button color="primary" type="submit">
+                  <mat-icon>search</mat-icon>
+                  {{ '::Search' | abpLocalization }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <div class="design-order-table">
+      <table
+        mat-table
+        [dataSource]="orderControlList.items"
+        class="w-100"
+        matSort
+        (matSortChange)="changeSort($event)"
+      >
+        <ng-container matColumnDef="orderNumber">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::OrderControl:OrderNumber' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.subOrderNumber }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="designStatus">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::DesignerOrderControl:DesignStatus' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ '::Enum:DesignStatus.' + element.designStatus | abpLocalization }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="recipientAddress">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::DesignerOrderControl:RecipientAddress' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.recipientAddress }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="productName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::DesignerOrderControl:ProductName' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.productName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="assignedEmployee">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::DesignerOrderControl:AssignedEmployee' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.assignedEmployeeName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>{{ '::Actions' | abpLocalization }}</th>
+          <td mat-cell *matCellDef="let element">
+            <button
+              mat-raised-button
+              color="primary"
+              [matMenuTriggerFor]="menu"
+              [matMenuTriggerData]="{
+                subOrderNumber: element.subOrderNumber,
+                designStatus: element.designStatus,
+                assignedEmployeeId: element.assignedEmployeeId,
+              }"
+            >
+              <mat-icon>settings</mat-icon>
+              {{ '::Actions' | abpLocalization }}
+              <mat-icon>expand_more</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+        <tr class="mat-row no-data-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+            <app-empty-table-message></app-empty-table-message>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <mat-paginator
+      [pageIndex]="list.page"
+      [length]="orderControlList.totalCount"
+      [pageSize]="list.maxResultCount"
+      (page)="changePage($event)"
+    ></mat-paginator>
+  </mat-card-content>
+</mat-card>
+
+<mat-menu #menu="matMenu">
+  <ng-template
+    matMenuContent
+    let-subOrderNumber="subOrderNumber"
+    let-designStatus="designStatus"
+    let-assignedEmployeeId="assignedEmployeeId"
+  >
+    @if (designStatus !== designStatusEnum.Review && designStatus !== designStatusEnum.UnPrint) {
+      <button *abpPermission="'ClientPortal.Design.Print'" mat-menu-item>
+        {{ '::DesignerOrderControl:Print' | abpLocalization }}
+      </button>
+    }
+
+    @if (assignedEmployeeId) {
+      <button
+        mat-menu-item
+        *abpPermission="'ClientPortal.Design.AssignOrder'"
+        (click)="onChangeEmployee(subOrderNumber, assignedEmployeeId)"
+      >
+        {{ '::DesignerOrderControl:ChangeEmployee' | abpLocalization }}
+      </button>
+    }
+    <button
+      *abpPermission="'ClientPortal.Design.UpdateOrderDetails'"
+      mat-menu-item
+      (click)="showDesignerDetails(subOrderNumber)"
+    >
+      {{ '::DesignerOrderControl:OpenOrder' | abpLocalization }}
+    </button>
+  </ng-template>
+</mat-menu>

@@ -1,0 +1,91 @@
+<mat-card class="pos-card pos-payment-options p-2 mb-2 pb-0" appearance="outlined">
+  <div class="swipe-card">
+    <mat-radio-group aria-label="Select an option">
+      <mat-radio-button value="1">{{ '::PosSwipeCard:' | abpLocalization }}</mat-radio-button>
+    </mat-radio-group>
+
+    <button class="process-card-button" mat-raised-button color="primary" type="button">
+      <mat-icon>credit_card</mat-icon>
+      <span>{{ '::Pos:ProcessCard' | abpLocalization }}</span>
+    </button>
+  </div>
+  <div class="card-divider">{{ '::Pos:OrEnterManually' | abpLocalization }}</div>
+  <mat-tab-group animationDuration="0ms" (selectedTabChange)="onTabSelectChange($event)">
+    <mat-tab [disabled]="isSubmitting" [label]="'::Pos:Payment:CreditCard' | abpLocalization">
+      <div class="p-2 card-container pb-0">
+        <app-credit-card-amount
+          style="width: 100%"
+          [amountToCharge]="amountToCharge"
+          (amountChanged)="onAmountChanged($event)"
+        >
+        </app-credit-card-amount>
+        <form id="iframes">
+          <div id="ss-banner"></div>
+          <div class="form-group">
+            <label for="iframesCardNumber">{{
+              '::Pos:Payment:CreditCard:CardNumber' | abpLocalization
+            }}</label>
+            <div id="iframesCardNumber"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="iframesCardExpiration">{{
+              '::Pos:Payment:CreditCard:CardExpiration' | abpLocalization
+            }}</label>
+            <div id="iframesCardExpiration"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="iframesCardCvv">{{
+              '::Pos:Payment:CreditCard:CardCVV' | abpLocalization
+            }}</label>
+            <div id="iframesCardCvv"></div>
+          </div>
+          <br />
+          <div id="iframesSubmit" style="display: none"></div>
+        </form>
+      </div>
+    </mat-tab>
+
+    <mat-tab [disabled]="isSubmitting" [label]="'::Pos:Payment:SavedCard' | abpLocalization">
+      <div class="p-2 card-container pb-0">
+        <app-credit-card-amount
+          style="width: 100%"
+          [amountToCharge]="amountToCharge"
+          (amountChanged)="onAmountChanged($event)"
+        >
+        </app-credit-card-amount>
+        <mat-radio-group [(ngModel)]="selectedCardToken" aria-label="Select a saved card">
+          <div *ngFor="let card of savedCards" class="saved-card-item">
+            <mat-radio-button [value]="card.token">
+              {{ card.cardType }} {{ card.maskedCardNumber }}
+            </mat-radio-button>
+          </div>
+        </mat-radio-group>
+        <div *ngIf="!savedCards.length" class="no-saved-cards">
+          {{ '::Pos:Payment:NoSavedCards' | abpLocalization }}
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+
+  <div class="submit-button pb-2 d-flex justify-content-end align-items-center">
+    <ng-container *ngIf="isSubmitting; else showBtn">
+      <mat-progress-spinner class="me-2" diameter="20" mode="indeterminate" color="warn">
+      </mat-progress-spinner>
+    </ng-container>
+    <ng-template #showBtn>
+      <button
+        class="process-card-button"
+        mat-raised-button
+        color="primary"
+        type="button"
+        [disabled]="isSubmitting"
+        (click)="submitPaymentData()"
+      >
+        <mat-icon>local_atm</mat-icon>
+        <span>{{ '::Pos:Accept' | abpLocalization }}</span>
+      </button>
+    </ng-template>
+  </div>
+</mat-card>

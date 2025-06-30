@@ -1,0 +1,105 @@
+<div class="modal-header">
+  <h2 *ngIf="!authenticated || isClocked" mat-dialog-title>
+    {{ '::Menu:TimeClock' | abpLocalization }}
+  </h2>
+  <h2 *ngIf="authenticated && !isCheckOut" mat-dialog-title>
+    {{ '::Menu:ClockIn' | abpLocalization }}
+  </h2>
+  <h2 *ngIf="authenticated && isCheckOut" mat-dialog-title>
+    {{ '::Menu:ClockOut' | abpLocalization }}
+  </h2>
+  <button mat-icon-button mat-dialog-close aria-label="Close">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+<mat-card appearance="outlined">
+  <mat-dialog-content class="mat-typography">
+    <div *ngIf="!authenticated && !isClocked">
+      <form [formGroup]="form">
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>{{ '::TimeClock:EmployeeId' | abpLocalization }}</mat-label>
+          <input id="timeClock-employeeId" matInput formControlName="employeeId" />
+        </mat-form-field>
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>{{ '::TimeClock:Pin' | abpLocalization }}</mat-label>
+          <input type="password" id="timeClock-pin" matInput formControlName="pin" />
+        </mat-form-field>
+      </form>
+    </div>
+    <div *ngIf="authenticated && !isClocked">
+      <div class="w-100 pb-4">
+        <div class="employee-name">
+          <h3>{{ displayName }}</h3>
+        </div>
+        <div class="current-time">
+          <h3 color="primary">
+            {{ currentTime | date: (employeeSettings.clockType === 0 ? 'hh:mm:ss a' : 'HH:mm:ss') }}
+          </h3>
+        </div>
+      </div>
+      <form [formGroup]="checkinForm">
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>{{ '::TimeClock:Location' | abpLocalization }}</mat-label>
+          <mat-select formControlName="shopId">
+            <mat-option *ngFor="let store of stores" [value]="store.id">{{
+              store.storeName
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>{{ '::TimeClock:Department' | abpLocalization }}</mat-label>
+          <mat-select formControlName="departmentId">
+            <mat-option *ngFor="let deptValue of departmentValues" [value]="deptValue.id">{{
+              deptValue.name
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>{{ '::TimeClock:Comment' | abpLocalization }}</mat-label>
+          <textarea matInput formControlName="comment"></textarea>
+        </mat-form-field>
+      </form>
+    </div>
+    <div *ngIf="isClocked">
+      <div class="close-modal-display-name">
+        <h3>{{ displayName }}</h3>
+      </div>
+      <div class="close-modal-card">
+        <span style="font-size: 1.3125rem">
+          <span *ngIf="isCheckOut">{{ '::Menu:ClockedOut' | abpLocalization }} </span>
+          <span *ngIf="!isCheckOut">{{ '::Menu:ClockedIn' | abpLocalization }} </span>
+          <span style="color: orangered">{{
+            currentStaticTime
+              | date
+                : (employeeSettings.clockType === 0
+                    ? 'hh:mm:ss a, MM/dd/YYYY '
+                    : 'HH:mm:ss, MM/dd/YYYY ')
+          }}</span>
+          {{ clockedLocation }}
+        </span>
+      </div>
+    </div>
+  </mat-dialog-content>
+</mat-card>
+<mat-dialog-actions align="end">
+  <button mat-raised-button mat-dialog-close>{{ '::TimeClock:Close' | abpLocalization }}</button>
+  <button *ngIf="!authenticated && !isClocked" mat-raised-button color="primary" (click)="save()">
+    {{ '::TimeClock:Submit' | abpLocalization }}
+  </button>
+  <button
+    *ngIf="authenticated && !isCheckOut"
+    mat-raised-button
+    color="primary"
+    (click)="checkIn()"
+  >
+    {{ '::Menu:ClockIn' | abpLocalization }}
+  </button>
+  <button
+    *ngIf="authenticated && isCheckOut"
+    mat-raised-button
+    color="primary"
+    (click)="checkOut()"
+  >
+    {{ '::Menu:ClockOut' | abpLocalization }}
+  </button>
+</mat-dialog-actions>

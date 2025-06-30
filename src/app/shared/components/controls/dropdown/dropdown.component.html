@@ -1,0 +1,33 @@
+<mat-form-field class="w-100" appearance="outline">
+  <mat-label>{{ label }}</mat-label>
+
+  <input
+    type="text"
+    [attr.tabindex]="tabIndex > 0 ? tabIndex : null"
+    matInput
+    [formControl]="control"
+    [matAutocomplete]="auto"
+    [placeholder]="placeholder"
+    #inputElement
+  />
+
+  <button
+    *ngIf="control.value"
+    matSuffix
+    mat-icon-button
+    aria-label="Clear"
+    (click)="clearSelection(inputElement)"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <mat-autocomplete
+    #auto="matAutocomplete"
+    [displayWith]="displayFn.bind(this)"
+    (optionSelected)="onSelectionChanged($event.option.value)"
+  >
+    <mat-option *ngFor="let option of filteredOptions" [value]="option[valueField]">
+      {{ option[displayField] }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>

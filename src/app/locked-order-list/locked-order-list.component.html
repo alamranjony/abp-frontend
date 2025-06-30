@@ -1,0 +1,92 @@
+<mat-card>
+  <mat-card-header class="w-100">
+    <mat-card-title-group class="w-100">
+      <mat-card-title class="abp-card-title"
+        >{{ '::Menu:LockedOrder' | abpLocalization }}
+      </mat-card-title>
+
+      <div class="header-actions">
+        <button
+          (click)="unlockOrders()"
+          [disabled]="!selection.hasValue()"
+          color="primary"
+          mat-raised-button
+        >
+          <mat-icon>lock_open</mat-icon>
+          {{ '::LockedOrder:UnlockOrders' | abpLocalization }}
+        </button>
+      </div>
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content>
+    <table
+      (matSortChange)="changeSort($event)"
+      [dataSource]="dataSource"
+      class="w-100 mt-3"
+      mat-table
+      matSort
+    >
+      <ng-container matColumnDef="select">
+        <th *matHeaderCellDef mat-header-cell>
+          <mat-checkbox
+            (change)="$event ? toggleAllRows() : null"
+            [checked]="selection.hasValue() && isAllSelected()"
+            [indeterminate]="selection.hasValue() && !isAllSelected()"
+          >
+          </mat-checkbox>
+        </th>
+        <td *matCellDef="let row" mat-cell>
+          <mat-checkbox
+            (change)="$event ? selection.toggle(row) : null"
+            (click)="$event.stopPropagation()"
+            [checked]="selection.isSelected(row)"
+          >
+          </mat-checkbox>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="orderNumber">
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>
+          {{ '::LockedOrder:OrderNumber' | abpLocalization }}
+        </th>
+        <td *matCellDef="let element" mat-cell>{{ element.orderNumber }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="storeName">
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>
+          {{ '::LockedOrder:StoreName' | abpLocalization }}
+        </th>
+        <td *matCellDef="let element" mat-cell>
+          {{ element.storeCode + ' - ' + element.storeName }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="assignedUserName">
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>
+          {{ '::LockedOrder:AssignedUserName' | abpLocalization }}
+        </th>
+        <td *matCellDef="let element" mat-cell>{{ element.assignedUserName }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="assignedTime">
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>
+          {{ '::LockedOrder:AssignedTime' | abpLocalization }}
+        </th>
+        <td *matCellDef="let element" mat-cell>{{ element.assignedTime | date: 'short' }}</td>
+      </ng-container>
+
+      <tr *matHeaderRowDef="columns" mat-header-row></tr>
+      <tr *matRowDef="let myRowData; columns: columns" mat-row></tr>
+
+      <tr class="mat-row no-data-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="columns.length">
+          <app-empty-table-message></app-empty-table-message>
+        </td>
+      </tr>
+    </table>
+    <mat-paginator
+      (page)="changePage($event)"
+      [length]="dataSource.data.length"
+      [pageSize]="list.maxResultCount"
+    ></mat-paginator>
+  </mat-card-content>
+</mat-card>

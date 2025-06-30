@@ -1,0 +1,66 @@
+<mat-card class="pos-check pos-payment-options p-2 mb-2 pb-0" appearance="outlined">
+  <div class="card-divider">
+    {{ '::Pos:SwipeTheGiftCardOrEnterManually' | abpLocalization }}
+  </div>
+  <div class="p-2 card-container pb-0">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{ '::Pos:GiftCardNumber' | abpLocalization }}</mat-label>
+      <input
+        matInput
+        [(ngModel)]="giftCardNumber"
+        type="number"
+        (ngModelChange)="onInputChange($event)"
+      />
+    </mat-form-field>
+  </div>
+  <p *ngIf="noGiftCardFound" class="mat-body giftCard-Error">
+    {{ '::Pos:GiftCardNotFound' | abpLocalization }}
+  </p>
+  <p *ngIf="isExpired" class="mat-body giftCard-Error">
+    {{ '::Pos:GiftCardExpired' | abpLocalization }}
+  </p>
+  <p *ngIf="sameGiftCardSelected" class="mat-body giftCard-Error">
+    {{ '::Pos:GiftCardSelected' | abpLocalization }}
+  </p>
+  <div class="p-2 card-container pb-0" *ngIf="giftCard && !isExpired">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{ '::Pos:GiftCardAmount' | abpLocalization }}</mat-label>
+      <input matInput [(ngModel)]="giftCardUserInput" type="number" />
+    </mat-form-field>
+    <p *ngIf="!isValidAmount" class="mat-body giftCard-Error">
+      {{ validAmountErrorMessage }}
+    </p>
+    <p class="mat-body giftCard-Success">
+      {{ '::Pos:CurrentGiftCardBalance' | abpLocalization }} {{ giftCard.balance | currency }}
+    </p>
+    <p class="mat-body giftCard-Success">
+      {{ '::Pos:CurrentCartAmount' | abpLocalization }} {{ currentCartAmount | currency }}
+    </p>
+    <p *ngIf="giftCard.customerName" class="mat-body giftCard-Success">
+      {{ '::Pos:GiftCardCustomerName' | abpLocalization }} {{ giftCard.customerName }}
+    </p>
+    <p *ngIf="giftCard.expirationDate" class="mat-body giftCard-Success">
+      {{ '::Pos:GiftCardExpirationDate' | abpLocalization }} {{ giftCard.expirationDate | date }}
+    </p>
+    <p
+      *ngIf="giftCard.giftCardType === giftCardTypes.Promotional"
+      class="mat-body giftCard-Success"
+    >
+      {{ '::Pos:GracePeriodExpirationDate' | abpLocalization }}
+      {{ gracePeriodExpirationDate | date }}
+    </p>
+  </div>
+
+  <div class="submit-button pb-2">
+    <button
+      class="process-card-button"
+      mat-raised-button
+      color="primary"
+      type="button"
+      (click)="acceptGiftCard()"
+    >
+      <mat-icon>local_atm</mat-icon>
+      <span>{{ '::Pos:Accept' | abpLocalization }}</span>
+    </button>
+  </div>
+</mat-card>

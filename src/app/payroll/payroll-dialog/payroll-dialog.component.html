@@ -1,0 +1,96 @@
+<h2 mat-dialog-title>
+  {{ (data.isEditMode ? '::Edit' : '::Payroll:NewPayroll') | abpLocalization }}
+</h2>
+
+<mat-card-content>
+  <mat-dialog-content>
+    <form [formGroup]="form">
+      <div class="row">
+        <div class="col col-md-6">
+          <div class="mt-2">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::Payroll:Employee' | abpLocalization }}</mat-label>
+              <mat-select id="payroll-employeeId" formControlName="employeeId">
+                <mat-option [value]="null">{{ '::Select' | abpLocalization }}</mat-option>
+                <mat-option [value]="employee.employeeId" *ngFor="let employee of employees.items">
+                  {{ employee.displayName }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="mt-2">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>{{ '::TimeClock:Location' | abpLocalization }}</mat-label>
+              <mat-select formControlName="shopId">
+                <mat-option [value]="null">{{ '::Select' | abpLocalization }}</mat-option>
+                <mat-option *ngFor="let store of stores" [value]="store.id">{{
+                  store.storeName
+                }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="mt-2">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>{{ '::TimeClock:Department' | abpLocalization }}</mat-label>
+              <mat-select formControlName="departmentId">
+                <mat-option [value]="null">{{ '::Select' | abpLocalization }}</mat-option>
+                <mat-option *ngFor="let deptValue of departmentValues" [value]="deptValue.id">{{
+                  deptValue.name
+                }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="mt-2">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>{{ '::TimeClock:Comment' | abpLocalization }}</mat-label>
+              <textarea matInput formControlName="comment"></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col col-md-6">
+          <div class="mt-2">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::Payroll:ClockIn' | abpLocalization }}</mat-label>
+              <input matInput [matDatepicker]="checkinDatePicker" formControlName="checkInDate" />
+              <mat-hint>{{ '::Date:Hint' | abpLocalization }}</mat-hint>
+              <mat-datepicker-toggle matSuffix [for]="checkinDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #checkinDatePicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="mt-2">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::Payroll:ClockInTime' | abpLocalization }}</mat-label>
+              <input matInput type="time" formControlName="checkInTime" />
+            </mat-form-field>
+          </div>
+          <div class="mt-2">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::Payroll:ClockOut' | abpLocalization }}</mat-label>
+              <input matInput [matDatepicker]="checkoutDatePicker" formControlName="checkOutDate" />
+              <mat-hint>{{ '::Date:Hint' | abpLocalization }}</mat-hint>
+              <mat-datepicker-toggle matSuffix [for]="checkoutDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #checkoutDatePicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="mt-2">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ '::Payroll:ClockOutTime' | abpLocalization }}</mat-label>
+              <input matInput type="time" formControlName="checkOutTime" />
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-raised-button color="accent" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+      {{ '::Close' | abpLocalization }}
+    </button>
+    <button mat-raised-button color="primary" (click)="onSave()">
+      <mat-icon>save</mat-icon>
+      {{ '::Save' | abpLocalization }}
+    </button>
+  </mat-dialog-actions>
+</mat-card-content>

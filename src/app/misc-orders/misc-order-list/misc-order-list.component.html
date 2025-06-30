@@ -1,0 +1,174 @@
+<mat-card>
+  <mat-card-header class="w-100">
+    <mat-card-title-group class="w-100">
+      <mat-card-title class="abp-card-title"
+        >{{ '::Menu:MiscOrderList' | abpLocalization }}
+      </mat-card-title>
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="filterForm" (ngSubmit)="onSearch()" class="py-3">
+      <div class="form-group row">
+        <div class="mb-2">
+          {{ '::Payroll:DateRangeFiltering' | abpLocalization }}
+        </div>
+        <div class="col-md-3 mb-2">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>{{ '::Payroll:From' | abpLocalization }}</mat-label>
+            <input matInput [matDatepicker]="fromDatePicker" formControlName="fromDate" />
+            <mat-hint>{{ '::Date:Hint' | abpLocalization }}</mat-hint>
+            <mat-datepicker-toggle matSuffix [for]="fromDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #fromDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3 mb-2">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>{{ '::Payroll:To' | abpLocalization }}</mat-label>
+            <input matInput [matDatepicker]="toDatePicker" formControlName="toDate" />
+            <mat-hint>{{ '::Date:Hint' | abpLocalization }}</mat-hint>
+            <mat-datepicker-toggle matSuffix [for]="toDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #toDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::OrderControl:OrderType' | abpLocalization }}</mat-label>
+            <mat-select
+              formControlName="miscOrderType"
+              (selectionChange)="onOrderTypeChange($event.value)"
+            >
+              <mat-option value="0">{{ '::All' | abpLocalization }}</mat-option>
+              <mat-option *ngFor="let orderType of miscOrderTypes" [value]="orderType.value">
+                {{ '::Enum:MiscOrderType.' + orderType.value | abpLocalization }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Pos:MiscOrder:ReasonTypeId' | abpLocalization }}</mat-label>
+            <mat-select formControlName="reasonId">
+              <mat-option value="0">{{ '::All' | abpLocalization }}</mat-option>
+              <mat-option *ngFor="let miscReason of miscReasons" [value]="miscReason.id">
+                {{ miscReason.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <app-multi-select-dropdown
+            [label]="'::OrderControl:Store' | abpLocalization"
+            [options]="storeList"
+            [idField]="'id'"
+            [nameField]="'storeName'"
+            [control]="filterForm.get('stores')"
+          ></app-multi-select-dropdown>
+        </div>
+        <div class="col-md-3">
+          <app-multi-select-dropdown
+            [label]="'::MiscOrder:Employee' | abpLocalization"
+            [options]="employees?.items"
+            [idField]="'employeeId'"
+            [nameField]="'displayName'"
+            [control]="filterForm.get('employees')"
+          ></app-multi-select-dropdown>
+        </div>
+        <div class="col-md-2">
+          <button mat-raised-button color="primary" type="submit" class="me-2">
+            <mat-icon>search</mat-icon>
+            {{ '::Search' | abpLocalization }}
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <div style="overflow-x: auto; max-width: 100%">
+      <table
+        mat-table
+        [dataSource]="miscOrderList.items"
+        class="w-100"
+        matSort
+        (matSortChange)="changeSort($event)"
+      >
+        <ng-container matColumnDef="creationTime">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::MiscOrder:CreationTime' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.creationTime | date }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="employeeName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::MiscOrder:EmployeeName' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.employeeName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="storeName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::MiscOrder:StoreName' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.storeName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="orderTypeId">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::MiscOrder:OrderType' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ '::Enum:MiscOrderType.' + element.orderTypeId | abpLocalization }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="reasonName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::MiscOrder:ReasonName' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.reasonName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::OrderControl:Amount' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.amount | currency }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::MiscOrder:Description' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.description }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+        <tr class="mat-row no-data-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+            <app-empty-table-message></app-empty-table-message>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <mat-paginator
+      [pageIndex]="list.page"
+      [length]="miscOrderList.totalCount"
+      [pageSize]="list.maxResultCount"
+      (page)="changePage($event)"
+    ></mat-paginator>
+  </mat-card-content>
+</mat-card>

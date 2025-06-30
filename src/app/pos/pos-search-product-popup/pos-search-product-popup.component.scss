@@ -1,0 +1,44 @@
+.pos {
+  min-height: 200px;
+}
+
+.pos .empty-icon-container {
+  position: relative;
+  min-height: 30vh;
+}
+.stock {
+  margin-top: 5px;
+  color: #fa7719;
+}
+.stockRecipe {
+  margin-top: 5px;
+  color: red;
+}
+
+.low-stock-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #ff9f38;
+  color: white;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 4px;
+  z-index: 10;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.out-Of-stock-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #d82a24;
+  color: white;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 4px;
+  z-index: 10;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}

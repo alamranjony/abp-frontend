@@ -1,0 +1,35 @@
+<h2 mat-dialog-title>{{ '::Pos:SelectedGiftCardsList' | abpLocalization }}</h2>
+
+<mat-dialog-content>
+  <div *ngFor="let card of existingGiftCards; let i = index" class="card-row mt-4">
+    <div class="card-field">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ '::Pos:GiftCardNumberList' | abpLocalization }} </mat-label>
+        <input matInput [value]="card.cardNumber" disabled />
+      </mat-form-field>
+    </div>
+
+    <div class="card-field">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ '::Pos:GiftCardCurrentBalanceList' | abpLocalization }}</mat-label>
+        <input matInput [value]="card.balance | currency" disabled />
+      </mat-form-field>
+    </div>
+
+    <div class="card-field">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ '::Pos:GiftCardStartingBalanceList' | abpLocalization }}</mat-label>
+        <input matInput [value]="card.startingAmount | currency" disabled />
+      </mat-form-field>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <div class="dialog-actions-container">
+    <button mat-raised-button color="accent" type="button" mat-dialog-close>
+      <mat-icon>close</mat-icon>
+      {{ '::Pos:Close' | abpLocalization }}
+    </button>
+  </div>
+</mat-dialog-actions>

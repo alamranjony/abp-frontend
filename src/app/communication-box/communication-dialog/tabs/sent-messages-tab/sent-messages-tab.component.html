@@ -1,0 +1,109 @@
+@if (sentMessages.items.length > 0) {
+  <div class="tab-content">
+    <div class="message-toolbar">
+      <form [formGroup]="searchForm" class="toolbar-form">
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>{{ '::WireService' | abpLocalization }}</mat-label>
+          <mat-select formControlName="wireServiceId">
+            <mat-option [value]="0">{{ '::All' | abpLocalization }}</mat-option>
+            <mat-option *ngFor="let wireService of wireServiceOptions" [value]="wireService.value">
+              {{ wireService.key }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Search</mat-label>
+          <input matInput placeholder="Search messages" formControlName="filter" />
+          <button
+            mat-icon-button
+            *ngIf="searchForm.get('filter')?.value"
+            matSuffix
+            (click)="searchForm.get('filter')?.setValue('')"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="deleteSelectedMessages()"
+            [disabled]="!hasSelectedMessages()"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+
+          <button mat-icon-button (click)="refreshMessages()">
+            <mat-icon>refresh</mat-icon>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <mat-progress-bar mode="indeterminate" *ngIf="isLoading()"></mat-progress-bar>
+
+    <mat-list class="message-list">
+      <mat-list-item class="message-header-row">
+        <div class="message-left">
+          <mat-checkbox
+            class="message-checkbox"
+            [checked]="isAllSelected()"
+            (change)="toggleSelectAll()"
+          ></mat-checkbox>
+        </div>
+      </mat-list-item>
+
+      <!-- Message Items -->
+      @for (message of sentMessages.items; track message.id) {
+        <mat-list-item
+          class="message-item"
+          [class.selected]="selectedMessageIds().has(message.id)"
+          (click)="toggleMessageSelection(message.id)"
+        >
+          <div class="message-left">
+            <mat-checkbox
+              class="message-checkbox"
+              [checked]="selectedMessageIds().has(message.id)"
+              (click)="$event.stopPropagation()"
+              (change)="onCheckboxChange(message.id, $event.checked)"
+            ></mat-checkbox>
+          </div>
+
+          <div class="content-container">
+            <div class="message-header">
+              <span class="recipients">To: {{ getRecipientNames(message) }}</span>
+              <span class="date">{{ message.creationTime | date: 'MMM d, y, h:mm a' }}</span>
+            </div>
+            <div class="message-preview">
+              {{ message.content }}
+            </div>
+          </div>
+
+          <div class="right-actions">
+            <div class="status-indicator">
+              <mat-icon *ngIf="isFullySent(message)">done_all</mat-icon>
+              <mat-icon *ngIf="!isFullySent(message)" class="partial-send">done</mat-icon>
+            </div>
+          </div>
+        </mat-list-item>
+      }
+
+      <mat-paginator
+        [length]="sentMessages.totalCount"
+        [pageSize]="list.maxResultCount"
+        [pageSizeOptions]="[5, 10, 15, 20, 30]"
+        (page)="onPageChange($event)"
+      ></mat-paginator>
+    </mat-list>
+  </div>
+} @else {
+  <div class="tab-content">
+    <div class="empty-state">
+      <mat-icon class="empty-icon">send</mat-icon>
+      <p>{{ '::CommunicationBox:EmptySentMessages' | abpLocalization }}</p>
+    </div>
+  </div>
+}

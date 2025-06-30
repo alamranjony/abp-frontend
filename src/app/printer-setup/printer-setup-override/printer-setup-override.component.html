@@ -1,0 +1,137 @@
+<mat-card-title-group class="w-100 mb-3">
+  <button (click)="addOverridePrinterSetup()" color="primary" mat-raised-button>
+    <mat-icon>add</mat-icon>
+    <span>{{ '::Add' | abpLocalization }}</span>
+  </button>
+</mat-card-title-group>
+<mat-card-content>
+  <table
+    (matSortChange)="onSort($event)"
+    [dataSource]="overridePrinterSetups.items"
+    class="w-100"
+    mat-table
+    matSort
+  >
+    <ng-container matColumnDef="printJobType">
+      <th *matHeaderCellDef mat-header-cell mat-sort-header>
+        {{ '::PrinterSetup:PrintJobType' | abpLocalization }}
+      </th>
+      <td *matCellDef="let element" mat-cell>
+        {{ '::Enum:PrintJobType:' + PrintJobType[element.printJobType] | abpLocalization }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="overrideType">
+      <th *matHeaderCellDef mat-header-cell mat-sort-header>
+        {{ '::PrinterSetup:OverrideType' | abpLocalization }}
+      </th>
+      <td *matCellDef="let element" mat-cell>
+        {{ '::Enum:PrinterOverrideType:' + element.printerOverrideType | abpLocalization }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="overrideValue">
+      <th *matHeaderCellDef mat-header-cell mat-sort-header>
+        {{ '::PrinterSetup:OverrideValue' | abpLocalization }}
+      </th>
+      <td *matCellDef="let element" mat-cell>
+        {{ element.value?.name }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="orderPrinter">
+      <th *matHeaderCellDef mat-header-cell>
+        {{ '::PrinterSetup:OrderPrinter' | abpLocalization }}
+      </th>
+      <td *matCellDef="let element" mat-cell>
+        @if (getPrinterInfo(element, 'order'); as printerInfo) {
+          <span
+            [matTooltip]="printerInfo.name + (printerInfo.tray ? ' • ' + printerInfo.tray : '')"
+          >
+            {{ printerInfo.name }}
+          </span>
+        } @else {
+          <span class="empty-cell">---</span>
+        }
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="threePanelCardPrinter">
+      <th *matHeaderCellDef mat-header-cell>
+        {{ '::PrinterSetup:CardPrinter3Panel' | abpLocalization }}
+      </th>
+      <td *matCellDef="let element" mat-cell>
+        @if (getPrinterInfo(element, 'panel3'); as printerInfo) {
+          <span
+            [matTooltip]="printerInfo.name + (printerInfo.tray ? ' • ' + printerInfo.tray : '')"
+          >
+            {{ printerInfo.name }}
+          </span>
+        } @else {
+          <span class="empty-cell">---</span>
+        }
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="fourPanelCardPrinter">
+      <th *matHeaderCellDef mat-header-cell>
+        {{ '::PrinterSetup:CardPrinter4Panel' | abpLocalization }}
+      </th>
+      <td *matCellDef="let element" mat-cell>
+        @if (getPrinterInfo(element, 'panel4'); as printerInfo) {
+          <span
+            [matTooltip]="printerInfo.name + (printerInfo.tray ? ' • ' + printerInfo.tray : '')"
+          >
+            {{ printerInfo.name }}
+          </span>
+        } @else {
+          <span class="empty-cell">---</span>
+        }
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="allInOneCardPrinter">
+      <th *matHeaderCellDef mat-header-cell>
+        {{ '::PrinterSetup:CardPrinterAllInOne' | abpLocalization }}
+      </th>
+      <td *matCellDef="let element" mat-cell>
+        @if (getPrinterInfo(element, 'allInOne'); as printerInfo) {
+          <span
+            [matTooltip]="printerInfo.name + (printerInfo.tray ? ' • ' + printerInfo.tray : '')"
+          >
+            {{ printerInfo.name }}
+          </span>
+        } @else {
+          <span class="empty-cell">---</span>
+        }
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>{{ '::Actions' | abpLocalization }}</th>
+      <td mat-cell *matCellDef="let element">
+        <button
+          mat-raised-button
+          color="primary"
+          [matMenuTriggerFor]="menu"
+          [matMenuTriggerData]="{ id: element.id }"
+        >
+          <mat-icon>settings</mat-icon>
+          {{ '::Actions' | abpLocalization }}
+          <mat-icon>expand_more</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+    <tr *matHeaderRowDef="columns" mat-header-row></tr>
+    <tr *matRowDef="let myRowData; columns: columns" mat-row></tr>
+  </table>
+  <mat-paginator
+    [length]="overridePrinterSetups.totalCount"
+    [pageSize]="list.maxResultCount"
+    (page)="changePage($event)"
+  ></mat-paginator>
+</mat-card-content>
+
+<mat-menu #menu="matMenu">
+  <ng-template matMenuContent let-id="id">
+    <button mat-menu-item (click)="editOverridePrinterSetup(id)">
+      {{ '::Edit' | abpLocalization }}
+    </button>
+    <button mat-menu-item (click)="delete(id)">
+      {{ '::Delete' | abpLocalization }}
+    </button>
+  </ng-template>
+</mat-menu>

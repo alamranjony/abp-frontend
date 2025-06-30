@@ -1,0 +1,53 @@
+<h2 mat-dialog-title>{{ data.isEditMode ? 'Edit Email Directory' : 'Add Email Directory' }}</h2>
+
+<mat-card-content>
+  <mat-dialog-content>
+    <form [formGroup]="form">
+      <div class="row">
+        <div class="col-md-12 mx-1">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Email' | abpLocalization }}</mat-label>
+            <input matInput formControlName="email" />
+            <mat-error *ngIf="form.get('email').hasError('email')">
+              {{ '::Error:InvalidEmail' | abpLocalization }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <mat-checkbox formControlName="isPrimary">{{
+            '::IsPrimary' | abpLocalization
+          }}</mat-checkbox>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <mat-checkbox formControlName="optOutForMarketing">{{
+            '::OptOutForMarketing' | abpLocalization
+          }}</mat-checkbox>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <mat-checkbox formControlName="optForDirectMarketing">{{
+            '::OptForDirectMarketing' | abpLocalization
+          }}</mat-checkbox>
+        </div>
+      </div>
+      <input type="hidden" formControlName="entityId" />
+      <input type="hidden" formControlName="entityName" />
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="actions">
+    <button mat-raised-button color="accent" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+      {{ '::Close' | abpLocalization }}
+    </button>
+    <button mat-raised-button color="primary" (click)="onSave()">
+      <mat-icon>save</mat-icon>
+      {{ '::Save' | abpLocalization }}
+    </button>
+  </mat-dialog-actions>
+</mat-card-content>

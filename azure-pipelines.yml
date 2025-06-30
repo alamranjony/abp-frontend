@@ -1,0 +1,62 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+# Install Node
+- task: NodeTool@0
+  inputs:
+    versionSpec: '20.x'
+  displayName: 'Install Node.js'
+
+# Install yarn
+- script: |
+    npm install -g yarn
+  displayName: 'Install Yarn'
+
+# Copy environment files
+- task: CopyFiles@2
+  inputs:
+    sourceFolder: '$(Build.SourcesDirectory)/Deployment Materials/Dev'
+    contents: |
+      environment.prod.ts
+      environment.ts
+    targetFolder: '$(Build.SourcesDirectory)/angular/src/environments'
+  displayName: 'Copy Environment Files'
+
+# Install dependencies and build
+- script: |
+    cd angular
+    npm install -g @angular/cli
+    yarn install --legacy-peer-deps
+    abp generate-proxy -t ng
+    yarn build:prod
+  displayName: 'Build Angular App'
+  workingDirectory: '$(Build.SourcesDirectory)'
+
+# Copy web.config (optional step if needed for deployment)
+- task: CopyFiles@2
+  inputs:
+    sourceFolder: '$(Build.SourcesDirectory)/Deployment Materials/Dev'
+    contents: 'web.config'
+    targetFolder: '$(Build.SourcesDirectory)/angular/dist/ClientPortal'
+  displayName: 'Copy web.config to dist folder'
+
+# Copy dist to artifact staging directory
+- task: CopyFiles@2
+  inputs:
+    sourceFolder: '$(Build.SourcesDirectory)/angular/dist/ClientPortal'
+    contents: '**'
+    targetFolder: '$(Build.ArtifactStagingDirectory)'
+  displayName: 'Prepare Artifact for Publishing'
+
+# Publish the build artifact
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: 'angular-app'
+  displayName: 'Publish Build Artifacts'

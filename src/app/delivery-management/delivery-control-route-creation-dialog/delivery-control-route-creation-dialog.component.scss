@@ -1,0 +1,16 @@
+.table-container {
+  max-height: 600px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+}
+
+.mat-header-row {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 1;
+}
+
+.cdk-drag-handle {
+  cursor: move;
+}

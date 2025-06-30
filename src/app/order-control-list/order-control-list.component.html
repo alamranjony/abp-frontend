@@ -1,0 +1,369 @@
+<mat-card>
+  <mat-card-content>
+    <form [formGroup]="filterForm" (ngSubmit)="onSearch()">
+      <div class="form-group row">
+        <div class="mb-2">
+          {{ '::Payroll:DateRangeFiltering' | abpLocalization }}
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>{{ '::Payroll:From' | abpLocalization }}</mat-label>
+            <input matInput [matDatepicker]="fromDatePicker" formControlName="fromDate" />
+            <mat-hint>{{ '::Date:Hint' | abpLocalization }}</mat-hint>
+            <mat-datepicker-toggle matSuffix [for]="fromDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #fromDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>{{ '::Payroll:To' | abpLocalization }}</mat-label>
+            <input matInput [matDatepicker]="toDatePicker" formControlName="toDate" />
+            <mat-hint>{{ '::Date:Hint' | abpLocalization }}</mat-hint>
+            <mat-datepicker-toggle matSuffix [for]="toDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #toDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::OrderControl:OrderType' | abpLocalization }}</mat-label>
+            <mat-select formControlName="orderType">
+              <mat-option value="0">{{ '::All' | abpLocalization }}</mat-option>
+              <mat-option *ngFor="let orderType of orderType" [value]="orderType.value">{{
+                orderType.key
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::OrderControl:OrderStatus' | abpLocalization }}</mat-label>
+            <mat-select formControlName="orderStatus">
+              <mat-option value="0">{{ '::All' | abpLocalization }}</mat-option>
+              <mat-option *ngFor="let orderStatus of orderStatus" [value]="orderStatus.value">{{
+                orderStatus.key
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4 mt-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::OrderControl:DeliveryCategory' | abpLocalization }}</mat-label>
+            <mat-select formControlName="deliveryCategory">
+              <mat-option value="0">{{ '::All' | abpLocalization }}</mat-option>
+              <mat-option
+                *ngFor="let deliveryCategory of deliveryCategory"
+                [value]="deliveryCategory.value"
+              >
+                {{ '::Enum:DeliveryCategory.' + deliveryCategory.value | abpLocalization }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4 mt-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::OrderControl:DeliveryStatus' | abpLocalization }}</mat-label>
+            <mat-select formControlName="deliveryStatus">
+              <mat-option value="0">{{ '::All' | abpLocalization }}</mat-option>
+              <mat-option
+                *ngFor="let deliveryStatus of subOrderDeliveryStatus"
+                [value]="deliveryStatus.value"
+              >
+                {{ '::Enum:SubOrderDeliveryStatus.' + deliveryStatus.value | abpLocalization }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4 mt-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::OrderControl:Store' | abpLocalization }}</mat-label>
+            <mat-select formControlName="store">
+              <mat-option value="0">{{ '::All' | abpLocalization }}</mat-option>
+              <mat-option *ngFor="let store of storeList" [value]="store.id">{{
+                store.storeName
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="d-flex align-items-center gap-2 mt-2">
+          <div class="flex-grow-1">
+            <mat-form-field appearance="outline" class="w-100 m-0">
+              <mat-label>{{ '::ValueTypes:Search' | abpLocalization }}</mat-label>
+              <input
+                matInput
+                type="text"
+                formControlName="keyword"
+                placeholder="{{ '::OrderControl:Search' | abpLocalization }}"
+              />
+            </mat-form-field>
+          </div>
+          <div class="d-flex align-items-center gap-2" style="margin-bottom: 1.34375em">
+            <button mat-raised-button color="primary" type="submit">
+              <mat-icon>search</mat-icon>
+              {{ '::Search' | abpLocalization }}
+            </button>
+
+            <button
+              mat-raised-button
+              color="primary"
+              type="button"
+              (click)="downloadPdf()"
+              class="ms-1"
+            >
+              <mat-icon>download</mat-icon>
+              <span>{{ '::Export' | abpLocalization }}</span>
+            </button>
+
+            <button
+              mat-raised-button
+              color="primary"
+              type="button"
+              (click)="generateReport()"
+              class="ms-1"
+              *abpPermission="'ClientPortal.Reports.OrderMasterListReport'"
+            >
+              <mat-icon>summarize</mat-icon>
+              {{ '::Reports:OrderMasterListReport' | abpLocalization }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div style="overflow-x: auto; max-width: 100%">
+      <table
+        mat-table
+        [dataSource]="orderControlList.items"
+        class="w-100"
+        matSort
+        (matSortChange)="changeSort($event)"
+      >
+        <ng-container matColumnDef="subOrderNumber">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::OrderControl:SubOrderNumber' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.subOrderNumber }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="orderType">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::OrderControl:OrderType' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ '::Enum:OrderType.' + element.orderType | abpLocalization }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="salesRep">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::OrderControl:SalesRep' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.salesRepresentative }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="customer">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::OrderControl:Customer' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.customerName ?? '-' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="recipient">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::OrderControl:Recipient' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.recipient ?? '-' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="address">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::OrderControl:Address' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{
+              (element.orderType !== orderTypeEnum.IV
+                ? element.deliveryAddress
+                : element.customerFullAddress) ?? '-'
+            }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="product">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::OrderControl:Product' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.productName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::OrderControl:Amount' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.amount }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="orderTotal">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::OrderControl:OrderTotal' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.orderTotal }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="deliveryDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::OrderControl:DeliveryDate' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.deliveryDate ? (element.deliveryDate | date) : '-' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="orderStatus">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::OrderControl:OrderStatus' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ '::Enum:OrderStatus.' + element.orderStatus | abpLocalization }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="deliveryStatus">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::OrderControl:DeliveryStatus' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{
+              '::Enum:SubOrderDeliveryStatus.' + element.subOrderDeliveryStatus | abpLocalization
+            }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="deliveryCategory">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::OrderControl:DeliveryCategory' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ '::Enum:DeliveryCategory.' + element.deliveryCategory | abpLocalization }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="fulfillingStore">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::OrderControl:FulFillingStore' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.fulfillingStoreName ?? '-' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="originalStore">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ '::OrderControl:OriginalStore' | abpLocalization }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.originalStoreName ?? '-' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>{{ '::Actions' | abpLocalization }}</th>
+          <td mat-cell *matCellDef="let element">
+            <button
+              mat-raised-button
+              color="primary"
+              [matMenuTriggerFor]="menu"
+              [matMenuTriggerData]="{
+                id: element.orderId,
+                orderStatus: element.orderStatus,
+                subOrderStatus: element.subOrderDeliveryStatus,
+                replacementReasonValueId: element.replacementReasonValueId,
+                parentOrderId: element.parentOrderId,
+              }"
+            >
+              <mat-icon>settings</mat-icon>
+              {{ '::Actions' | abpLocalization }}
+              <mat-icon>expand_more</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+        <tr class="mat-row no-data-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+            <app-empty-table-message></app-empty-table-message>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <mat-paginator
+      [pageIndex]="list.page"
+      [length]="orderControlList.totalCount"
+      [pageSize]="list.maxResultCount"
+      (page)="changePage($event)"
+    ></mat-paginator>
+  </mat-card-content>
+</mat-card>
+
+<mat-menu #menu="matMenu">
+  <ng-template
+    matMenuContent
+    let-id="id"
+    let-orderStatus="orderStatus"
+    let-subOrderStatus="subOrderStatus"
+    let-replacementReasonValueId="replacementReasonValueId"
+    let-parentOrderId="parentOrderId"
+  >
+    <button mat-menu-item (click)="reOrder(id)">
+      {{ '::OrderControl:ReOrder' | abpLocalization }}
+    </button>
+
+    @if (orderStatus !== orderStatusEnum.Complete && replacementReasonValueId && !parentOrderId) {
+      <button
+        mat-menu-item
+        (click)="onReDelivery(id, orderTypeEnum.RP)"
+        *abpPermission="'ClientPortal.Orders.CreateReplacementOrder'"
+      >
+        {{ '::OrderControl:Replacement' | abpLocalization }}
+      </button>
+    }
+
+    @if (
+      orderStatus !== orderStatusEnum.Complete &&
+      subOrderStatus === subOrderDeliveryStatusEnum.Failed
+    ) {
+      <button
+        mat-menu-item
+        (click)="onReDelivery(id, orderTypeEnum.RD)"
+        *abpPermission="'ClientPortal.Orders.CreateRedeliveryOrder'"
+      >
+        {{ '::OrderControl:ReDelivery' | abpLocalization }}
+      </button>
+    }
+
+    <button
+      mat-menu-item
+      (click)="showDetails(id)"
+      *abpPermission="'ClientPortal.Orders.OrderDetails'"
+    >
+      {{ '::Customer:OrderHistory.OrderDetails' | abpLocalization }}
+    </button>
+    <button mat-menu-item (click)="openInOrderEntry(id)">
+      {{ '::OrderControl:OpenInOrderEntry' | abpLocalization }}
+    </button>
+  </ng-template>
+</mat-menu>

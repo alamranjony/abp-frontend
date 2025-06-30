@@ -1,0 +1,23 @@
+.pos-payment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--primary-color);
+  border-radius: 0.25rem;
+  color: var(--primary-color);
+  font-weight: 500;
+  cursor: pointer;
+  height: 36px;
+  font-size: 14px;
+  background: #ffefe4;
+}
+
+mat-icon {
+  margin-right: 8px;
+}
+
+.disabled-pos-payment {
+  background: gray;
+  color: #fff;
+  border: none;
+}

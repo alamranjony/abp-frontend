@@ -1,0 +1,127 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title-group class="w-100 d-flex justify-content-between align-items-center">
+      <mat-card-title class="abp-card-title">
+        {{ '::Menu:Vehicles' | abpLocalization }}
+      </mat-card-title>
+      <div class="button-group d-flex">
+        <button
+          mat-raised-button
+          class="me-2"
+          color="primary"
+          *abpPermission="'ClientPortal.Vehicles.CreateAndEdit'"
+          id="create"
+          type="button"
+          (click)="createVehicle()"
+        >
+          <mat-icon>add</mat-icon>
+          <span>{{ '::NewVehicle' | abpLocalization }}</span>
+        </button>
+        <button
+          *abpPermission="'ClientPortal.Vehicles.Export'"
+          mat-raised-button
+          color="accent"
+          class="me-2"
+          type="button"
+          (click)="exportCsv()"
+        >
+          <i class="fa fa-file-csv mr-1"></i>
+          <span>{{ '::DownloadCSV' | abpLocalization }}</span>
+        </button>
+      </div>
+    </mat-card-title-group>
+  </mat-card-header>
+
+  <mat-card-content>
+    <app-search (filterChange)="onSearch($event)" [(filter)]="filter"></app-search>
+    <table
+      mat-table
+      [dataSource]="vehicles.items"
+      class="w-100"
+      matSort
+      (matSortChange)="changeSort($event)"
+    >
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>{{ '::Actions' | abpLocalization }}</th>
+        <td mat-cell *matCellDef="let element">
+          <button
+            mat-raised-button
+            color="primary"
+            [matMenuTriggerFor]="menu"
+            [matMenuTriggerData]="{ id: element.id }"
+          >
+            <mat-icon>settings</mat-icon>
+            {{ '::Actions' | abpLocalization }}
+            <mat-icon>expand_more</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="vehicleNo">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::Vehicle:VehicleNo' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.vehicleNo }}</td>
+      </ng-container>
+      <ng-container matColumnDef="licensePlate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::Vehicle:LicensePlate' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.licensePlate }}</td>
+      </ng-container>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::Vehicle:Name' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+      </ng-container>
+      <ng-container matColumnDef="vin">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::Vehicle:VIN' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.vin }}</td>
+      </ng-container>
+      <ng-container matColumnDef="model">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::Vehicle:Model' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.model }}</td>
+      </ng-container>
+      <ng-container matColumnDef="expirationDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::Vehicle:ExpirationDate' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.expirationDate | date }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns"></tr>
+
+      <tr class="mat-row no-data-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="columns.length">
+          <app-empty-table-message></app-empty-table-message>
+        </td>
+      </tr>
+    </table>
+    <mat-paginator
+      [pageIndex]="list.page"
+      [length]="vehicles.totalCount"
+      [pageSize]="list.maxResultCount"
+      (page)="changePage($event)"
+    ></mat-paginator>
+  </mat-card-content>
+</mat-card>
+
+<mat-menu #menu="matMenu">
+  <ng-template matMenuContent let-id="id">
+    <button
+      mat-menu-item
+      (click)="editVehicle(id)"
+      *abpPermission="'ClientPortal.Vehicles.CreateAndEdit'"
+    >
+      {{ '::Edit' | abpLocalization }}
+    </button>
+    <button mat-menu-item (click)="delete(id)" *abpPermission="'ClientPortal.Vehicles.Delete'">
+      {{ '::Delete' | abpLocalization }}
+    </button>
+  </ng-template>
+</mat-menu>

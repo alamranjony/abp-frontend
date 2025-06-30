@@ -1,0 +1,39 @@
+.accepted-payment-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-right: 150px;
+}
+
+.added-amount {
+  width: 120px;
+  border: 1px solid var(--primary-color);
+  border-radius: 0.25rem;
+  box-shadow:
+    inset -8px 8px 15px -12px rgba(255, 153, 0, 0.32),
+    inset 8px -8px 15px -12px rgba(255, 153, 0, 0.32);
+  height: 34px;
+  line-height: 1;
+  margin-left: 8px;
+}
+
+.payment-item {
+  display: inline-block;
+  width: 220px;
+  text-align: right;
+}
+
+.price-input {
+  text-align: right;
+  color: var(--primary-color) !important;
+}
+
+.btn-details {
+  position: relative;
+  top: 5px;
+}
+.cash-changeDue {
+  display: inline-block;
+  text-align: right;
+  width: 214px;
+}

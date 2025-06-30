@@ -1,0 +1,88 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title-group>
+      <mat-card-title>
+        {{ '::Menu:CreditCardSettings' | abpLocalization }}
+      </mat-card-title>
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="form">
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{
+              '::StoreSpecificCreditCardSetup:PublicKeyLabel' | abpLocalization
+            }}</mat-label>
+            <input
+              matInput
+              formControlName="publicKey"
+              [type]="hidePublicKey ? 'password' : 'text'"
+            />
+            <mat-icon matSuffix (click)="hidePublicKey = !hidePublicKey">{{
+              hidePublicKey ? 'visibility_off' : 'visibility'
+            }}</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{
+              '::StoreSpecificCreditCardSetup:SecretKeyLabel' | abpLocalization
+            }}</mat-label>
+            <input
+              matInput
+              formControlName="secretKey"
+              [type]="hideSecretKey ? 'password' : 'text'"
+            />
+            <mat-icon matSuffix (click)="hideSecretKey = !hideSecretKey">{{
+              hideSecretKey ? 'visibility_off' : 'visibility'
+            }}</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{
+              '::StoreSpecificCreditCardSetup:DeveloperId' | abpLocalization
+            }}</mat-label>
+            <input matInput formControlName="developerId" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{
+              '::StoreSpecificCreditCardSetup:VersionNumber' | abpLocalization
+            }}</mat-label>
+            <input matInput formControlName="versionNumber" />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{
+              '::StoreSpecificCreditCardSetup:ServiceUrl' | abpLocalization
+            }}</mat-label>
+            <input matInput formControlName="serviceUrl" />
+            <div *ngIf="form.controls['serviceUrl'].touched && form.controls['serviceUrl'].invalid">
+              <small *ngIf="form.controls['serviceUrl'].errors?.invalidUrl">{{
+                '::StoreSpecificCreditCardSetup:InvalidUrl' | abpLocalization
+              }}</small>
+            </div>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row float-end">
+        <div class="col-md-2 mt-lg-3 w-100">
+          <button mat-raised-button color="primary" (click)="saveCreditCardSettings()">
+            <mat-icon>save</mat-icon>
+            {{ '::Save' | abpLocalization }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

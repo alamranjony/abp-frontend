@@ -1,0 +1,51 @@
+<h2 mat-dialog-title class="p-2">
+  {{ (data.isEditMode ? '::Edit' : '::NewValue') | abpLocalization }}
+</h2>
+
+<mat-card-content>
+  <mat-dialog-content>
+    <form [formGroup]="form" class="value-type-form">
+      <div class="w-100">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ 'Name' | abpLocalization }}</mat-label>
+          <input matInput formControlName="name" />
+        </mat-form-field>
+      </div>
+      <div class="w-100">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::DisplayOrder' | abpLocalization }}</mat-label>
+          <input type="number" matInput formControlName="displayOrder" />
+        </mat-form-field>
+      </div>
+
+      <div class="w-100">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::Description' | abpLocalization }}</mat-label>
+          <textarea formControlName="description" matInput rows="4"></textarea>
+        </mat-form-field>
+      </div>
+      <div class="w-100">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::ValueType' | abpLocalization }}</mat-label>
+          <mat-select formControlName="valueTypeId">
+            <mat-option *ngFor="let option of data.valueTypes | async" [value]="option.id">
+              {{ option.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="w-100">
+        <mat-checkbox formControlName="isPreSelect">{{
+          '::IsPreSelect' | abpLocalization
+        }}</mat-checkbox>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="actions">
+    <button mat-button (click)="onClose()">{{ '::Cancel' | abpLocalization }}</button>
+    <button mat-raised-button color="primary" (click)="onSave()">
+      {{ '::Save' | abpLocalization }}
+    </button>
+  </mat-dialog-actions>
+</mat-card-content>

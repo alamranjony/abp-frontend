@@ -1,0 +1,121 @@
+<mat-card class="example-card" appearance="outlined">
+  <mat-card-header>
+    <mat-card-title-group class="w-100">
+      <mat-card-title class="abp-card-title" *ngIf="!discountId">{{
+        '::DiscountCreatePageTitle' | abpLocalization
+      }}</mat-card-title>
+      <mat-card-title class="abp-card-title" *ngIf="discountId">{{
+        '::DiscountUpdatePageTitle' | abpLocalization
+      }}</mat-card-title>
+    </mat-card-title-group>
+    <app-back-button [route]="'/discounts'"></app-back-button>
+  </mat-card-header>
+  <mat-card-content class="mt-2">
+    <form *ngIf="form" [formGroup]="form">
+      <mat-expansion-panel class="mb-3 pt-3" expanded="true">
+        <div class="form-group row">
+          <div class="col-md-6">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>{{ '::Discounts:DiscountCode' | abpLocalization }}</mat-label>
+              <input matInput formControlName="discountCode" [readonly]="discountId" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>{{ '::Discounts:DiscountType' | abpLocalization }}</mat-label>
+              <mat-select formControlName="discountType">
+                <mat-option
+                  *ngFor="let discountType of discountTypeOptions"
+                  [value]="discountType.value"
+                  >{{ discountType.key }}</mat-option
+                >
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-md-6">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>{{ '::Discounts:DiscountAmount' | abpLocalization }}</mat-label>
+              <input type="number" matInput formControlName="discountAmount" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>{{ '::Discounts:DiscountStatus' | abpLocalization }}</mat-label>
+              <mat-select formControlName="discountStatus">
+                <mat-option
+                  *ngFor="let discountStatus of discountStatusOptions"
+                  [value]="discountStatus.value"
+                  >{{ discountStatus.key }}</mat-option
+                >
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-md-6">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>{{ '::Discounts:StartDate' | abpLocalization }}</mat-label>
+              <input matInput [matDatepicker]="picker" formControlName="startDate" />
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>{{ '::Discounts:EndDate' | abpLocalization }}</mat-label>
+              <input matInput [matDatepicker]="picker2" formControlName="endDate" />
+              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+              <mat-datepicker #picker2></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col">
+            <mat-label>{{ '::Discounts:DiscountApplicationType' | abpLocalization }}</mat-label>
+            <mat-radio-group formControlName="discountApplicationType">
+              <mat-radio-button [value]="1">{{
+                '::Discounts:DiscountApplicationType:Item' | abpLocalization
+              }}</mat-radio-button>
+              <mat-radio-button [value]="2">{{
+                '::Discounts:DiscountApplicationType:Order' | abpLocalization
+              }}</mat-radio-button>
+              <mat-radio-button [value]="3">{{
+                '::Discounts:DiscountApplicationType:DeliveryFee' | abpLocalization
+              }}</mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>{{ '::Discounts:Description' | abpLocalization }}</mat-label>
+              <textarea matInput formControlName="description"></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </form>
+
+    <mat-card-actions align="end">
+      <button
+        mat-raised-button
+        class="me-2"
+        type="button"
+        color="accent"
+        [routerLink]="['/discounts']"
+      >
+        <mat-icon>close</mat-icon>
+        {{ '::Cancel' | abpLocalization }}
+      </button>
+      <button mat-raised-button color="primary" (click)="onSaveBtnClick()">
+        <mat-icon>save</mat-icon>
+        {{ '::Save' | abpLocalization }}
+      </button>
+    </mat-card-actions>
+  </mat-card-content>
+</mat-card>

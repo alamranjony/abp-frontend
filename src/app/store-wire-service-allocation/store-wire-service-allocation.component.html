@@ -1,0 +1,120 @@
+<mat-card>
+  <mat-card-header class="mb-2">
+    <mat-card-title-group>
+      <mat-card-title>
+        {{ '::Menu:StoreSpecificWireServiceAllocation' | abpLocalization }}
+      </mat-card-title>
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="form" class="row g-3" (ngSubmit)="onSubmit()">
+      <div class="row mt-3">
+        <div class="col-md-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Enum:WireService.1' | abpLocalization }}</mat-label>
+            <input matInput formControlName="bloomnetQuota" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Enum:WireService.2' | abpLocalization }}</mat-label>
+            <input matInput formControlName="telefloraQuota" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Enum:WireService.3' | abpLocalization }}</mat-label>
+            <input matInput formControlName="ftdQuota" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Enum:WireService.4' | abpLocalization }}</mat-label>
+            <input matInput formControlName="masDirectQuota" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Enum:WireService.5' | abpLocalization }}</mat-label>
+            <input matInput formControlName="fsnQuota" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{
+            '::StoreSpecificWireServiceAllocation:WireService' | abpLocalization
+          }}</mat-label>
+          <mat-select
+            formControlName="wireServiceType"
+            (selectionChange)="onWireServiceChange($event)"
+          >
+            <mat-option *ngFor="let type of wireServiceTypeOptions" [value]="type.value">{{
+              type.key
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{
+            '::StoreSpecificWireServiceAllocation:DeliveryCharge' | abpLocalization
+          }}</mat-label>
+          <input matInput formControlName="incomingDeliveryCharge" type="number" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{
+            '::StoreSpecificWireServiceAllocation:WireOutCommission' | abpLocalization
+          }}</mat-label>
+          <input matInput formControlName="wireOutCommission" type="number" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{
+            '::StoreSpecificWireServiceAllocation:ExchangeRate' | abpLocalization
+          }}</mat-label>
+          <input matInput formControlName="exchangeRate" type="number" />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{
+            '::StoreSpecificWireServiceAllocation:Quota' | abpLocalization
+          }}</mat-label>
+          <input
+            matInput
+            formControlName="quota"
+            type="number"
+            (keypress)="preventDecimal($event)"
+            (input)="onQuotaChange($event)"
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{
+            '::StoreSpecificWireServiceAllocation:WireInCommission' | abpLocalization
+          }}</mat-label>
+          <input matInput formControlName="wireInCommission" type="number" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{
+            '::StoreSpecificWireServiceAllocation:ClearingFees' | abpLocalization
+          }}</mat-label>
+          <input matInput formControlName="clearingFees" type="number" />
+        </mat-form-field>
+      </div>
+      <div class="pt-2 d-flex justify-content-end">
+        <button mat-raised-button color="primary" type="submit">
+          <mat-icon>save</mat-icon>
+          {{ '::Save' | abpLocalization }}
+        </button>
+        <mat-checkbox class="ms-3" formControlName="applyForAllStore">{{
+          '::WireServiceSetup:ApplyForAllStore' | abpLocalization
+        }}</mat-checkbox>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

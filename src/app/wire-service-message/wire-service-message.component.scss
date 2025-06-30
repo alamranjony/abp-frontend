@@ -1,0 +1,21 @@
+.mat-mdc-table {
+  table-layout: fixed;
+}
+
+.mat-column-wireService,
+.mat-column-fromDate,
+.mat-column-toDate {
+  width: 10%;
+}
+
+.mat-column-messageType,
+.mat-column-amount,
+.mat-column-actions {
+  width: 15%;
+}
+
+.mat-column-message {
+  width: 25%;
+  white-space: normal;
+  word-wrap: break-word;
+}

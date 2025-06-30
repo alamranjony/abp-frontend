@@ -1,0 +1,34 @@
+<mat-form-field class="w-100" appearance="outline">
+  <mat-label>{{ label }}</mat-label>
+  <input
+    matInput
+    [formControl]="searchControl"
+    [placeholder]="placeHolder"
+    [matAutocomplete]="auto"
+  />
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="addSelection($event.option.value)">
+    <mat-option *ngFor="let item of filteredOptions | async" [value]="item[idField]">
+      {{
+        hasLocalizationDisplayName
+          ? (displayNameLocalizationKey + item[idField] | abpLocalization)
+          : item[nameField]
+      }}
+    </mat-option>
+  </mat-autocomplete>
+  <div class="chip-container">
+    <mat-chip-set>
+      <mat-chip
+        *ngFor="let item of displayedItemNames; let i = index"
+        color="primary"
+        [removable]="true"
+        (removed)="removeSelection(displayedItemIds[i])"
+      >
+        {{ item }}
+        <mat-icon matChipRemove>cancel</mat-icon>
+      </mat-chip>
+      <mat-chip *ngIf="remainingCount > 0" color="accent" [removable]="false" disableRipple>
+        +{{ remainingCount }} others
+      </mat-chip>
+    </mat-chip-set>
+  </div>
+</mat-form-field>

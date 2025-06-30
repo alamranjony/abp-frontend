@@ -1,0 +1,97 @@
+<h2 mat-dialog-title>{{ data.isEditMode ? 'Edit Vehicle' : 'Add Vehicle' }}</h2>
+
+<mat-card-content>
+  <mat-dialog-content>
+    <form [formGroup]="form">
+      <div class="w-100">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::Vehicle:VehicleNo' | abpLocalization }}</mat-label>
+          <input matInput formControlName="vehicleNo" />
+          <mat-error *ngIf="form.get('vehicleNo')?.hasError('vehicleNoExists')">
+            {{ '::Vehicle:VehicleExistErrorMessage' | abpLocalization }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="w-100">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::Vehicle:LicensePlate' | abpLocalization }}</mat-label>
+          <input matInput formControlName="licensePlate" />
+        </mat-form-field>
+      </div>
+      <div class="w-100">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::Vehicle:Name' | abpLocalization }}</mat-label>
+          <input matInput formControlName="name" />
+        </mat-form-field>
+      </div>
+      <div class="w-100 mb-1">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::Vehicle:VIN' | abpLocalization }}</mat-label>
+          <input matInput formControlName="vin" />
+
+          <mat-error *ngIf="form.get('vin').hasError('maxlength')">
+            {{ '::Vehicle:VIN:Error:ExceedLimit' | abpLocalization }}
+          </mat-error>
+          <mat-error *ngIf="form.get('vin').hasError('minlength')">
+            {{ '::Vehicle:VIN:Error:ExceedLimit' | abpLocalization }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="w-100">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::Vehicle:Mileage' | abpLocalization }}</mat-label>
+          <input matInput formControlName="mileage" type="number" />
+        </mat-form-field>
+      </div>
+      <div class="w-100">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::Vehicle:Model' | abpLocalization }}</mat-label>
+          <input matInput formControlName="model" />
+        </mat-form-field>
+      </div>
+      <div class="w-100">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::Vehicle:Status' | abpLocalization }}</mat-label>
+          <mat-select formControlName="statusValueId">
+            <mat-option *ngFor="let pValue of statusValues" [value]="pValue.id">
+              {{ pValue.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="w-100 mb-2">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::Vehicle:ExpirationDate' | abpLocalization }}</mat-label>
+          <input matInput [matDatepicker]="expirationDatePicker" formControlName="expirationDate" />
+          <mat-hint>{{ '::Date:Hint' | abpLocalization }}</mat-hint>
+          <mat-datepicker-toggle matSuffix [for]="expirationDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #expirationDatePicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="w-100">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::Vehicle:MaintenanceDue' | abpLocalization }}</mat-label>
+          <input
+            matInput
+            [matDatepicker]="maintenanceDatePicker"
+            formControlName="maintenanceDue"
+          />
+          <mat-hint>{{ '::Date:Hint' | abpLocalization }}</mat-hint>
+          <mat-datepicker-toggle matSuffix [for]="maintenanceDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #maintenanceDatePicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="actions">
+    <button mat-raised-button color="accent" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+      {{ '::Close' | abpLocalization }}
+    </button>
+    <button mat-raised-button color="primary" (click)="onSave()">
+      <mat-icon>save</mat-icon>
+      {{ '::Save' | abpLocalization }}
+    </button>
+  </mat-dialog-actions>
+</mat-card-content>

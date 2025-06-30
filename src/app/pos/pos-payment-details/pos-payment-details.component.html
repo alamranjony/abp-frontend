@@ -1,0 +1,98 @@
+<div class="payment-details position-relative">
+  <h2 mat-dialog-title>{{ '::Pos:PaymentDetails' | abpLocalization }}</h2>
+  <mat-dialog-content class="mat-typography content">
+    <div *ngIf="selectedPaymentOption === PaymentMethod.Card">
+      <app-pos-card (accept)="onAccept(PaymentMethod.Card, $event)"></app-pos-card>
+    </div>
+    <div *ngIf="selectedPaymentOption === PaymentMethod.Check">
+      <app-pos-check (accept)="onCheckAccept(PaymentMethod.Check, $event)"></app-pos-check>
+    </div>
+    <div *ngIf="selectedPaymentOption === PaymentMethod.GiftCard">
+      <app-pos-gift-card-payment
+        (accept)="onGiftCardAccept(PaymentMethod.GiftCard, $event)"
+      ></app-pos-gift-card-payment>
+    </div>
+    <div *ngIf="selectedPaymentOption === PaymentMethod.Cash">
+      <app-pos-cash (accept)="onAccept(PaymentMethod.Cash, $event)"></app-pos-cash>
+    </div>
+    <div *ngIf="selectedPaymentOption === PaymentMethod.HouseAccount">
+      <app-pos-house-account
+        (accept)="onAccept(PaymentMethod.HouseAccount, $event)"
+      ></app-pos-house-account>
+    </div>
+
+    <!-- Select Payment Options -->
+    <mat-form-field appearance="outline" class="w-100 pt-2">
+      <mat-label>{{ '::Pos:PaymentOptions' | abpLocalization }}</mat-label>
+      <mat-select
+        [(ngModel)]="selectedPaymentOption"
+        (selectionChange)="onPaymentMethodSelect($event)"
+      >
+        <mat-option [value]="0">{{ '::Select:PaymentMethod' | abpLocalization }}</mat-option>
+        @for (paymentMethodOption of paymentMethodOptions; track paymentMethodOption.value) {
+          <mat-option [value]="paymentMethodOption.value">
+            {{ '::Enum:PaymentMethod:' + paymentMethodOption.text | abpLocalization }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <div *ngFor="let posPayment of posPayments" class="m-1">
+      <span class="payment-item">
+        {{ '::Enum:PaymentMethod:' + PaymentMethod[posPayment.paymentMethodId] | abpLocalization }}
+        @if (posPayment.paymentMethodId === PaymentMethod.Check) {
+          {{ '#: ' + posPayment.extraProperties['checkNumber'].slice(-4) }}
+        }
+        @if (posPayment.paymentMethodId === PaymentMethod.GiftCard) {
+          {{ '#: ' + posPayment.extraProperties['cardNumber'] }}
+        }
+      </span>
+      <mat-form-field appearance="outline" class="added-amount">
+        <input
+          class="price-input"
+          matInput
+          [value]="posPayment.amount | number: '1.2-2'"
+          disabled
+        />
+      </mat-form-field>
+
+      @if (posPayment.paymentMethodId === PaymentMethod.Cash && orderSummary?.changeDue > 0) {
+        <div class="m-1">
+          <span class="cash-changeDue">{{ '::Pos:CashChangeDue' | abpLocalization }}</span>
+          <mat-form-field appearance="outline" class="added-amount">
+            <input
+              class="price-input"
+              matInput
+              [value]="orderSummary?.changeDue | number: '1.2-2'"
+              disabled
+            />
+          </mat-form-field>
+        </div>
+      }
+
+      <button
+        class="btn-details"
+        *ngIf="posPayment.paymentMethodId === PaymentMethod.GiftCard"
+        mat-icon-button
+        color="primary"
+        matTooltip="Special Action"
+        (click)="getUsedGiftCardList(posPayment.extraProperties['cardNumber'])"
+      >
+        <mat-icon>remove_red_eye</mat-icon>
+      </button>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-raised-button color="accent" type="button" mat-dialog-close>
+      <mat-icon>close</mat-icon>
+      <span>{{ '::Pos:Close' | abpLocalization }}</span>
+    </button>
+    <button mat-raised-button color="primary" type="button" (click)="confirmPayment()">
+      <mat-icon>done_all</mat-icon>
+      <span>{{ '::Pos:Done' | abpLocalization }}</span>
+    </button>
+  </mat-dialog-actions>
+
+  <mat-icon class="custom-close-popup" mat-dialog-close color="primary">close</mat-icon>
+</div>

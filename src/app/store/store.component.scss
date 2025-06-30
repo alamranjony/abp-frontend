@@ -1,0 +1,15 @@
+.mat-expansion-panel-header span {
+  color: rgba(var(--bs-warning-rgb), var(--bs-text-opacity)) !important;
+}
+
+.radio-buttons-container {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.responsive-image {
+  height: 240px;
+  object-fit: contain;
+  display: block;
+}

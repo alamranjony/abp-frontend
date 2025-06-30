@@ -1,0 +1,57 @@
+<h2 mat-dialog-title>{{ '::PaymentTransactionCode:CreateUpdatePageTitle' | abpLocalization }}</h2>
+<mat-card-content>
+  <mat-dialog-content>
+    <form [formGroup]="form" class="form-container">
+      <div class="row">
+        <div class="col-6">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{
+              '::PaymentTransactionCode:TransactionCode' | abpLocalization
+            }}</mat-label>
+            <input type="text" matInput formControlName="transactionCode" />
+          </mat-form-field>
+        </div>
+        <div class="col-6">
+          <mat-checkbox formControlName="isActive"
+            >{{ '::PaymentTransactionCode:IsActive' | abpLocalization }}
+          </mat-checkbox>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::PaymentTransactionCode:Title' | abpLocalization }}</mat-label>
+            <input type="text" matInput formControlName="title" />
+          </mat-form-field>
+        </div>
+        <div class="col-6">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{
+              '::PaymentTransactionCode:TransactionType' | abpLocalization
+            }}</mat-label>
+            <mat-select formControlName="paymentTransactionCodeCategory">
+              <mat-option
+                *ngFor="let paymentTransactionCodeCategory of paymentTransactionCodeCategoryOptions"
+                [value]="paymentTransactionCodeCategory.value"
+                >{{
+                  '::Enum:PaymentTransactionCodeCategory:' + paymentTransactionCodeCategory.key
+                    | abpLocalization
+                }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-raised-button mat-dialog-close color="accent">
+      {{ '::Close' | abpLocalization }}
+      <mat-icon>close</mat-icon>
+    </button>
+    <button mat-raised-button color="primary" (click)="onSave()">
+      {{ '::Save' | abpLocalization }}
+      <mat-icon>save</mat-icon>
+    </button>
+  </mat-dialog-actions>
+</mat-card-content>

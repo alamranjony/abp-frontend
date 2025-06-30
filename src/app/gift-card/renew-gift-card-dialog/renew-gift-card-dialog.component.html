@@ -1,0 +1,30 @@
+<h3 mat-dialog-title>{{ '::RenewGiftCard' | abpLocalization }}</h3>
+<div mat-dialog-content>
+  <form [formGroup]="renewForm">
+    <mat-form-field appearance="outline" class="w-100 mt-2">
+      <mat-label>{{ '::GiftCard.ExpirationDate' | abpLocalization }}</mat-label>
+      <input
+        matInput
+        [matDatepicker]="renewExpirationDatePicker"
+        formControlName="extendedTillDate"
+        [min]="minDate"
+      />
+      <mat-datepicker-toggle matSuffix [for]="renewExpirationDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #renewExpirationDatePicker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-100 mt-2">
+      <mat-label>{{ '::GiftCard.RenewalAmount' | abpLocalization }}</mat-label>
+      <input matInput type="number" formControlName="renewalAmount" />
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions align="end">
+  <button type="button" mat-raised-button color="accent" class="m-1" (click)="close()">
+    {{ '::Close' | abpLocalization }}
+    <mat-icon>close</mat-icon>
+  </button>
+  <button mat-raised-button color="primary" (click)="saveRenewal()">
+    <mat-icon>save</mat-icon>
+    {{ '::Save' | abpLocalization }}
+  </button>
+</div>

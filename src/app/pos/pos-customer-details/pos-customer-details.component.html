@@ -1,0 +1,112 @@
+<div class="customer-details">
+  <h2 mat-dialog-title>{{ '::Pos:CustomerDetails' | abpLocalization }}</h2>
+  <mat-dialog-content class="mat-typography content">
+    <div class="row">
+      <div class="col-6">
+        <mat-card appearance="outlined">
+          <mat-card-header>{{ '::Pos:PersonalDetails' | abpLocalization }}</mat-card-header>
+          <mat-card-content>
+            <div class="item">
+              <span class="key">{{ '::Customer:Name' | abpLocalization }} </span
+              ><span class="value">{{ customer.name }}</span>
+            </div>
+            <div class="item">
+              <span class="key">{{ '::Customer:Id' | abpLocalization }} </span
+              ><span class="value">{{ customer.customerId }}</span>
+            </div>
+            <div class="item">
+              <span class="key">{{ '::Customer:Phone' | abpLocalization }}</span
+              ><span class="value">{{ phoneNumber }}</span>
+            </div>
+            <div class="item">
+              <span class="key">{{ '::Customer:Address' | abpLocalization }} </span
+              ><span class="value">
+                {{ customer.address1 }},{{ customer.address2 }},{{ customer.city }},{{
+                  customer.stateProvince
+                }},{{ customer.country }},{{ customer.zip }}
+              </span>
+            </div>
+            <div class="item">
+              <span class="key">{{ '::Customer:Email' | abpLocalization }}</span
+              ><span class="value">{{ email }}</span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div class="col-6">
+        <mat-card appearance="outlined">
+          <mat-card-header>{{ '::Customer:OtherDetails' | abpLocalization }}</mat-card-header>
+          <mat-card-content>
+            <div class="item">
+              <span class="key">{{ '::Customer:StatusValueId' | abpLocalization }}</span
+              ><span class="value">{{ customer.status }}</span>
+            </div>
+            <div class="item">
+              <span class="key">{{ '::Customer:CustomerAccountType' | abpLocalization }}</span
+              ><span class="value">{{
+                '::Enum:CustomerAccountType:' + customer.customerAccountType | abpLocalization
+              }}</span>
+            </div>
+            <div class="item">
+              <span class="key">{{ '::Customer:AcctClassValueId' | abpLocalization }}</span
+              ><span class="value">{{ customer.acctClassValue }}</span>
+            </div>
+            <div class="item">
+              <span class="key">{{ '::Customer:AcctManagerValueId' | abpLocalization }} </span
+              ><span class="value">{{ customer.acctManagerValue }}</span>
+            </div>
+            <div class="item">
+              <span class="key"
+                >{{ '::Customer:InvoicePaymentSchedulerValueId' | abpLocalization }} </span
+              ><span class="value">{{ customer.invoicePaymentSchedulerValue }}</span>
+            </div>
+            <div class="item">
+              <span class="key">{{ '::Customer:Terms' | abpLocalization }} </span
+              ><span class="value">{{ customer.termValue }}</span>
+            </div>
+            <div class="item">
+              <span class="key">{{ '::Customer:ReferredByValueId' | abpLocalization }}</span
+              ><span class="value">{{ customer.referredByValue }}</span>
+            </div>
+            <div class="item">
+              <span class="key">{{ '::Customer:DeliveryCharge' | abpLocalization }} </span
+              ><span class="value">{{ customer.deliveryCharge | number: '1.2-2' }} USD</span>
+            </div>
+            <div class="item">
+              <span class="key">{{ '::Customer:Discount' | abpLocalization }} </span
+              ><span class="value">{{ customer.discount | number: '1.2-2' }} %</span>
+            </div>
+            <div class="item">
+              <span class="key">{{ '::Customer:TaxExempt' | abpLocalization }} </span
+              ><span class="value">{{
+                customer.taxExempt
+                  ? ('::Customer:Yes' | abpLocalization)
+                  : ('::Customer:No' | abpLocalization)
+              }}</span>
+            </div>
+            <div class="item" *ngIf="customer.taxExempt">
+              <span class="key">{{ '::Customer:TaxCertificate' | abpLocalization }} </span
+              ><span class="value">{{ customer.taxCertificate }}</span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button (click)="addCustomer()" mat-raised-button color="primary" type="button">
+      <mat-icon>person_add</mat-icon>
+      <span>{{ '::Add' | abpLocalization }} </span>
+    </button>
+    <button mat-raised-button color="accent" type="button" (click)="editCustomer()">
+      <mat-icon>edit</mat-icon>
+      <span>{{ '::Edit' | abpLocalization }}</span>
+    </button>
+    <button mat-raised-button color="accent" type="button" mat-dialog-close>
+      <mat-icon>close</mat-icon>
+      <span>{{ '::Close' | abpLocalization }}</span>
+    </button>
+  </mat-dialog-actions>
+  <mat-icon class="custom-close-popup" mat-dialog-close color="primary">close</mat-icon>
+</div>

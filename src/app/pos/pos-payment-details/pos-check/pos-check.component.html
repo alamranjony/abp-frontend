@@ -1,0 +1,38 @@
+<mat-card class="pos-payment-options" appearance="outlined">
+  <div class="card-container py-3">
+    <form [formGroup]="checkForm">
+      <mat-form-field appearance="outline" class="p-1">
+        <mat-label>{{ '::Pos:CheckNumber' | abpLocalization }}</mat-label>
+        <input matInput type="text" formControlName="checkNumber" autofocus />
+        <mat-error
+          *ngIf="
+            checkForm.get('checkNumber').hasError('minlength') ||
+            checkForm.get('checkNumber').hasError('maxlength')
+          "
+          >{{ '::Pos:CheckPayment:InvalidCheckNumber' | abpLocalization }}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="p-1">
+        <mat-label>{{ '::Pos:Amount' | abpLocalization }}</mat-label>
+        <input matInput type="number" formControlName="enteredAmount" />
+        <mat-error *ngIf="checkForm.get('enteredAmount').hasError('invalidAmount')">
+          {{ '::Pos:CheckPayment:InvalidAmount' | abpLocalization }} </mat-error
+        ><mat-error *ngIf="checkForm.get('enteredAmount').hasError('nonPositive')">
+          {{ '::Pos:CheckPayment:NonPositive' | abpLocalization }}
+        </mat-error>
+      </mat-form-field>
+    </form>
+  </div>
+  <div class="submit-button mb-2">
+    <button
+      class="process-card-button"
+      mat-raised-button
+      color="primary"
+      type="button"
+      (click)="onAccept()"
+    >
+      <mat-icon>local_atm</mat-icon>
+      <span>{{ '::Pos:Accept' | abpLocalization }}</span>
+    </button>
+  </div>
+</mat-card>

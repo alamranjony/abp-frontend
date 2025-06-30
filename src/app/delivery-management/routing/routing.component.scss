@@ -1,0 +1,35 @@
+.tripNumberContainer {
+  width: 100%;
+  padding: 10px;
+  background-color: rgb(255, 252, 240);
+  display: block;
+  float: left;
+  overflow: hidden;
+  border-left: 2px solid rgb(247, 170, 99);
+}
+
+.align-space-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modeName {
+  color: rgb(247, 170, 99);
+  font-weight: bold;
+  font-family: 'inter', sans-serif;
+}
+
+.route-map {
+  margin: auto;
+  width: 50%;
+}
+
+.table-container {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+}
+
+.mat-column-vehicleId {
+  text-align: center;
+}

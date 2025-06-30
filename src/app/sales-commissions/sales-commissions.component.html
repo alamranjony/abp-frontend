@@ -1,0 +1,246 @@
+<mat-card>
+  <mat-card-header class="mb-2">
+    <mat-card-title>{{ '::Menu:SalesCommission' | abpLocalization }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="form">
+      <input formControlName="id" hidden />
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::Commission.Fields.SelectEmployee' | abpLocalization }}</mat-label>
+            <mat-select formControlName="employeeId" (selectionChange)="onEmployeeChange($event)">
+              <mat-option [value]="0">{{
+                '::Commission.Fields.SelectEmployee.All' | abpLocalization
+              }}</mat-option>
+              <mat-option *ngFor="let employee of employees" [value]="employee.id"
+                >{{ employee.displayName }}({{ employee.employeeId }})</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <h4 class="text-warning m-0 p-0">{{ '::Commission.LocalOrder' | abpLocalization }}</h4>
+            <button
+              mat-raised-button
+              color="primary"
+              type="button"
+              (click)="addLocalOrderCommission()"
+            >
+              <mat-icon>add</mat-icon>
+              {{ '::Commission.LocalOrder.Add' | abpLocalization }}
+            </button>
+          </div>
+          <div formArrayName="commissionOnLocalOrderDtos">
+            <div
+              *ngFor="let localCommission of localOrderCommissions.controls; let lc = index"
+              [formGroupName]="lc"
+            >
+              <div class="row my-3">
+                <div class="col-md-1 align-items-center">
+                  <h4 class="card-subtitle py-2">#{{ lc + 1 }}</h4>
+                </div>
+                <div class="col-md-3">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{
+                      '::CommissionOnLocalOrder.Fields.LocalOrderMinValue' | abpLocalization
+                    }}</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      class="example-right-align"
+                      formControlName="localOrderMinValue"
+                    />
+                    <span matTextSuffix>$</span>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-3">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{
+                      '::CommissionOnLocalOrder.Fields.LocalOrderMaxValue' | abpLocalization
+                    }}</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      class="example-right-align"
+                      formControlName="localOrderMaxValue"
+                    />
+                    <span matTextSuffix>$</span>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-4">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{
+                      '::CommissionOnLocalOrder.Fields.PayoutAmount' | abpLocalization
+                    }}</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      class="example-right-align"
+                      formControlName="payoutAmount"
+                    />
+                    <span matTextSuffix>$</span>
+                  </mat-form-field>
+                </div>
+                <input formControlName="id" hidden />
+                <div class="col-md-1 mt-0">
+                  <button
+                    mat-mini-fab
+                    aria-label="delete local commission icon"
+                    type="button"
+                    id="delete-local-commission-btn"
+                    (click)="removeLocalOrderCommission(lc)"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{
+                  '::Commission.Fields.PickupOrderAboveLimit' | abpLocalization
+                }}</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  class="example-right-align"
+                  formControlName="pickupOrderAboveLimit"
+                />
+                <span matTextSuffix>$</span>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{
+                  '::Commission.Fields.PickupOrderBelowLimit' | abpLocalization
+                }}</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  class="example-right-align"
+                  formControlName="pickupOrderBelowLimit"
+                />
+                <span matTextSuffix>$</span>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <h4 class="text-warning m-0 p-0">{{ '::Commission.WireOrder' | abpLocalization }}</h4>
+            <button
+              mat-raised-button
+              color="primary"
+              type="button"
+              (click)="addWireOrderCommission()"
+            >
+              <mat-icon>add</mat-icon>
+              {{ '::Commission.WireOrder.Add' | abpLocalization }}
+            </button>
+          </div>
+          <div formArrayName="commissionOnWireOrderDtos">
+            <div
+              *ngFor="let wireCommission of wireOrderCommissions.controls; let wc = index"
+              [formGroupName]="wc"
+            >
+              <div class="row my-3">
+                <div class="col-md-1 align-items-center">
+                  <h4 class="card-subtitle py-2">#{{ wc + 1 }}</h4>
+                </div>
+                <div class="col-md-3">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{
+                      '::CommissionOnWireOrder.Fields.WireOrderMinValue' | abpLocalization
+                    }}</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      class="example-right-align"
+                      formControlName="wireOrderMinValue"
+                    />
+                    <span matTextSuffix>$</span>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-3">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{
+                      '::CommissionOnWireOrder.Fields.WireOrderMaxValue' | abpLocalization
+                    }}</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      class="example-right-align"
+                      formControlName="wireOrderMaxValue"
+                    />
+                    <span matTextSuffix>$</span>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-4">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{
+                      '::CommissionOnWireOrder.Fields.Commission' | abpLocalization
+                    }}</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      class="example-right-align"
+                      formControlName="commission"
+                    />
+                    <span matTextSuffix>$</span>
+                  </mat-form-field>
+                </div>
+                <input formControlName="id" hidden />
+                <div class="col-md-1 mt-0">
+                  <button
+                    mat-mini-fab
+                    aria-label="delete wire commission icon"
+                    type="button"
+                    id="delete-wire-commission-btn"
+                    (click)="removeWireOrderCommission(wc)"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{
+                  '::Commission.Fields.OutgoingWireOrderBonusOver100Order' | abpLocalization
+                }}</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  class="example-right-align"
+                  formControlName="outgoingWireOrderBonusOver100Order"
+                />
+                <span matTextSuffix>$</span>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <button
+          *abpPermission="'ClientPortal.Commissions.Edit'"
+          mat-raised-button
+          color="primary"
+          (click)="save()"
+          class="float-end"
+        >
+          <mat-icon>save</mat-icon>
+          {{ '::Save' | abpLocalization }}
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,43 @@
+.communication-box {
+  position: relative;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 16px 8px 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  }
+
+  .dialog-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 500;
+  }
+
+  .close-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
+
+  mat-tab-group {
+    flex: 1;
+
+    ::ng-deep {
+      .mat-mdc-tab-body-wrapper {
+        flex: 1;
+        height: calc(100% - 48px);
+      }
+
+      .mat-mdc-tab-body-content {
+        padding-top: 16px;
+        overflow: auto;
+      }
+    }
+  }
+}

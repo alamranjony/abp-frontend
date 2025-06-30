@@ -1,0 +1,206 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title-group class="w-100 d-flex justify-content-between align-items-center">
+      <mat-card-title class="abp-card-title">
+        {{ '::Menu:Routing' | abpLocalization }}
+      </mat-card-title>
+    </mat-card-title-group>
+  </mat-card-header>
+
+  <mat-card-content class="mt-2">
+    <mat-card appearance="outlined" class="mt-2">
+      <mat-card-content>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="store-filter d-flex align-items-center">
+              <mat-form-field appearance="outline" class="store-dropdown w-100">
+                <mat-label>{{ '::SelectStores' | abpLocalization }}</mat-label>
+                <mat-select
+                  [(value)]="selectedStoreIds"
+                  multiple
+                  (selectionChange)="onStoreSelect($event.value)"
+                >
+                  <mat-option *ngFor="let store of stores" [value]="store.id">
+                    {{ store.storeFormatted }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="filter-section d-flex align-items-center">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ '::DeliveryDate' | abpLocalization }}</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="deliveryDatePicker"
+                  (dateChange)="onFromDateChange($event)"
+                  [(ngModel)]="filterDate"
+                />
+                <mat-datepicker-toggle matSuffix [for]="deliveryDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #deliveryDatePicker></mat-datepicker>
+                <button
+                  matSuffix
+                  mat-icon-button
+                  *ngIf="filterDate"
+                  (click)="clearRouteDate()"
+                  aria-label="Clear date"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="filter-section d-flex align-items-center">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ '::SelectDriver' | abpLocalization }}</mat-label>
+                <mat-select
+                  [(value)]="selectedDriverId"
+                  (selectionChange)="onDriverChange($event.value)"
+                >
+                  <mat-option *ngFor="let driver of drivers" [value]="driver.id">
+                    {{ driver.firstName }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="d-flex justify-content-end mt-3">
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              class="me-2"
+              (click)="onFilter()"
+            >
+              <mat-icon>search</mat-icon>
+              {{ '::Filter' | abpLocalization }}
+            </button>
+            <button mat-raised-button color="warn" type="button" (click)="onResetFilters()">
+              <mat-icon>clear</mat-icon>
+              {{ '::Reset' | abpLocalization }}
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card appearance="outlined" class="mt-4">
+      <mat-card-content>
+        <div class="table-container">
+          <table mat-table [dataSource]="trips" class="w-100">
+            <ng-container matColumnDef="customTripId">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ '::Delivery:CustomTripId' | abpLocalization }}
+              </th>
+              <td mat-cell *matCellDef="let element">{{ element.customTripId }}</td>
+            </ng-container>
+            <ng-container matColumnDef="driver">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ '::Delivery:Driver' | abpLocalization }}
+              </th>
+              <td mat-cell *matCellDef="let element">{{ element.driverName }}</td>
+            </ng-container>
+            <ng-container matColumnDef="vehicleId">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ '::Delivery:VehicleId' | abpLocalization }}
+              </th>
+              <td mat-cell *matCellDef="let element">{{ element.vehicleNo ?? '-' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="tripStatus">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ '::Delivery:TripStatus' | abpLocalization }}
+              </th>
+              <td mat-cell *matCellDef="let element">
+                {{ '::Enum:TripStatus.' + element.tripStatusType | abpLocalization }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="noOfDeliveries">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ '::Delivery:NoOfDeliveries' | abpLocalization }}
+              </th>
+              <td mat-cell *matCellDef="let element">{{ element.noOfDeliveries }}</td>
+            </ng-container>
+            <ng-container matColumnDef="checkoutTime">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ '::Delivery:CheckOutTime' | abpLocalization }}
+              </th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.checkedOutAt | date: 'short' }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="checkInTime">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ '::Delivery:CheckInTime' | abpLocalization }}
+              </th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.checkedInAt | date: 'short' }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="eta">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ '::Delivery:ETA' | abpLocalization }}
+              </th>
+              <td mat-cell *matCellDef="let element">{{ element.eta }}</td>
+            </ng-container>
+            <ng-container matColumnDef="tripDate">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ '::Delivery:TripDate' | abpLocalization }}
+              </th>
+              <td mat-cell *matCellDef="let element">{{ element.tripDate | date }}</td>
+            </ng-container>
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ '::Actions' | abpLocalization }}
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <button
+                  mat-raised-button
+                  color="primary"
+                  [matMenuTriggerFor]="menu"
+                  [matMenuTriggerData]="{ id: element.id }"
+                >
+                  <mat-icon>settings</mat-icon>
+                  {{ '::Actions' | abpLocalization }}
+                  <mat-icon>expand_more</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="columns"></tr>
+            <tr mat-row *matRowDef="let row; columns: columns"></tr>
+
+            <tr class="mat-row no-data-row" *matNoDataRow>
+              <td class="mat-cell" [attr.colspan]="columns.length">
+                <app-empty-table-message></app-empty-table-message>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-card-content>
+</mat-card>
+
+<mat-menu #menu="matMenu">
+  <ng-template matMenuContent let-id="id">
+    <button
+      *abpPermission="'ClientPortal.DeliveryRoutes.CreateAndEdit'"
+      mat-menu-item
+      (click)="onClickEditBtn(id)"
+    >
+      {{ '::Edit' | abpLocalization }}
+    </button>
+
+    <button
+      *abpPermission="'ClientPortal.DeliveryRoutes.Delete'"
+      mat-menu-item
+      (click)="onClickDeleteBtn(id)"
+    >
+      {{ '::Delete' | abpLocalization }}
+    </button>
+  </ng-template>
+</mat-menu>

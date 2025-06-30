@@ -1,0 +1,27 @@
+.product-code {
+  color: #ff6600;
+}
+
+.search-bar {
+  margin-bottom: 16px;
+  margin-top: 20px;
+}
+
+.actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+
+  button {
+    margin-left: 8px;
+  }
+}
+
+mat-table {
+  width: 100%;
+}
+
+.recipient-tabs {
+  max-height: 600px;
+  overflow-y: auto;
+}

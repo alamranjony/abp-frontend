@@ -1,0 +1,30 @@
+<h2 mat-dialog-title>{{ data.isEditMode ? 'Edit Customer Comment' : 'Add Customer Comment' }}</h2>
+
+<mat-card-content>
+  <mat-dialog-content>
+    <form [formGroup]="form">
+      <div class="w-100">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::CustomerComment' | abpLocalization }}</mat-label>
+          <textarea matInput formControlName="comment"></textarea>
+        </mat-form-field>
+      </div>
+      <div class="w-100">
+        <mat-checkbox formControlName="commentAsLocationNote">
+          {{ '::CustomerComment:CommentAsLocationNote' | abpLocalization }}</mat-checkbox
+        >
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="actions">
+    <button mat-raised-button color="accent" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+      {{ '::Close' | abpLocalization }}
+    </button>
+    <button mat-raised-button color="primary" (click)="onSave()">
+      <mat-icon>save</mat-icon>
+      {{ '::Save' | abpLocalization }}
+    </button>
+  </mat-dialog-actions>
+</mat-card-content>

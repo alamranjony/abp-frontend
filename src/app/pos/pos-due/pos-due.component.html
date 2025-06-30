@@ -1,0 +1,23 @@
+<mat-card class="pos-due p-2 mb-2" appearance="outlined">
+  <div class="amount-due-info mb-2">
+    <div class="amount-due">
+      <div>Amount Due:</div>
+      <div>$ {{ amountDue$ | async }}</div>
+    </div>
+    <div class="change-due">
+      <div>Change Due:</div>
+      <div>$ {{ changeDue$ | async }}</div>
+    </div>
+  </div>
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>Review</mat-label>
+    <mat-select [(ngModel)]="selectedReviewType" (selectionChange)="onReviewTypeSelectionChange()">
+      <mat-option
+        *ngFor="let reviewTypeOption of reviewTypeOptions"
+        [value]="reviewTypeOption.value"
+      >
+        {{ '::Enum:ReviewType.' + reviewTypeOption.value | abpLocalization }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-card>

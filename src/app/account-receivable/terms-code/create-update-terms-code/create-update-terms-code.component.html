@@ -1,0 +1,83 @@
+<h2 mat-dialog-title>
+  {{
+    data.isEditMode
+      ? ('::TermsCode:EditMessage' | abpLocalization)
+      : ('::TermsCode:AddMessage' | abpLocalization)
+  }}
+</h2>
+
+<mat-dialog-content>
+  <mat-card-content>
+    <mat-dialog-content>
+      <form [formGroup]="termsCodeForm">
+        <div class="mt-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>
+              {{ '::TermsCode:Fields:Code' | abpLocalization }}
+            </mat-label>
+            <input matInput formControlName="code" />
+          </mat-form-field>
+        </div>
+        <div class="mt-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>
+              {{ '::TermsCode:Fields:Description' | abpLocalization }}
+            </mat-label>
+            <input matInput formControlName="description" />
+          </mat-form-field>
+        </div>
+        <div class="mt-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>
+              {{ '::TermsCode:Fields:NetDueDays' | abpLocalization }}
+            </mat-label>
+            <input matInput formControlName="netDueDays" />
+          </mat-form-field>
+        </div>
+
+        <div class="mt-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::TermsCode:Fields:AgingBucket' | abpLocalization }}</mat-label>
+            <mat-select formControlName="agingBucket">
+              <mat-option *ngFor="let agingBucket of allowedAgingBuckets" [value]="agingBucket">
+                {{ agingBucket + '+' }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="mt-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>
+              {{ '::TermsCode:Fields:LateChargePercentage' | abpLocalization }}
+            </mat-label>
+            <input matInput formControlName="lateChargePercentage" />
+          </mat-form-field>
+        </div>
+        <div class="mt-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>
+              {{ '::TermsCode:Fields:MinimumLateChargeAmount' | abpLocalization }}
+            </mat-label>
+            <input matInput formControlName="minimumLateChargeAmount" />
+          </mat-form-field>
+        </div>
+        <div class="mt-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>
+              {{ '::TermsCode:Fields:LateChargeStatementDescription' | abpLocalization }}
+            </mat-label>
+            <input matInput formControlName="lateChargeStatementDescription" />
+          </mat-form-field>
+        </div>
+      </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end" class="actions">
+      <button mat-button (click)="onClose()">{{ '::Close' | abpLocalization }}</button>
+      <button mat-raised-button color="primary" (click)="onSave()">
+        {{ '::Save' | abpLocalization }}
+      </button>
+    </mat-dialog-actions>
+  </mat-card-content>
+</mat-dialog-content>

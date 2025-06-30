@@ -1,0 +1,99 @@
+<div id="identity-roles-wrapper" class="card">
+  <div class="card-header">
+    <div class="row">
+      <div class="col col-md-6">
+        <h5 class="card-title">My Roles</h5>
+      </div>
+      <div class="text-end col col-md-6">
+        <abp-page-toolbar [record]="data.items"></abp-page-toolbar>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <abp-extensible-table
+      [data]="data.items"
+      [recordsTotal]="data.totalCount"
+      [list]="list"
+    ></abp-extensible-table>
+  </div>
+</div>
+
+<abp-modal size="md" [(visible)]="isModalVisible" [busy]="modalBusy">
+  <ng-template #abpHeader>
+    <h3>{{ (selected?.id ? 'AbpIdentity::Edit' : 'AbpIdentity::NewRole') | abpLocalization }}</h3>
+  </ng-template>
+
+  <ng-template #abpBody>
+    <form [formGroup]="form" (ngSubmit)="save()" validateOnSubmit>
+      <div class="">
+        <label for="name" class="form-label">{{ '::Role.Fields.Name' | abpLocalization }}</label
+        ><span> * </span>
+        <input type="text" id="name" class="form-control" formControlName="name" autofocus />
+      </div>
+      <div class="form-check mt-2">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="isDefault"
+          formControlName="isDefault"
+        />
+        <label class="form-check-label" for="isDefault">
+          {{ '::Role.Fields.IsDefault' | abpLocalization }}
+        </label>
+      </div>
+      <div class="form-check mt-2">
+        <input class="form-check-input" type="checkbox" id="isPublic" formControlName="isPublic" />
+        <label class="form-check-label" for="isPublic">
+          {{ '::Role.Fields.IsPublic' | abpLocalization }}
+        </label>
+      </div>
+      <div class="form-check mt-2">
+        <div formGroupName="extraProperties">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="IsMASRole"
+            formControlName="IsMASRole"
+            [abpDisabled]="!!selected.id || currentTenantName !== hostTenantName"
+          />
+          <label class="form-check-label" for="IsMASRole">
+            {{ '::Role.Fields.IsMASRole' | abpLocalization }}
+          </label>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+
+  <ng-template #abpFooter>
+    <button type="button" class="btn btn-secondary" abpClose>
+      {{ 'AbpIdentity::Cancel' | abpLocalization }}
+    </button>
+    <abp-button
+      iconClass="fa fa-check"
+      [disabled]="form?.invalid"
+      (click)="save()"
+      *ngIf="editEnabled"
+      >{{ 'AbpIdentity::Save' | abpLocalization }}</abp-button
+    >
+  </ng-template>
+</abp-modal>
+
+<abp-permission-management
+  #abpPermissionManagement="abpPermissionManagement"
+  *abpReplaceableTemplate="
+    {
+      inputs: {
+        providerName: { value: 'R' },
+        providerKey: { value: providerKey },
+        visible: { value: visiblePermissions, twoWay: true },
+        hideBadges: { value: true },
+      },
+      outputs: { visibleChange: onVisiblePermissionChange },
+      componentKey: permissionManagementKey,
+    };
+    let init = initTemplate
+  "
+  (abpInit)="init(abpPermissionManagement)"
+>
+</abp-permission-management>

@@ -1,0 +1,76 @@
+.store-filter-section {
+  display: block;
+  margin-bottom: 16px;
+
+  .store-filter {
+    .store-dropdown {
+      min-width: 200px;
+    }
+
+    .selected-store-chip {
+      background-color: #f0f0f0;
+      padding: 4px 8px;
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .selected-store-chip mat-icon {
+      font-size: 16px;
+      margin-left: 4px;
+    }
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid #ccc;
+  }
+}
+
+.deliveryModeContainer {
+  width: 100%;
+  background-color: rgb(255, 252, 240);
+  display: block;
+  float: left;
+  overflow: hidden;
+  border-left: 2px solid rgb(247, 170, 99);
+}
+
+.align-space-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modeName {
+  color: rgb(247, 170, 99);
+  font-weight: bold;
+  font-family: 'inter', sans-serif;
+}
+
+.filter-section mat-form-field {
+  width: 100%;
+}
+
+.deliveryModeContainer span {
+  font-size: 14px;
+}
+
+.deliveryModeContainer .fw-bold {
+  font-weight: bold;
+}
+
+.deliveryModeContainer .text-primary {
+  color: #007bff;
+}
+
+.deliveryModeContainer .text-warning {
+  color: #ffc107;
+}
+
+.deliveryModeContainer .text-success {
+  color: #28a745;
+}
+
+.deliveryModeContainer .gap-3 > span {
+  margin-right: 16px;
+}

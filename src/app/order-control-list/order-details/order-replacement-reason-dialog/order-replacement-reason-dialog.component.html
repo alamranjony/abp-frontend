@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>{{ '::Order:ReplacementReasons' | abpLocalization }}</h2>
+
+<mat-dialog-content>
+  <mat-card-content>
+    <mat-dialog-content>
+      <form>
+        <div class="mt-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Order:ReplacementReasons' | abpLocalization }}</mat-label>
+            <mat-select [(ngModel)]="selectedReasonId" name="selectedReasonId">
+              <mat-option
+                *ngFor="let replaceReason of replacementReasons"
+                [value]="replaceReason.id"
+                >{{ replaceReason.name }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::Pos:CancelReasons:AdditionalComment' | abpLocalization }}</mat-label>
+            <textarea
+              matInput
+              name="additionalComment"
+              [(ngModel)]="additionalComment"
+              style="height: 100px"
+            ></textarea>
+          </mat-form-field>
+        </div>
+      </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end" class="actions">
+      <button mat-raised-button color="accent" (click)="onClose()">
+        <mat-icon>close</mat-icon>{{ '::Close' | abpLocalization }}
+      </button>
+      <button mat-raised-button color="primary" (click)="onSave()">
+        <mat-icon>save</mat-icon>
+        {{ '::Save' | abpLocalization }}
+      </button>
+    </mat-dialog-actions>
+  </mat-card-content>
+</mat-dialog-content>

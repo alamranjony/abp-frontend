@@ -1,0 +1,20 @@
+.menu-item-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  cursor: pointer;
+}
+
+.menu-title {
+  font-size: 12px;
+}
+
+/* HD laptops (1366x768 - 1440x900) */
+@media (min-width: 1280px) and (max-width: 1440px) {
+  .menu-title {
+    font-size: 0.5625rem;
+  }
+}

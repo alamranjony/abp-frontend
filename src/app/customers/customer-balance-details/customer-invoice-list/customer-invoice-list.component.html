@@ -1,0 +1,125 @@
+<mat-card>
+  <table
+    mat-table
+    [dataSource]="transactions.items"
+    matSort
+    (matSortChange)="changeSort($event)"
+    class="w-100"
+  >
+    <ng-container matColumnDef="transactionType">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ '::Customer:BalanceDetails:TransactionType' | abpLocalization }}
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element"
+        [ngClass]="{ 'warning-row': element.isFinancialChargeTransaction }"
+      >
+        {{ '::Enum:TransactionType:' + element.transactionType | abpLocalization }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="orderDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ '::Customer:BalanceDetails:OrderDate' | abpLocalization }}
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element"
+        [ngClass]="{ 'warning-row': element.isFinancialChargeTransaction }"
+      >
+        {{ element.transactionDate | date }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="referenceNumber">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ '::Customer:BalanceDetails:ReferenceNumber' | abpLocalization }}
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element"
+        [ngClass]="{ 'warning-row': element.isFinancialChargeTransaction }"
+      >
+        {{ element.referenceNumber }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="orderNumber">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ '::Customer:BalanceDetails:OrderNumber' | abpLocalization }}
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element"
+        [ngClass]="{ 'warning-row': element.isFinancialChargeTransaction }"
+      >
+        {{ element.orderNumber ?? '_' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="totalAmount">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ '::Customer:BalanceDetails:TotalAmount' | abpLocalization }}
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element"
+        [ngClass]="{ 'warning-row': element.isFinancialChargeTransaction }"
+      >
+        {{ element.totalAmount | currency: 'USD' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="paidAmount">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ '::Customer:BalanceDetails:PaidAmount' | abpLocalization }}
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element"
+        [ngClass]="{ 'warning-row': element.isFinancialChargeTransaction }"
+      >
+        {{ element.paidAmount | currency: 'USD' }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="netAmount">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ '::Customer:BalanceDetails:DueAmount' | abpLocalization }}
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element"
+        [ngClass]="{ 'warning-row': element.isFinancialChargeTransaction }"
+      >
+        {{ element.netAmount | currency: 'USD' }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="note">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ '::Customer:BalanceDetails:Note' | abpLocalization }}
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element"
+        [ngClass]="{ 'warning-row': element.isFinancialChargeTransaction }"
+      >
+        {{ element.note ?? '_' }}
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr mat-row *matRowDef="let myRowData; columns: columns"></tr>
+
+    <tr class="mat-row no-data-row" *matNoDataRow>
+      <td class="mat-cell" [attr.colspan]="columns.length">
+        <app-empty-table-message></app-empty-table-message>
+      </td>
+    </tr>
+  </table>
+
+  <mat-paginator
+    [pageIndex]="list.page"
+    [length]="transactions.totalCount"
+    [pageSize]="list.maxResultCount"
+    (page)="changePage($event)"
+  ></mat-paginator>
+</mat-card>

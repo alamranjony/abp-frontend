@@ -1,0 +1,33 @@
+@import '../../../assets/scss/tomtom.cdn';
+
+.coordinates-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.coordinate-row {
+  display: flex;
+  gap: 10px;
+}
+
+.coordinate-field {
+  flex: 1;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.btn-delete-polygon {
+  margin-right: 10px;
+}
+
+.map-container {
+  height: 450px;
+  width: 100%;
+  max-width: 700px;
+}

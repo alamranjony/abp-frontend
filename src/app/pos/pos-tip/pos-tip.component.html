@@ -1,0 +1,17 @@
+@if (!isTipApplied) {
+  <div class="add-tip mb-2" (click)="openTipPopup()" matRipple>
+    <mat-icon>add_box</mat-icon>
+    {{ '::Tip:AddTip' | abpLocalization }}
+  </div>
+} @else {
+  <div class="remove-tip mb-2" (click)="removeTip()" matRipple>
+    <ng-container *ngIf="isRemovingTip; else removeIcon">
+      <mat-progress-spinner class="me-2" diameter="20" mode="indeterminate" color="warn">
+      </mat-progress-spinner>
+    </ng-container>
+    <ng-template #removeIcon>
+      <mat-icon>remove</mat-icon>
+    </ng-template>
+    {{ '::Tip:RemoveTip' | abpLocalization }}
+  </div>
+}

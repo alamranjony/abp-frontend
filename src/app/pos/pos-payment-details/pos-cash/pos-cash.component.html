@@ -1,0 +1,33 @@
+<mat-card class="pos-cash pos-payment-options p-2 mb-2 pb-0" appearance="outlined">
+  <div class="p-2 card-container pb-0">
+    <mat-form-field appearance="outline" class="w-100 disabled">
+      <mat-label>{{ '::Pos:AmountDue' | abpLocalization }}</mat-label>
+      <input
+        class="price-input"
+        matInput
+        [value]="initialAmountDue || 0 | number: '1.2-2'"
+        disabled
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{ '::Pos:CashPaid' | abpLocalization }}</mat-label>
+      <input matInput type="number" [(ngModel)]="cashPaid" (ngModelChange)="calculateChange()" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-100 disabled">
+      <mat-label>{{ '::Pos:ChangeDue' | abpLocalization }}</mat-label>
+      <input class="price-input" matInput [value]="changeDue | number: '1.2-2'" disabled />
+    </mat-form-field>
+  </div>
+  <div class="submit-button pb-2">
+    <button
+      class="process-card-button"
+      mat-raised-button
+      color="primary"
+      type="button"
+      (click)="onAccept()"
+    >
+      <mat-icon>local_atm</mat-icon>
+      <span>{{ '::Pos:Accept' | abpLocalization }}</span>
+    </button>
+  </div>
+</mat-card>

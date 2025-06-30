@@ -1,0 +1,7 @@
+<mat-form-field appearance="outline" class="w-100 py-3">
+  <input matInput [placeholder]="placeHolder" (keyup)="onSearch()" [(ngModel)]="filter" />
+  <mat-icon matSuffix (click)="onClearSearch()" *ngIf="filter" style="cursor: pointer"
+    >clear</mat-icon
+  >
+  <mat-icon matSuffix *ngIf="!filter">search</mat-icon>
+</mat-form-field>

@@ -1,0 +1,104 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title-group>
+      <mat-card-title>
+        {{ '::Menu:EmployeeSettings' | abpLocalization }}
+      </mat-card-title>
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="form">
+      <mat-tab-group class="mb-md-3">
+        <mat-tab>
+          <ng-template mat-tab-label>
+            {{ '::EmployeeSettings:TimeClock' | abpLocalization }}
+          </ng-template>
+          <div class="my-md-3">
+            <div class="col-md-6">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{ '::EmployeeSettings:AutoCheckOut' | abpLocalization }}</mat-label>
+                <input matInput type="number" formControlName="autoCheckOut" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{ '::EmployeeSettings:AutoLogOff' | abpLocalization }}</mat-label>
+                <input matInput type="number" formControlName="autoLogOff" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-6 mb-2">
+              <mat-label>{{ '::EmployeeSettings:ClockType' | abpLocalization }}</mat-label>
+              <mat-radio-group class="w-100" formControlName="clockType">
+                <mat-radio-button [value]="0">{{ '::Hour12' | abpLocalization }}</mat-radio-button>
+                <mat-radio-button [value]="1">{{ '::Hour24' | abpLocalization }}</mat-radio-button>
+              </mat-radio-group>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{
+                  '::EmployeeSettings:DailyOvertimeThreshold' | abpLocalization
+                }}</mat-label>
+                <input matInput type="number" formControlName="dailyOvertimeThreshold" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{
+                  '::EmployeeSettings:WeeklyOvertimeThreshold' | abpLocalization
+                }}</mat-label>
+                <input matInput type="number" formControlName="weeklyOvertimeThreshold" />
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-tab>
+
+        <mat-tab>
+          <ng-template mat-tab-label>
+            {{ '::EmployeeSettings:Payroll' | abpLocalization }}
+          </ng-template>
+          <div class="my-md-3">
+            <div class="col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>
+                  {{ '::EmployeeSettings:FirstPayrollOfYear' | abpLocalization }}
+                </mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="datePicker"
+                  formControlName="firstPayrollOfYear"
+                  (dateChange)="updateDayOfWeek($event.value)"
+                />
+                <mat-hint>{{ '::Date:Hint' | abpLocalization }}</mat-hint>
+                <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+                <mat-datepicker #datePicker></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="col-md-6 mt-md-3">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>
+                  {{ '::EmployeeSettings:DayOfTheWeekPayrollBegins' | abpLocalization }}
+                </mat-label>
+                <input matInput [value]="dayOfWeek" [readonly]="true" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ '::EmployeeSettings:PayrollFrequency' | abpLocalization }}</mat-label>
+                <mat-select formControlName="payrollFrequency">
+                  <mat-option *ngFor="let item of payrollFrequencies" [value]="item.value">
+                    {{ item.text }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+
+      <button mat-raised-button color="primary" (click)="saveEmployeeSettings()">
+        <mat-icon>save</mat-icon>
+        {{ '::Save' | abpLocalization }}
+      </button>
+    </form>
+  </mat-card-content>
+</mat-card>

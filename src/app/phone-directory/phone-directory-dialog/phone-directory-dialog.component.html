@@ -1,0 +1,48 @@
+<h2 mat-dialog-title>{{ data.isEditMode ? 'Edit Phone Directory' : 'Add Phone Directory' }}</h2>
+
+<mat-card-content>
+  <mat-dialog-content>
+    <form [formGroup]="form">
+      <div class="row">
+        <div class="col-md-12 mx-1">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::PhoneNumber' | abpLocalization }}</mat-label>
+            <input matInput formControlName="phoneNumber" />
+            <mat-error
+              *ngIf="
+                form.get('phoneNumber').hasError('invalidPhoneNumber') &&
+                !form.get('phoneNumber').hasError('required')
+              "
+              >{{ '::Error:InvalidPhoneNumber' | abpLocalization }}</mat-error
+            >
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <mat-checkbox formControlName="isPrimary">{{
+            '::IsPrimary' | abpLocalization
+          }}</mat-checkbox>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <mat-checkbox formControlName="isAcceptTextMessage">{{
+            '::IsAcceptTextMessage' | abpLocalization
+          }}</mat-checkbox>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="actions">
+    <button mat-raised-button color="accent" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+      {{ '::Close' | abpLocalization }}
+    </button>
+    <button mat-raised-button color="primary" (click)="onSave()">
+      <mat-icon>save</mat-icon>
+      {{ '::Save' | abpLocalization }}
+    </button>
+  </mat-dialog-actions>
+</mat-card-content>

@@ -1,0 +1,127 @@
+<h2 mat-dialog-title>
+  {{ (data.isEditMode ? '::DeliveryCode:Edit' : '::DeliveryCode:AddNew') | abpLocalization }}
+</h2>
+
+<mat-card-content>
+  <mat-dialog-content>
+    <form [formGroup]="form" class="delivery-code-form">
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::DeliveryCode' | abpLocalization }}</mat-label>
+            <input matInput formControlName="code" tabindex="1" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::DeliveryCode:DepartmentResponsible' | abpLocalization }}</mat-label>
+            <input matInput formControlName="departmentResponse" tabindex="8" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::DeliveryCode:ShortDescription' | abpLocalization }}</mat-label>
+            <input matInput formControlName="shortDescription" tabindex="2" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::DeliveryCode:PhoneSystemCode' | abpLocalization }}</mat-label>
+            <input matInput formControlName="phoneSystemCode" tabindex="9" />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::DeliveryCode:LongDescription' | abpLocalization }}</mat-label>
+            <input matInput formControlName="longDescription" tabindex="3" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::DeliveryCode:PhoneSystemMsgCode' | abpLocalization }}</mat-label>
+            <input matInput formControlName="phoneSystemMsgCode" tabindex="10" />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::DeliveryCode:StatusCode' | abpLocalization }}</mat-label>
+            <mat-select formControlName="statusCategory" tabindex="4">
+              <mat-option *ngFor="let category of statusCategories" [value]="category.value">
+                {{ category.text }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::DeliveryCode:WSMCode1' | abpLocalization }}</mat-label>
+            <input matInput formControlName="wsmCode1" tabindex="11" />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <mat-label>{{ '::DeliveryCode:SendProblemBox' | abpLocalization }}</mat-label>
+          <mat-radio-group formControlName="sendProblemBox" tabindex="5">
+            <mat-radio-button [value]="true">{{ '::Yes' | abpLocalization }}</mat-radio-button>
+            <mat-radio-button [value]="false">{{ '::No' | abpLocalization }}</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::DeliveryCode:WSMCode2' | abpLocalization }}</mat-label>
+            <input matInput formControlName="wsmCode2" tabindex="12" />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <mat-label>{{ '::DeliveryCode:ForceSignByEntry' | abpLocalization }}</mat-label>
+          <mat-radio-group formControlName="forceSignByEntry" tabindex="6">
+            <mat-radio-button [value]="true">{{ '::Yes' | abpLocalization }}</mat-radio-button>
+            <mat-radio-button [value]="false">{{ '::No' | abpLocalization }}</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::DeliveryCode:EmailFileName' | abpLocalization }}</mat-label>
+            <input matInput formControlName="emailFileName" tabindex="13" />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <mat-label>{{ '::DeliveryCode:LeftAtAddressEntry' | abpLocalization }}</mat-label>
+          <mat-radio-group formControlName="leftAtAddressEntry" tabindex="7">
+            <mat-radio-button [value]="true">{{ '::Yes' | abpLocalization }}</mat-radio-button>
+            <mat-radio-button [value]="false">{{ '::No' | abpLocalization }}</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::DeliveryCode:EmailSubject' | abpLocalization }}</mat-label>
+            <input matInput formControlName="emailSubject" tabindex="14" />
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="actions">
+    <button mat-raised-button color="accent" (click)="onClose()" tabindex="15">
+      <mat-icon>close</mat-icon>
+      {{ '::Close' | abpLocalization }}
+    </button>
+    <button mat-raised-button color="primary" (click)="onSave()" tabindex="16">
+      <mat-icon>save</mat-icon>
+      {{ '::Save' | abpLocalization }}
+    </button>
+  </mat-dialog-actions>
+</mat-card-content>

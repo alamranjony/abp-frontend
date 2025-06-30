@@ -1,0 +1,67 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title-group>
+      <mat-card-title>
+        <h3>
+          {{ '::Menu:SchedulerSettings' | abpLocalization }}
+        </h3>
+      </mat-card-title>
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div formArrayName="settings">
+        <div
+          *ngFor="let setting of settings.controls; let i = index"
+          [formGroupName]="i"
+          class="form-group"
+        >
+          <mat-checkbox formControlName="isEnabled">{{
+            '::WireServiceScheduler:' + setting.get('name')?.value ?? '' | abpLocalization
+          }}</mat-checkbox>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-2 mt-lg-3 w-100">
+          <button mat-raised-button color="primary" type="submit">
+            <mat-icon>check</mat-icon>
+            {{ '::Save' | abpLocalization }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title-group>
+      <mat-card-title>
+        <h3>{{ '::SchedulerSettings:TestHouseAccountScheduler' | abpLocalization }}</h3>
+      </mat-card-title>
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="row">
+      <div class="col-md-6">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ '::SchedulerSettings:ChooseDate' | abpLocalization }}</mat-label>
+          <input
+            matInput
+            [matDatepicker]="picker"
+            [(ngModel)]="selectedDate"
+            (ngModelChange)="onDateChange()"
+          />
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="col-md-6 d-flex align-items-center">
+        <button mat-raised-button color="primary" (click)="testScheduler()">
+          <mat-icon>play_arrow</mat-icon>
+          {{ '::SchedulerSettings:RunBtn' | abpLocalization }}
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

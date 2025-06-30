@@ -1,0 +1,50 @@
+<div class="dialog-content">
+  <div class="d-flex justify-content-between">
+    <div>
+      <h5 mat-dialog-title> {{ '::CalendarDeliveryModeDialog:title' | abpLocalization }}</h5>
+    </div>
+    <div>
+      <mat-checkbox #checkboxRef>{{ '::CalendarDeliveryModeDialog:RangeUpdateCheckBox' | abpLocalization
+        }}</mat-checkbox>
+    </div>
+  </div>
+  <div [formGroup]="appointmentForm">
+    <div mat-dialog-content>
+      <mat-form-field class="form-field">
+        <mat-label>{{ '::CalendarDeliveryModeDialog:Fields:DeliveryMode' | abpLocalization }}</mat-label>
+        <mat-select formControlName="deliveryModeId">
+          @for (deliveryMode of deliveryModes; track deliveryMode) {
+          <mat-option [value]="deliveryMode.id">{{deliveryMode.name}}</mat-option>
+          }
+        </mat-select>
+
+      </mat-form-field>
+      <mat-form-field class="form-field">
+        <mat-label>{{ '::CalendarDeliveryModeDialog:Fields:Date' | abpLocalization }}</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="date" />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <ng-container *ngIf="checkboxRef?.checked">
+        <mat-form-field class="form-field">
+          <mat-label>{{ '::CalendarDeliveryModeDialog:Fields:UpToDate' | abpLocalization }}</mat-label>
+          <input matInput [matDatepicker]="picker2" formControlName="endTime" />
+          <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+        </mat-form-field>
+      </ng-container>
+
+    </div>
+    <div mat-dialog-actions align="end">
+      <button type="submit" mat-raised-button color="primary" (click)="onSaveClick()">
+        <span>{{'::Save' | abpLocalization}}</span>
+      </button>
+      <button (click)="onDeleteClick()" mat-raised-button color="accent" *ngIf="data.uuid" style="margin-left: 10px">
+        {{ '::Delete' | abpLocalization }}
+      </button>
+      <button style="margin-left: 10px" mat-stroked-button (click)="onNoClick()">
+        {{ '::Close' | abpLocalization }}
+      </button>
+    </div>
+  </div>
+</div>

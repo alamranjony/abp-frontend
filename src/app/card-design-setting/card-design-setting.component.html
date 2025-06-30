@@ -1,0 +1,370 @@
+<mat-card class="card-design-card" appearance="outlined">
+  <mat-card-header>
+    <mat-card-title-group class="w-100">
+      <mat-card-title class="abp-card-title">
+        {{ '::Menu:CardDesignSetting' | abpLocalization }}
+      </mat-card-title>
+    </mat-card-title-group>
+  </mat-card-header>
+
+  <mat-card-content class="mt-2">
+    <form [formGroup]="cardDesignSettingForm" autocomplete="off" class="card-Design-Form">
+      <div class="form-group row mt-2">
+        <div class="col-md-6">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::CardDesignSetting:TemplateWidth' | abpLocalization }}</mat-label>
+            <input matInput type="number" formControlName="templateWidth" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::CardDesignSetting:TemplateHeight' | abpLocalization }}</mat-label>
+            <input matInput type="number" formControlName="templateHeight" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <mat-expansion-panel
+        class="mb-3"
+        [expanded]="cardDesignSettingForm.get('isCardMessage')?.value"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title
+            >{{ '::CardDesignSetting:CardMessage' | abpLocalization }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="form-group row">
+          <div class="col-md-6" class="checkbox-margin">
+            <section>
+              <mat-checkbox matInput formControlName="isCardMessage">
+                {{ '::CardDesignSetting:IncludeCardMessage' | abpLocalization }}
+              </mat-checkbox>
+            </section>
+          </div>
+        </div>
+        <div *ngIf="cardDesignSettingForm.get('isCardMessage')?.value">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ '::CardDesignSetting:PreviewCardMessage' | abpLocalization }}</mat-label>
+            <textarea
+              matInput
+              formControlName="previewCardMessage"
+              rows="3"
+              maxlength="500"
+            ></textarea>
+          </mat-form-field>
+          <div class="form-group row">
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::CardDesignSetting:FontFamily' | abpLocalization }}</mat-label>
+                <mat-select
+                  matinput
+                  formControlName="cardFontFamily"
+                  (selectionChange)="onFontFamilyChange($event.value)"
+                >
+                  <mat-option *ngFor="let option of fontFamilyOptions" [value]="option.value">
+                    {{ option.key }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::CardDesignSetting:FontStyle' | abpLocalization }}</mat-label>
+                <mat-select matinput formControlName="cardFontStyle">
+                  <mat-option *ngFor="let option of filteredStyleOptions" [value]="option.value">
+                    {{ option.key }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::CardDesignSetting:LeftMargin' | abpLocalization }}</mat-label>
+                <input matInput type="number" formControlName="cardMessageLeftMargin" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::CardDesignSetting:TopMargin' | abpLocalization }}</mat-label>
+                <input matInput type="number" formControlName="cardMessageTopMargin" />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::CardDesignSetting:MessageWidth' | abpLocalization }}</mat-label>
+                <input matInput type="number" formControlName="cardMessageWidth" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::CardDesignSetting:FontSize' | abpLocalization }}</mat-label>
+                <input matInput type="number" formControlName="cardFontSize" />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::CardDesignSetting:LineHeight' | abpLocalization }}</mat-label>
+                <input matInput type="number" formControlName="cardLineHeight" />
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-6">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>{{ '::CardDesignSetting:TextColor' | abpLocalization }}</mat-label>
+                <input
+                  matInput
+                  [colorPicker]="cardDesignSettingForm.get('cardMessageTextColor')?.value"
+                  [cpOutputFormat]="'hex'"
+                  [cpPosition]="'top'"
+                  formControlName="cardMessageTextColor"
+                  (colorPickerChange)="onCardColorChange($event)"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel
+        class="mb-3"
+        [expanded]="cardDesignSettingForm.get('isRecipient')?.value"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title
+            >{{ '::CardDesignSetting:Recipient' | abpLocalization }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="form-group row">
+          <div class="col-md-6">
+            <section>
+              <mat-checkbox matInput formControlName="isRecipient" class="checkbox-margin">
+                {{ '::CardDesignSetting:IncludeRecipientName' | abpLocalization }}
+              </mat-checkbox>
+            </section>
+          </div>
+        </div>
+        <div *ngIf="cardDesignSettingForm.get('isRecipient')?.value">
+          <div class="form-group row">
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{
+                  '::CardDesignSetting:PreviewRecipientName' | abpLocalization
+                }}</mat-label>
+                <input matInput type="text" formControlName="previewRecipientName" />
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::CardDesignSetting:MessageWidth' | abpLocalization }}</mat-label>
+                <input matInput type="number" formControlName="recipientWidth" />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::CardDesignSetting:FontFamily' | abpLocalization }}</mat-label>
+                <mat-select
+                  matinput
+                  formControlName="recipientFontFamily"
+                  (selectionChange)="onFontFamilyChange($event.value)"
+                >
+                  <mat-option *ngFor="let option of fontFamilyOptions" [value]="option.value">
+                    {{ option.key }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::CardDesignSetting:FontStyle' | abpLocalization }}</mat-label>
+                <mat-select matinput formControlName="recipientFontStyle">
+                  <mat-option *ngFor="let option of filteredStyleOptions" [value]="option.value">
+                    {{ option.key }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::CardDesignSetting:LeftMargin' | abpLocalization }}</mat-label>
+                <input matInput type="number" formControlName="recipientLeftMargin" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::CardDesignSetting:TopMargin' | abpLocalization }}</mat-label>
+                <input matInput type="number" formControlName="recipientTopMargin" />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::CardDesignSetting:FontSize' | abpLocalization }}</mat-label>
+                <input matInput type="number" formControlName="recipientFontSize" />
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-6">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>{{ '::CardDesignSetting:TextColor' | abpLocalization }}</mat-label>
+                <input
+                  matInput
+                  [colorPicker]="cardDesignSettingForm.get('recipientTextColor')?.value"
+                  [cpOutputFormat]="'hex'"
+                  [cpPosition]="'top'"
+                  formControlName="recipientTextColor"
+                  (colorPickerChange)="onRecipientColorChange($event)"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel class="mb-3" [expanded]="cardDesignSettingForm.get('isOccasion')?.value">
+        <mat-expansion-panel-header>
+          <mat-panel-title>{{ '::CardDesignSetting:Occasion' | abpLocalization }} </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="form-group row">
+          <div class="col-md-6">
+            <section>
+              <mat-checkbox matInput formControlName="isOccasion" class="checkbox-margin">
+                {{ '::CardDesignSetting:IncludeOccasion' | abpLocalization }}
+              </mat-checkbox>
+            </section>
+          </div>
+        </div>
+
+        <div *ngIf="cardDesignSettingForm.get('isOccasion')?.value" class="section">
+          <div class="form-group-row">
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::Occasion' | abpLocalization }}</mat-label>
+                <mat-select matinput formControlName="occasionType">
+                  <mat-option *ngFor="let option of ocasionTypeOptions" [value]="option.value">
+                    {{ option.key }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::CardDesignSetting:MessageWidth' | abpLocalization }}</mat-label>
+                <input matInput type="number" formControlName="occasionWidth" />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::CardDesignSetting:FontFamily' | abpLocalization }}</mat-label>
+                <mat-select
+                  matinput
+                  formControlName="occasionFontFamily"
+                  (selectionChange)="onFontFamilyChange($event.value)"
+                >
+                  <mat-option *ngFor="let option of fontFamilyOptions" [value]="option.value">
+                    {{ option.key }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::CardDesignSetting:FontStyle' | abpLocalization }}</mat-label>
+                <mat-select matinput formControlName="occasionFontStyle">
+                  <mat-option *ngFor="let option of filteredStyleOptions" [value]="option.value">
+                    {{ option.key }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::CardDesignSetting:LeftMargin' | abpLocalization }}</mat-label>
+                <input matInput type="number" formControlName="occasionLeftMargin" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::CardDesignSetting:TopMargin' | abpLocalization }}</mat-label>
+                <input matInput type="number" formControlName="occasionTopMargin" />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-md-6">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ '::CardDesignSetting:FontSize' | abpLocalization }}</mat-label>
+                <input matInput type="number" formControlName="occasionFontSize" />
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-6">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>{{ '::CardDesignSetting:TextColor' | abpLocalization }}</mat-label>
+                <input
+                  matInput
+                  [colorPicker]="cardDesignSettingForm.get('occasionTextColor')?.value"
+                  [cpOutputFormat]="'hex'"
+                  [cpPosition]="'top'"
+                  formControlName="occasionTextColor"
+                  (colorPickerChange)="onOccasionColorChange($event)"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+
+      <mat-card-actions align="end">
+        <button type="button" mat-raised-button color="accent" class="me-1" (click)="onPreview()">
+          <mat-icon>preview</mat-icon>
+          {{ '::Product.Preview' | abpLocalization }}
+        </button>
+        <button mat-raised-button color="primary" class="me-1" type="submit" (click)="onSubmit()">
+          <mat-icon>save</mat-icon>
+          <span> {{ '::Save' | abpLocalization }}</span>
+        </button>
+        <div>
+          <mat-checkbox formControlName="isApplyToAllStore" class="me-1">
+            {{ '::WireServiceSetup:ApplyForAllStore' | abpLocalization }}
+          </mat-checkbox>
+        </div>
+      </mat-card-actions>
+    </form>
+
+    <div *ngIf="pdfSrc" class="pdf-preview">
+      <iframe [src]="pdfSrc" width="100%" height="800px" frameborder="0"></iframe>
+    </div>
+  </mat-card-content>
+</mat-card>

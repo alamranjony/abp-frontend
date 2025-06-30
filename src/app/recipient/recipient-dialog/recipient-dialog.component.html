@@ -1,0 +1,131 @@
+<h1 mat-dialog-title>
+  {{
+    data.isEditMode
+      ? ('::Recipient:EditRecipient' | abpLocalization)
+      : ('::Recipient:NewRecipient' | abpLocalization)
+  }}
+</h1>
+
+<mat-card-content>
+  <mat-dialog-content>
+    <form [formGroup]="form">
+      <!-- First Name -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ '::Recipient:FirstName' | abpLocalization }}</mat-label>
+        <input matInput formControlName="firstName" required />
+      </mat-form-field>
+
+      <!-- Last Name -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ '::Recipient:LastName' | abpLocalization }}</mat-label>
+        <input matInput formControlName="lastName" required />
+      </mat-form-field>
+
+      <!-- Location Type -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ '::Recipient:LocationType' | abpLocalization }}</mat-label>
+        <mat-select formControlName="locationType" required>
+          <mat-option [value]="null">{{ '::SelectLocationType' | abpLocalization }}</mat-option>
+          <mat-option *ngFor="let locationType of locationTypes" [value]="locationType.value">
+            {{ '::Enum:LocationType.' + locationType.value | abpLocalization }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Attention -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ '::Recipient:Attention' | abpLocalization }}</mat-label>
+        <input matInput formControlName="attention" />
+      </mat-form-field>
+
+      <!-- Delivery Code ID -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ '::Recipient:DeliveryCode' | abpLocalization }}</mat-label>
+        <input matInput formControlName="deliveryCodeId" />
+      </mat-form-field>
+
+      <!-- Address1 -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ '::Recipient:Address1' | abpLocalization }}</mat-label>
+        <input matInput formControlName="address1" required />
+      </mat-form-field>
+
+      <!-- Address2 -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ '::Recipient:Address2' | abpLocalization }}</mat-label>
+        <input matInput formControlName="address2" />
+      </mat-form-field>
+
+      <!-- City -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ '::Recipient:City' | abpLocalization }}</mat-label>
+        <input matInput formControlName="city" required />
+      </mat-form-field>
+
+      <!-- Zip Code -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ '::Recipient:ZipCode' | abpLocalization }}</mat-label>
+        <input matInput formControlName="zipCode" required />
+      </mat-form-field>
+
+      <!-- Country ID -->
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>{{ '::Recipient:Country' | abpLocalization }}</mat-label>
+        <mat-select (selectionChange)="onChangeCountry($event)" formControlName="countryId">
+          <mat-option *ngFor="let country of countries" [value]="country.id">{{
+            country.name
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- State Province ID -->
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>{{ '::Recipient:StateProvince' | abpLocalization }}</mat-label>
+        <mat-select formControlName="stateProvinceId">
+          <mat-option *ngFor="let state of filteredStateProvinces" [value]="state.id">{{
+            state.name
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Email -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ '::Recipient:Email' | abpLocalization }}</mat-label>
+        <input matInput type="email" formControlName="email" />
+      </mat-form-field>
+
+      <!-- Phone Type -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ '::Recipient:PhoneType' | abpLocalization }}</mat-label>
+        <mat-select formControlName="phoneType">
+          <mat-option [value]="null">{{ '::SelectPhoneType' | abpLocalization }}</mat-option>
+          <mat-option *ngFor="let phoneType of phoneTypes" [value]="phoneType.value">
+            {{ phoneType.key }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Phone Number -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ '::Recipient:PhoneNumber' | abpLocalization }}</mat-label>
+        <input matInput formControlName="number" required />
+      </mat-form-field>
+
+      <!-- Short Code -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ '::Recipient:ShortCode' | abpLocalization }}</mat-label>
+        <input matInput formControlName="shortCode" />
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="actions">
+    <button mat-button mat-dialog-close>
+      {{ '::Cancel' | abpLocalization }}
+    </button>
+    <button mat-raised-button color="primary" (click)="onSave()">
+      <mat-icon>save</mat-icon>
+      {{ '::Save' | abpLocalization }}
+    </button>
+  </mat-dialog-actions>
+</mat-card-content>

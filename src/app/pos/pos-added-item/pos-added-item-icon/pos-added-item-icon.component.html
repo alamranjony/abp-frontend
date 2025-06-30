@@ -1,0 +1,13 @@
+<div class="pos-added-item-icon">
+  <ng-container *ngFor="let icon of topIcon">
+    <button
+      [disabled]="!disableIcon(icon.id)"
+      [ngClass]="{ 'disabled-button': !disableIcon(icon.id) }"
+      mat-mini-fab
+      matTooltip="{{ icon.title }}"
+      (click)="handleIconClick(icon.id)"
+    >
+      <mat-icon>{{ icon.icon }}</mat-icon>
+    </button>
+  </ng-container>
+</div>

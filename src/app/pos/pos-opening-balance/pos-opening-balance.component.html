@@ -1,0 +1,72 @@
+<h2 mat-dialog-title>
+  {{
+    isValidEmployee && !isNewOpeningBalance
+      ? ('::Pos:OpeningBalanceZOut' | abpLocalization)
+      : ('::Pos:OpeningBalance' | abpLocalization)
+  }}
+</h2>
+
+<div class="p-2 card-container pb-0" *ngIf="!isValidEmployee">
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>{{ '::Pos:OpeningBalanceEmployeeId' | abpLocalization }}</mat-label>
+    <input matInput type="text" [(ngModel)]="employeeId" disabled />
+  </mat-form-field>
+</div>
+
+<div class="p-2 card-container pb-0" *ngIf="!isValidEmployee">
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>{{ '::Pos:OpeningBalancePin' | abpLocalization }}</mat-label>
+    <input
+      matInput
+      [(ngModel)]="pin"
+      placeholder="{{ '::Pos:OpeningBalancePin' | abpLocalization }}"
+      [type]="hidePassword ? 'password' : 'text'"
+    />
+    <button mat-icon-button matSuffix (click)="togglePasswordVisibility($event)">
+      <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+    </button>
+  </mat-form-field>
+</div>
+
+<div class="p-2 card-container pb-0" *ngIf="isValidEmployee">
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>{{ '::Pos:OpeningBalanceInput' | abpLocalization }}</mat-label>
+    <input matInput type="number" [(ngModel)]="balance" />
+  </mat-form-field>
+</div>
+
+<mat-dialog-actions class="d-flex justify-content-between">
+  <div class="d-flex">
+    <button
+      mat-raised-button
+      color="primary"
+      type="button"
+      (click)="openCashDrawerDialogue()"
+      *ngIf="isValidEmployee && !isNewOpeningBalance"
+      class="me-2"
+    >
+      {{ '::Pos:OpeningBalance.CashDrawer' | abpLocalization }}
+    </button>
+  </div>
+
+  <div class="d-flex">
+    <button mat-raised-button color="accent" type="button" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+      {{ '::Close' | abpLocalization }}
+    </button>
+    <ng-container *ngIf="isValidEmployee; else elseTemplate">
+      <button mat-raised-button color="primary" type="button" (click)="submitOpeningBalance()">
+        <mat-icon>save</mat-icon>
+        {{ '::Save' | abpLocalization }}
+      </button>
+    </ng-container>
+    <ng-template #elseTemplate>
+      <button mat-raised-button color="primary" type="button" (click)="checkOpeningBalance()">
+        <mat-icon>save</mat-icon>
+        {{ '::Pos:Submit' | abpLocalization }}
+      </button>
+    </ng-template>
+  </div>
+</mat-dialog-actions>
+
+<mat-icon class="custom-close-popup" mat-dialog-close color="primary">close</mat-icon>

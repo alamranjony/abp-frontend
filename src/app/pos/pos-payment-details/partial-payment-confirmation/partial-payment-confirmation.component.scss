@@ -1,0 +1,43 @@
+.price-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.mat-price-container {
+    border: 1px solid var(--primary-color);
+    background-color: #fffbf6;
+}
+
+.price-tag {
+    font-weight: 500;
+    width: 130px;
+}
+
+.price-input-field {
+    width: 130px;
+    border: 1px solid var(--primary-color);
+    border-radius: 0.25rem;
+    box-shadow:
+        inset -8px 8px 15px -12px rgba(255, 153, 0, 0.32),
+        inset 8px -8px 15px -12px rgba(255, 153, 0, 0.32);
+    height: 34px;
+    line-height: 1;
+}
+
+.price-currency {
+    padding-right: 10px;
+}
+
+.price-input {
+    color: var(--primary-color) !important;
+}
+
+.price-container {
+    font-weight: 500;
+}
+
+.price-container:last-child {
+    margin-bottom: 0;
+}

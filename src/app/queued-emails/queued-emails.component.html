@@ -1,0 +1,99 @@
+<mat-card>
+  <mat-card-header class="w-100">
+    <mat-card-title-group class="w-100">
+      <mat-card-title class="abp-card-title">{{
+        '::Menu:QueuedEmails' | abpLocalization
+      }}</mat-card-title>
+    </mat-card-title-group>
+  </mat-card-header>
+
+  <mat-card-content>
+    <app-search (filterChange)="search($event)" [(filter)]="filter"></app-search>
+    <table
+      mat-table
+      [dataSource]="queuedEmailsPaginatedResult.items"
+      matSort
+      (matSortChange)="changeSort($event)"
+      class="w-100"
+    >
+      <ng-container matColumnDef="from">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::QueuedEmails:From' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.from }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="to">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::QueuedEmails:To' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.to }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="subject">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::QueuedEmails:Subject' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.subject }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="body">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::QueuedEmails:Body' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element" [innerHtml]="element.body"></td>
+      </ng-container>
+
+      <ng-container matColumnDef="sentTries">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::QueuedEmails:TryCount' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.sentTries }}</td>
+      </ng-container>
+      <ng-container matColumnDef="creationTime">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::QueuedEmails:CreationTime' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.creationTime | date: 'medium' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="sentOnUtc">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::QueuedEmails:SentOn' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.sentOnUtc | date: 'medium' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>{{ '::Actions' | abpLocalization }}</th>
+        <td mat-cell *matCellDef="let element">
+          <button
+            mat-raised-button
+            color="primary"
+            [matMenuTriggerFor]="menu"
+            [matMenuTriggerData]="{ id: element.id }"
+          >
+            <mat-icon>settings</mat-icon>
+            {{ '::Actions' | abpLocalization }}
+            <mat-icon>expand_more</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let myRowData; columns: columns"></tr>
+    </table>
+    <mat-paginator
+      [pageIndex]="list.page"
+      [length]="queuedEmailsPaginatedResult.totalCount"
+      [pageSize]="list.maxResultCount"
+      (page)="changePage($event)"
+    ></mat-paginator>
+  </mat-card-content>
+</mat-card>
+
+<mat-menu #menu="matMenu">
+  <ng-template matMenuContent let-id="id">
+    <button mat-menu-item (click)="resendQueuedEmailById(id)">
+      {{ '::Send' | abpLocalization }}
+    </button>
+  </ng-template>
+</mat-menu>

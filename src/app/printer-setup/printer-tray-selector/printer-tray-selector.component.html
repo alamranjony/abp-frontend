@@ -1,0 +1,18 @@
+<mat-form-field appearance="outline" class="w-100">
+  <mat-label>{{ label }}</mat-label>
+  <mat-select (selectionChange)="onPrinterChange($event.value)" [formControl]="printerControl">
+    <mat-option [value]="EMPTY_GUID">{{ '::Select' | abpLocalization }}</mat-option>
+    <mat-option *ngFor="let printer of printers" [value]="printer.id">
+      {{ printer.name }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field appearance="outline" class="w-100">
+  <mat-label>{{ '::PrinterSetup:Tray' | abpLocalization }}</mat-label>
+  <mat-select [formControl]="trayControl">
+    <mat-option *ngFor="let tray of trayOptions" [value]="tray">
+      {{ tray }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

@@ -1,0 +1,329 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title-group class="w-100">
+      <mat-card-title>{{ '::NewDeliveryZone' | abpLocalization }}</mat-card-title>
+    </mat-card-title-group>
+    <app-back-button [route]="'/delivery-zones'"></app-back-button>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-dialog-content>
+      <div class="row">
+        <div class="col-md-6">
+          <form [formGroup]="form" (ngSubmit)="save()">
+            <div class="delivery-area">
+              <h4 class="text-warning">
+                {{ '::Fields:DeliveryZone.DeliveryArea' | abpLocalization }}
+              </h4>
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{ '::Fields:DeliveryZone.Name' | abpLocalization }}</mat-label>
+                <input matInput formControlName="name" />
+              </mat-form-field>
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{ '::Fields:DeliveryZone.Description' | abpLocalization }}</mat-label>
+                <textarea matInput formControlName="description"></textarea>
+              </mat-form-field>
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{ '::Fields:DeliveryZone.ZoneType' | abpLocalization }}</mat-label>
+                <mat-select formControlName="zoneType">
+                  <mat-option *ngFor="let zoneType of zoneTypes" [value]="zoneType.value">{{
+                    '::Enum:ZoneType.' + zoneType.value | abpLocalization
+                  }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{
+                  '::Fields:DeliveryZone.ZoneAreaSelector' | abpLocalization
+                }}</mat-label>
+                <mat-select
+                  formControlName="zoneAreaSelector"
+                  (selectionChange)="onZoneAreaSelectorChange($event)"
+                >
+                  <mat-option *ngFor="let zoneArea of zoneAreaSelectors" [value]="zoneArea.value">{{
+                    '::Enum:ZoneAreaSelector.' + zoneArea.value | abpLocalization
+                  }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field
+                class="w-100"
+                appearance="outline"
+                *ngIf="form.get('zoneAreaSelector')?.value === ZoneAreaSelector.ZipCode"
+              >
+                <mat-label>{{ '::Fields:DeliveryZone.ZipCode' | abpLocalization }}</mat-label>
+                <input matInput formControlName="zipCode" />
+              </mat-form-field>
+              <!-- Coordinates Section -->
+              <div
+                formArrayName="deliveryZoneCoordinates"
+                *ngIf="form.get('zoneAreaSelector')?.value === ZoneAreaSelector.Coordinates"
+              >
+                <div
+                  *ngFor="let coordinate of coordinates.controls; let i = index"
+                  [formGroupName]="i"
+                >
+                  <div class="row mb-2">
+                    <div class="col-md-5">
+                      <mat-form-field class="w-100" appearance="outline">
+                        <mat-label>{{
+                          '::Fields:DeliveryZone.Latitude' | abpLocalization
+                        }}</mat-label>
+                        <input matInput formControlName="latitude" type="number" />
+                      </mat-form-field>
+                      <input formControlName="displayOrder" hidden />
+                    </div>
+                    <div class="col-md-5">
+                      <mat-form-field class="w-100" appearance="outline">
+                        <mat-label>{{
+                          '::Fields:DeliveryZone.Longitude' | abpLocalization
+                        }}</mat-label>
+                        <input matInput formControlName="longitude" type="number" />
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-2">
+                      <button
+                        mat-mini-fab
+                        aria-label="delete coordinate icon"
+                        type="button"
+                        id="delete-coordinate-btn"
+                        [disabled]="coordinates.length <= 3"
+                        (click)="removeCoordinate(i)"
+                      >
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  mat-flat-button
+                  color="primary"
+                  type="button"
+                  class="my-2"
+                  (click)="addCoordinate()"
+                  id="add-coordinate-btn"
+                >
+                  <mat-icon>add</mat-icon>
+                  {{ '::AddDeliveryZoneCoordinate' | abpLocalization }}
+                </button>
+                <button
+                  mat-flat-button
+                  color="accent"
+                  type="button"
+                  class="my-2 ms-2"
+                  (click)="generateMap()"
+                  id="generate-map-btn"
+                >
+                  {{ '::GenerateMap' | abpLocalization }}
+                </button>
+              </div>
+
+              <div>
+                <mat-checkbox class="mb-2" formControlName="isAutoTransfer">{{
+                  '::Fields:DeliveryZone.IsAutoTransfer' | abpLocalization
+                }}</mat-checkbox>
+              </div>
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{
+                  '::Fields:DeliveryZone.FulfillingStore' | abpLocalization
+                }}</mat-label>
+                <mat-select formControlName="storeId">
+                  <mat-option *ngFor="let store of availableStores" [value]="store.id">{{
+                    store.storeName
+                  }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="delivery-prices">
+              <h4 class="text-warning">
+                {{ '::Fields:DeliveryZone.DeliveryPrices' | abpLocalization }}
+              </h4>
+              <div class="row">
+                <div class="col-md-6">
+                  <mat-form-field floatLabel="always" appearance="outline" class="w-100">
+                    <mat-label>{{
+                      '::Fields:DeliveryZone.ZoneDeliveryFee' | abpLocalization
+                    }}</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      class="example-right-align"
+                      formControlName="deliveryFee"
+                    />
+                    <span matTextSuffix>$</span>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                  <mat-form-field floatLabel="always" appearance="outline" class="w-100">
+                    <mat-label>{{
+                      '::Fields:DeliveryZone.FutureWithin2HoursFee' | abpLocalization
+                    }}</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      class="example-right-align"
+                      formControlName="futureWithin2HrDeliveryFee"
+                    />
+                    <span matTextSuffix>$</span>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <mat-form-field floatLabel="always" appearance="outline" class="w-100">
+                    <mat-label>{{
+                      '::Fields:DeliveryZone.Within2HoursFee' | abpLocalization
+                    }}</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      class="example-right-align"
+                      formControlName="within2HrDeliveryFee"
+                    />
+                    <span matTextSuffix>$</span>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                  <mat-form-field floatLabel="always" appearance="outline" class="w-100">
+                    <mat-label>{{
+                      '::Fields:DeliveryZone.FutureWithin3HoursFee' | abpLocalization
+                    }}</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      class="example-right-align"
+                      formControlName="futureWithin3HrDeliveryFee"
+                    />
+                    <span matTextSuffix>$</span>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <mat-form-field floatLabel="always" appearance="outline" class="w-100">
+                    <mat-label>{{
+                      '::Fields:DeliveryZone.Within3HoursFee' | abpLocalization
+                    }}</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      class="example-right-align"
+                      formControlName="within3HrDeliveryFee"
+                    />
+                    <span matTextSuffix>$</span>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                  <mat-form-field floatLabel="always" appearance="outline" class="w-100">
+                    <mat-label>{{
+                      '::Fields:DeliveryZone.FutureWithin4HoursFee' | abpLocalization
+                    }}</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      class="example-right-align"
+                      formControlName="futureWithin4HrDeliveryFee"
+                    />
+                    <span matTextSuffix>$</span>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <mat-form-field floatLabel="always" appearance="outline" class="w-100">
+                    <mat-label>{{
+                      '::Fields:DeliveryZone.Within4HoursFee' | abpLocalization
+                    }}</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      class="example-right-align"
+                      formControlName="within4HrDeliveryFee"
+                    />
+                    <span matTextSuffix>$</span>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                  <mat-form-field floatLabel="always" appearance="outline" class="w-100">
+                    <mat-label>{{ '::Fields:DeliveryZone.SalesTax' | abpLocalization }}</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      class="example-right-align"
+                      formControlName="salesTax"
+                    />
+                    <span matTextSuffix>$</span>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <mat-form-field floatLabel="always" appearance="outline" class="w-100">
+                    <mat-label>{{
+                      '::Fields:DeliveryZone.ExpressDeliveryFee' | abpLocalization
+                    }}</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      class="example-right-align"
+                      formControlName="expressDeliveryFee"
+                    />
+                    <span matTextSuffix>$</span>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                  <mat-form-field floatLabel="always" appearance="outline" class="w-100">
+                    <mat-label>{{
+                      '::Fields:DeliveryZone.SundayDeliveryFee' | abpLocalization
+                    }}</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      class="example-right-align"
+                      formControlName="sundayDeliveryFee"
+                    />
+                    <span matTextSuffix>$</span>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <mat-form-field floatLabel="always" appearance="outline" class="w-100">
+                    <mat-label>{{
+                      '::Fields:DeliveryZone.WeddingDayDeliveryFee' | abpLocalization
+                    }}</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      class="example-right-align"
+                      formControlName="weddingDayDeliveryFee"
+                    />
+                    <span matTextSuffix>$</span>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6"></div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-6 mt-2">
+          <app-add-zone-map
+            [deliveryZoneId]="null"
+            (coordinatesChange)="onMapDrawn($event)"
+            [zoneSaved]="null"
+            [drawOnMapEnabled]="drawOnMapEnabled"
+            [zoneCoordinates]="zoneCoordinates"
+          ></app-add-zone-map>
+        </div>
+      </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end" class="actions">
+      <button mat-raised-button class="me-2" color="accent" (click)="close()">
+        <mat-icon>close</mat-icon>
+        {{ '::Cancel' | abpLocalization }}
+      </button>
+      <button mat-raised-button color="primary" (click)="save()">
+        <mat-icon>save</mat-icon>
+        {{ '::Save' | abpLocalization }}
+      </button>
+    </mat-dialog-actions>
+  </mat-card-content>
+</mat-card>

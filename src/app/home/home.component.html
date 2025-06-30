@@ -1,0 +1,16 @@
+<abp-page>
+  <div class="card main-container">
+    <div class="card-header content-space-between">
+      <button
+        *ngIf="!hasLoggedIn"
+        class="btn btn-primary mb-1 time-clock-nav-btn"
+        (click)="openModal()"
+      >
+        <span class="fas fa-clock"></span> {{ '::Menu:TimeClock' | abpLocalization }}
+      </button>
+    </div>
+    <div class="card-body">
+      <app-custom-login *ngIf="!hasLoggedIn"></app-custom-login>
+    </div>
+  </div>
+</abp-page>

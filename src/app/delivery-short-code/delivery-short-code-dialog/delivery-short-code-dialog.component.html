@@ -1,0 +1,159 @@
+<h2 mat-dialog-title>
+  {{ (data.isEditMode ? '::DeliveryShortCode:Edit' : '::DeliveryShortCode:Add') | abpLocalization }}
+</h2>
+
+<mat-card-content>
+  <mat-dialog-content>
+    <form [formGroup]="form" class="row g-3">
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::DeliveryShortCode:Code' | abpLocalization }}</mat-label>
+          <input matInput formControlName="code" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::DeliveryShortCode:Name' | abpLocalization }}</mat-label>
+          <input matInput formControlName="name" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::DeliveryShortCode:Address1' | abpLocalization }}</mat-label>
+          <input matInput formControlName="address1" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::DeliveryShortCode:Address2' | abpLocalization }}</mat-label>
+          <input matInput formControlName="address2" />
+        </mat-form-field>
+
+        <mat-form-field
+          appearance="outline"
+          class="w-100"
+          [class.mb-2]="form.get('countryId').hasError('invalidSelection')"
+        >
+          <mat-label>{{ '::DeliveryShortCode:CountryId' | abpLocalization }}</mat-label>
+          <input
+            matInput
+            type="text"
+            formControlName="countryId"
+            [matAutocomplete]="countryAutoGroup"
+          />
+          <mat-autocomplete #countryAutoGroup="matAutocomplete" [displayWith]="displayCountryName">
+            @for (country of filteredCountries | async; track country.id) {
+              <mat-option [value]="country" (onSelectionChange)="onCountrySelected(country)"
+                >{{ country.name }}
+              </mat-option>
+            }
+          </mat-autocomplete>
+          <mat-error *ngIf="form.get('countryId').hasError('invalidSelection')">
+            {{ '::DeliveryShortCode:CountryId:Invalid' | abpLocalization }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field
+          appearance="outline"
+          class="w-100"
+          [class.mb-2]="form.get('stateProvinceId').hasError('invalidSelection')"
+        >
+          <mat-label>{{ '::DeliveryShortCode:StateProvinceId' | abpLocalization }}</mat-label>
+          <input
+            matInput
+            type="text"
+            formControlName="stateProvinceId"
+            [matAutocomplete]="stateProvinceAutoGroup"
+          />
+          <mat-autocomplete
+            #stateProvinceAutoGroup="matAutocomplete"
+            [displayWith]="displayStateProvinceName"
+          >
+            @for (stateProvince of filteredStateProvinces | async; track stateProvince.id) {
+              <mat-option [value]="stateProvince">
+                {{ stateProvince.name }}
+              </mat-option>
+            }
+          </mat-autocomplete>
+          <mat-error *ngIf="form.get('stateProvinceId').hasError('invalidSelection')">
+            {{ '::DeliveryShortCode:StateProvinceId:Invalid' | abpLocalization }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::DeliveryShortCode:City' | abpLocalization }}</mat-label>
+          <input matInput formControlName="city" />
+        </mat-form-field>
+
+        <div class="row w-100">
+          <mat-form-field appearance="outline" class="col-md-8">
+            <mat-label>{{ '::DeliveryShortCode:ZipCode' | abpLocalization }}</mat-label>
+            <input matInput formControlName="zipCode" />
+          </mat-form-field>
+          <div class="col-md-4">
+            <button type="button" mat-raised-button color="primary" (click)="validateAddress()">
+              <mat-icon>check_box</mat-icon>
+              <span>{{ '::DeliveryShortCode:Address:Validate' | abpLocalization }}</span>
+            </button>
+          </div>
+        </div>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::DeliveryShortCode:PhoneNumber' | abpLocalization }}</mat-label>
+          <input matInput formControlName="phoneNumber" />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::DeliveryShortCode:SpecialInstruction' | abpLocalization }}</mat-label>
+          <textarea matInput formControlName="specialInstruction"></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::DeliveryShortCode:StoreId' | abpLocalization }}</mat-label>
+          <mat-select formControlName="storeId">
+            <mat-option *ngFor="let store of stores" [value]="store.id"
+              >{{ store.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::DeliveryShortCode:DeliveryType' | abpLocalization }}</mat-label>
+          <mat-select formControlName="deliveryType">
+            <mat-option *ngFor="let deliveryType of deliveryTypes" [value]="deliveryType.id"
+              >{{ deliveryType.name | abpLocalization }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::DeliveryShortCode:ZoneId' | abpLocalization }}</mat-label>
+          <mat-select formControlName="zoneId">
+            <mat-option *ngFor="let zone of zones" [value]="zone.id">{{ zone.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="w-100 mb-2">
+          <mat-checkbox
+            [labelPosition]="'after'"
+            formControlName="useDefaultDeliveryCharge"
+            (change)="onUseDefaultDeliveryChargeChange($event)"
+            >{{ '::DeliveryShortCode:UseDefaultDeliveryCharge' | abpLocalization }}
+          </mat-checkbox>
+        </div>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::DeliveryShortCode:SpecialDeliveryCharge' | abpLocalization }}</mat-label>
+          <input matInput type="number" formControlName="specialDeliveryCharge" />
+        </mat-form-field>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="actions">
+    <button mat-raised-button color="accent" (click)="onClose()">
+      {{ '::Close' | abpLocalization }}
+      <mat-icon>close</mat-icon>
+    </button>
+    <button mat-raised-button color="primary" (click)="onSave()">
+      {{ '::Save' | abpLocalization }}
+      <mat-icon>save</mat-icon>
+    </button>
+  </mat-dialog-actions>
+</mat-card-content>

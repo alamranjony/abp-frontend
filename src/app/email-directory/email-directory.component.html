@@ -1,0 +1,87 @@
+<mat-card-header>
+  <mat-card-title-group class="w-100 d-flex justify-content-between align-items-center">
+    <div class="button-group d-flex">
+      <button mat-raised-button class="me-2" color="primary" type="button" (click)="createEmail()">
+        <mat-icon>add</mat-icon>
+        <span>{{ '::NewEmail' | abpLocalization }}</span>
+      </button>
+    </div>
+  </mat-card-title-group>
+</mat-card-header>
+
+<mat-card-content>
+  <table mat-table [dataSource]="emailDirectories.items" class="w-100">
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>{{ '::Actions' | abpLocalization }}</th>
+      <td mat-cell *matCellDef="let element">
+        <button
+          mat-raised-button
+          color="primary"
+          type="button"
+          [matMenuTriggerFor]="menu"
+          [matMenuTriggerData]="{ id: element.id }"
+        >
+          <mat-icon>settings</mat-icon>
+          {{ '::Actions' | abpLocalization }}
+          <mat-icon>expand_more</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ '::Email' | abpLocalization }}
+      </th>
+      <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+    </ng-container>
+    <ng-container matColumnDef="isPrimary">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ '::IsPrimary' | abpLocalization }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{ (element.isPrimary ? '::Yes' : '::No') | abpLocalization }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="optOutForMarketing">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ '::OptOutForMarketing' | abpLocalization }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{ (element.optOutForMarketing ? '::Yes' : '::No') | abpLocalization }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="optForDirectMarketing">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ '::OptForDirectMarketing' | abpLocalization }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{ (element.optForDirectMarketing ? '::Yes' : '::No') | abpLocalization }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="entityName">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ '::EntityName' | abpLocalization }}
+      </th>
+      <td mat-cell *matCellDef="let element">{{ element.entityName }}</td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr mat-row *matRowDef="let row; columns: columns"></tr>
+  </table>
+  <mat-paginator
+    [length]="emailDirectories.totalCount"
+    [pageSize]="list.maxResultCount"
+    (page)="changePage($event)"
+  ></mat-paginator>
+</mat-card-content>
+
+<mat-menu #menu="matMenu">
+  <ng-template matMenuContent let-id="id">
+    <button type="button" mat-menu-item (click)="editEmail(id)">
+      {{ '::Edit' | abpLocalization }}
+    </button>
+    <button type="button" mat-menu-item (click)="onDelete(id)">
+      {{ '::Delete' | abpLocalization }}
+    </button>
+  </ng-template>
+</mat-menu>

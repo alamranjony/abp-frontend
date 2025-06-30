@@ -1,0 +1,176 @@
+<mat-card>
+  <mat-card-header class="w-100">
+    <mat-card-title-group class="w-100">
+      <mat-card-title class="abp-card-title"
+        >{{ '::Menu:WireServiceMessage' | abpLocalization }}
+      </mat-card-title>
+
+      <div class="text-end col col-md-8">
+        <div class="text-lg-end">
+          <button
+            *abpPermission="'ClientPortal.WireServiceMessage.CreateAndEdit'"
+            (click)="addWireServiceMessage()"
+            class="me-2"
+            color="primary"
+            mat-raised-button
+          >
+            <mat-icon>add</mat-icon>
+            <span>{{ '::DeliveryShortCode:AddNew' | abpLocalization }}</span>
+          </button>
+        </div>
+      </div>
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content class="mt-3">
+    <form [formGroup]="searchForm">
+      <div class="row">
+        <div class="form-group col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::WireServiceMessage:WireService' | abpLocalization }}</mat-label>
+            <mat-select formControlName="wireServiceId">
+              <mat-option [value]="0">{{ '::All' | abpLocalization }}</mat-option>
+              <mat-option
+                *ngFor="let wireService of wireServiceOptions"
+                [value]="wireService.value"
+              >
+                {{ wireService.key }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="form-group col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::WireServiceMessage:FromDate' | abpLocalization }}</mat-label>
+            <input [matDatepicker]="fromDatePicker" formControlName="fromDate" matInput />
+            <div class="datepicker-toggle-wrapper" matSuffix>
+              <mat-datepicker-toggle [for]="fromDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker-toggle
+                (click)="clearFromDate()"
+                *ngIf="searchForm.value['fromDate'] !== null"
+              >
+                <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+              </mat-datepicker-toggle>
+            </div>
+            <mat-datepicker #fromDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="form-group col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::WireServiceMessage:ToDate' | abpLocalization }}</mat-label>
+            <input [matDatepicker]="toDatePicker" formControlName="toDate" matInput />
+            <div class="datepicker-toggle-wrapper" matSuffix>
+              <mat-datepicker-toggle [for]="toDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker-toggle
+                (click)="clearToDate()"
+                *ngIf="searchForm.value['toDate'] !== null"
+              >
+                <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+              </mat-datepicker-toggle>
+            </div>
+            <mat-datepicker #toDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+    <table
+      (matSortChange)="changeSort($event)"
+      [dataSource]="wireServiceMessages.items"
+      class="w-100"
+      mat-table
+      matSort
+    >
+      <ng-container matColumnDef="wireService">
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>
+          {{ '::WireServiceMessage:WireService' | abpLocalization }}
+        </th>
+        <td *matCellDef="let element" mat-cell>
+          {{ '::WireServiceMessage:WireService:' + element.wireService | abpLocalization }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="messageType">
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>
+          {{ '::WireServiceMessage:MessageType' | abpLocalization }}
+        </th>
+        <td *matCellDef="let element" mat-cell>
+          {{ '::WireServiceMessage:MessageType:' + element.messageType | abpLocalization }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="fromDate">
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>
+          {{ '::WireServiceMessage:FromDate' | abpLocalization }}
+        </th>
+        <td *matCellDef="let element" mat-cell>{{ element.fromDate | date: 'MM/dd/yyyy' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="toDate">
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>
+          {{ '::WireServiceMessage:ToDate' | abpLocalization }}
+        </th>
+        <td *matCellDef="let element" mat-cell>{{ element.toDate | date: 'MM/dd/yyyy' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="amount">
+        <th *matHeaderCellDef mat-header-cell>
+          {{ '::WireServiceMessage:Amount' | abpLocalization }}
+        </th>
+        <td *matCellDef="let element" mat-cell>
+          {{
+            (element.minAmount | number: '1.2-2') + ' - ' + (element.maxAmount | number: '1.2-2')
+          }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="message">
+        <th *matHeaderCellDef mat-header-cell>
+          {{ '::WireServiceMessage:Message' | abpLocalization }}
+        </th>
+        <td *matCellDef="let element" mat-cell>{{ element.message }}</td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th *matHeaderCellDef mat-header-cell>{{ '::Actions' | abpLocalization }}</th>
+        <td *matCellDef="let element" mat-cell>
+          <button
+            [matMenuTriggerData]="{ id: element.id }"
+            [matMenuTriggerFor]="menu"
+            color="primary"
+            mat-raised-button
+          >
+            <mat-icon>settings</mat-icon>
+            {{ '::Actions' | abpLocalization }}
+            <mat-icon>expand_more</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <tr *matHeaderRowDef="columns" mat-header-row></tr>
+      <tr *matRowDef="let myRowData; columns: columns" mat-row></tr>
+
+      <tr class="mat-row no-data-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="columns.length">
+          <app-empty-table-message></app-empty-table-message>
+        </td>
+      </tr>
+    </table>
+    <mat-paginator
+      (page)="changePage($event)"
+      [length]="wireServiceMessages.totalCount"
+      [pageIndex]="list.page"
+      [pageSize]="list.maxResultCount"
+    ></mat-paginator>
+  </mat-card-content>
+</mat-card>
+
+<mat-menu #menu="matMenu">
+  <ng-template let-id="id" matMenuContent>
+    <button
+      *abpPermission="'ClientPortal.WireServiceMessage.CreateAndEdit'"
+      (click)="editWireServiceMessage(id)"
+      mat-menu-item
+    >
+      {{ '::Edit' | abpLocalization }}
+    </button>
+    <button
+      *abpPermission="'ClientPortal.WireServiceMessage.Delete'"
+      (click)="delete(id)"
+      mat-menu-item
+    >
+      {{ '::Delete' | abpLocalization }}
+    </button>
+  </ng-template>
+</mat-menu>

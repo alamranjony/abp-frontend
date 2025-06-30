@@ -1,0 +1,96 @@
+<div class="container">
+  <div class="calendar-container">
+    <div class="calendar-header">
+      <div>
+        <h2 class="calendar-month" *ngIf="currentView === 'month' || currentView === 'week'">
+          {{ viewDate | date: 'MMMM' }}
+          <span>{{ viewDate | date: 'y' }}</span>
+        </h2>
+        <h2 class="calendar-month" *ngIf="currentView === 'day'">
+          {{ viewDate | date: 'd MMMM' }}
+          <span>{{ viewDate | date: 'y' }}</span>
+        </h2>
+        <span class="calendar-dayname" *ngIf="currentView === 'day'">
+          {{ viewDate | date: 'EEEE' }}
+        </span>
+      </div>
+
+      <div class="calendar-controls">
+        <button
+          mat-icon-button
+          (click)="previous()"
+          (keydown.enter)="previous()"
+          (keydown.space)="previous()"
+        >
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <button
+          mat-stroked-button
+          (click)="viewToday()"
+          (keydown.enter)="viewToday()"
+          (keydown.space)="viewToday()"
+        >
+          {{ '::DeliveryModeCalendar:TodayBtn' | abpLocalization }}
+        </button>
+        <button mat-icon-button (click)="next()" (keydown.enter)="next()" (keydown.space)="next()">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+        <button
+          *abpPermission="'ClientPortal.DeliveryModeDateMap.Edit'"
+          mat-flat-button
+          color="secondary"
+          (click)="selectDate()"
+          (keydown.enter)="selectDate()"
+          (keydown.space)="selectDate()"
+        >
+          {{ '::DeliveryModeCalendar:TopUpdateDeliveryModeBtn' | abpLocalization }}
+        </button>
+      </div>
+    </div>
+
+    <table
+      width="100%"
+      cellspacing="0"
+      cellpadding="0"
+      class="calendar-view-month"
+      *ngIf="currentView === 'month'"
+    >
+      <thead>
+        <tr>
+          <th *ngFor="let day of weekDays">
+            {{ day }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let week of weeks">
+          <td
+            *ngFor="let date of week"
+            [class.today]="isToday(date)"
+            [ngStyle]="{ opacity: isCurrentMonth(date) ? '1' : '0.5' }"
+          >
+            <div (click)="selectDate(date)" class="cell-overlay" tabindex="0"></div>
+            <div class="date">
+              {{ date.getDate() }}
+            </div>
+            <div class="appointments">
+              <ng-container *ngFor="let appointment of appointments">
+                <div
+                  tabindex="0"
+                  *ngIf="isSameDate(appointment.date, date)"
+                  class="appointment"
+                  [ngStyle]="{ 'background-color': appointment.color }"
+                  (click)="editAppointment(appointment, $event)"
+                >
+                  <span style="text-align: left; line-height: 15px">{{
+                    appointment.deliveryModeName
+                  }}</span>
+                </div>
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

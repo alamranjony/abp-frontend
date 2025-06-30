@@ -1,0 +1,45 @@
+<h1 mat-dialog-title>{{ '::ShopSelection:SelectShop' | abpLocalization }}</h1>
+<div class="dialog-content" mat-dialog-content>
+  <div class="w-100">
+    <app-search
+      [(ngModel)]="filter"
+      (filterChange)="onSearch($event)"
+      [placeHolder]="'::ShopSelection:Placeholder' | abpLocalization"
+    ></app-search>
+  </div>
+
+  <mat-list *ngIf="shops.items.length > 0" class="shop-list">
+    <mat-list-item (click)="selectShop(shop)" *ngFor="let shop of shops.items">
+      <div class="shop-item">
+        <span class="shop-code">{{ shop.shopCode }}</span>
+        <span class="shop-name">{{ shop.name }}</span>
+      </div>
+    </mat-list-item>
+  </mat-list>
+
+  @if (isLoading) {
+    <mat-progress-spinner
+      diameter="32"
+      mode="indeterminate"
+      class="mx-auto my-2"
+    ></mat-progress-spinner>
+  } @else if (shops.items.length === 0) {
+    <p class="no-shops">
+      {{ '::ShopSelection:NoShops' | abpLocalization }}
+    </p>
+  }
+</div>
+
+<mat-paginator
+  (page)="changePage($event)"
+  [length]="shops.totalCount"
+  [pageSize]="list.maxResultCount"
+>
+</mat-paginator>
+
+<div mat-dialog-actions class="dialog-actions">
+  <button mat-raised-button color="accent" (click)="close()">
+    <mat-icon>close</mat-icon>
+    {{ '::Cancel' | abpLocalization }}
+  </button>
+</div>

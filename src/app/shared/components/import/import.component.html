@@ -1,0 +1,25 @@
+<h2 mat-dialog-title>{{ '::ImportCsv' | abpLocalization }}</h2>
+
+<mat-card-content>
+    <mat-dialog-content>
+        <div class="row">
+            <div class="col col-md-12 file-input-section" (click)="fileInput.click()">
+                <button type="button" class="gray-btn" mat-button >Choose File</button>
+                <input hidden (change)="onFileSelected($event)" #fileInput type="file" accept=".csv">
+                <span class="file-name">{{selectedFile?.name}}</span>
+                <span class="text-error">{{errors}}</span>
+            </div>
+        </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="accent" (click)="onClose()">
+            <mat-icon>close</mat-icon>
+            {{ '::Close' | abpLocalization }}
+        </button>
+        <button mat-raised-button color="primary" (click)="onSave()">
+            <mat-icon>upload</mat-icon>
+            {{ '::Import' | abpLocalization }}
+        </button>
+    </mat-dialog-actions>
+</mat-card-content>

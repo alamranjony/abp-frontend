@@ -1,0 +1,23 @@
+.pos-payment-options {
+  border: 1px solid var(--primary-color);
+  background-color: #fffbf6;
+}
+
+.card-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 16px;
+}
+
+.submit-button {
+  width: 80%;
+  margin: auto;
+  text-align: right;
+}
+
+mat-error {
+  line-height: normal;
+}

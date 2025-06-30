@@ -1,0 +1,28 @@
+@import url('https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.25.1/maps/maps.css');
+@import url('https://api.tomtom.com/maps-sdk-for-web/cdn/plugins/DrawingTools/1.1.5//DrawingTools.css');
+
+.coordinates-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.coordinate-row {
+  display: flex;
+  gap: 10px;
+}
+
+.coordinate-field {
+  flex: 1;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.btn-delete-polygon {
+  margin-right: 10px;
+}

@@ -1,0 +1,75 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      {{ '::Menu:TenantEmailSettings' | abpLocalization }}
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <div class="mt-2">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::TenantEmailSettings:SecretKey' | abpLocalization }}</mat-label>
+          <input
+            matInput
+            formControlName="secretKey"
+            [type]="hideSecretKey ? 'password' : 'text'"
+          />
+          <mat-icon matSuffix (click)="hideSecretKey = !hideSecretKey">{{
+            hideSecretKey ? 'visibility_off' : 'visibility'
+          }}</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <div class="mt-2">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::TenantEmailSettings:defaultFromAddress' | abpLocalization }}</mat-label>
+          <input matInput formControlName="defaultFromAddress" />
+        </mat-form-field>
+      </div>
+      <div class="mt-2">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{
+            '::TenantEmailSettings:DefaultFromDisplayName' | abpLocalization
+          }}</mat-label>
+          <input matInput formControlName="defaultFromDisplayName" />
+        </mat-form-field>
+      </div>
+      <div class="mt-2 d-flex justify-content-end">
+        <button
+          *abpPermission="'ClientPortal.TenantEmailSettings.Edit'"
+          mat-raised-button
+          color="primary"
+          type="submit"
+        >
+          <mat-icon>done</mat-icon>
+          {{ '::Save' | abpLocalization }}
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="mt-2">
+  <mat-card-header>
+    <mat-card-title>
+      {{ '::TenantEmailSettings:SendTestEmailCardTitle' | abpLocalization }}
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="sendTestMailForm" (ngSubmit)="onClickSendTestMailBtn()">
+      <div class="mt-2">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::TenantEmailSettings:SendToEmail' | abpLocalization }}</mat-label>
+          <input matInput formControlName="targetEmailAddress" />
+        </mat-form-field>
+      </div>
+
+      <div class="mt-2">
+        <button mat-raised-button color="primary" type="submit">
+          <mat-icon>send</mat-icon>
+          {{ '::SendTestEmailBtn' | abpLocalization }}
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

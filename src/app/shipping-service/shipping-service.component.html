@@ -1,0 +1,85 @@
+<mat-card>
+  <mat-card-header class="w-100">
+    <mat-card-title-group class="w-100">
+      <mat-card-title class="abp-card-title">{{
+        '::Menu:ShippingServices' | abpLocalization
+      }}</mat-card-title>
+      <button id="create" mat-raised-button color="primary" (click)="addShippingService()">
+        <mat-icon>add</mat-icon>
+        <span>{{ '::ShippingService:AddNew' | abpLocalization }}</span>
+      </button>
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content>
+    <app-search
+      [placeHolder]="'::Search' | abpLocalization"
+      (filterChange)="onSearch($event)"
+      [(filter)]="filter"
+    >
+    </app-search>
+
+    <table
+      mat-table
+      [dataSource]="shippingServices.items"
+      matSort
+      (matSortChange)="changeSort($event)"
+      class="w-100"
+    >
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::ShippingService:Name' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+      </ng-container>
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::ShippingService:Status' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <span [ngClass]="{ 'active-status': element.status, 'inactive-status': !element.status }">
+            {{ element.status ? 'Active' : 'Inactive' }}
+          </span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>{{ '::Actions' | abpLocalization }}</th>
+        <td mat-cell *matCellDef="let element">
+          <button
+            mat-raised-button
+            color="primary"
+            [matMenuTriggerFor]="menu"
+            [matMenuTriggerData]="{ id: element.id }"
+          >
+            <mat-icon>settings</mat-icon>
+            {{ '::Actions' | abpLocalization }}
+            <mat-icon>expand_more</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let myRowData; columns: columns"></tr>
+
+      <tr class="mat-row no-data-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="columns.length">
+          <app-empty-table-message></app-empty-table-message>
+        </td>
+      </tr>
+    </table>
+    <mat-paginator
+      [length]="shippingServices.totalCount"
+      [pageSize]="list.maxResultCount"
+      (page)="changePage($event)"
+    ></mat-paginator>
+  </mat-card-content>
+</mat-card>
+
+<mat-menu #menu="matMenu">
+  <ng-template matMenuContent let-id="id">
+    <button mat-menu-item (click)="editShippingService(id)">
+      {{ '::Edit' | abpLocalization }}
+    </button>
+    <button mat-menu-item (click)="delete(id)">
+      {{ '::Delete' | abpLocalization }}
+    </button>
+  </ng-template>
+</mat-menu>

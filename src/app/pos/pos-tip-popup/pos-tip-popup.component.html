@@ -1,0 +1,39 @@
+<h2 mat-dialog-title>{{ '::Tip:AddTip' | abpLocalization }}</h2>
+
+<mat-card-content>
+  <mat-dialog-content>
+    <form [formGroup]="tipForm">
+      <div class="w-100">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::Tip:Option' | abpLocalization }}</mat-label>
+          <mat-select formControlName="tipValueTypeId">
+            <mat-option *ngFor="let tip of tipValueTypes" [value]="tip.id">
+              {{ tip.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="w-100">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ '::Tip:TipAmount' | abpLocalization }}</mat-label>
+          <input matInput type="number" min="0" formControlName="tipAmount" />
+          <span matSuffix style="padding-right: 5px"> $ </span>
+          <mat-error *ngIf="tipForm.get('tipAmount')?.hasError('nonPositive')">
+            {{ '::Tip:NonPositiveError' | abpLocalization }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="actions">
+    <button mat-raised-button color="accent" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+      {{ '::Close' | abpLocalization }}
+    </button>
+    <button mat-raised-button color="primary" (click)="applyTip()">
+      <mat-icon>check</mat-icon>
+      {{ '::Confirm' | abpLocalization }}
+    </button>
+  </mat-dialog-actions>
+</mat-card-content>

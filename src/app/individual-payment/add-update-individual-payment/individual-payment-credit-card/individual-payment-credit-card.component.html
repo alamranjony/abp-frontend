@@ -1,0 +1,24 @@
+<div class="payment-details position-relative">
+  <h2 mat-dialog-title>{{ '::Pos:PaymentDetails' | abpLocalization }}</h2>
+  <mat-dialog-content class="mat-typography content">
+    <div *ngIf="customerId">
+      <app-credit-card-payment
+        [customerId]="customerId"
+        [amountToCharge]="amountToCharge"
+        (acceptEvent)="onAccept($event)"
+      ></app-credit-card-payment>
+    </div>
+    <div *ngIf="!customerId" class="no-customer-id-message">
+      {{ '::CreditCardPayment:NoCustomerSelected' | abpLocalization }}
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-raised-button color="accent" type="button" mat-dialog-close>
+      <mat-icon>close</mat-icon>
+      <span>{{ '::Pos:Close' | abpLocalization }}</span>
+    </button>
+  </mat-dialog-actions>
+
+  <mat-icon class="custom-close-popup" mat-dialog-close color="primary">close</mat-icon>
+</div>

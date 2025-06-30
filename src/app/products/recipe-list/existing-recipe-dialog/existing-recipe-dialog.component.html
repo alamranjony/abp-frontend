@@ -1,0 +1,37 @@
+<h2 mat-dialog-title>
+  {{ '::Recipe.AddExistingRecipe' | abpLocalization }}
+</h2>
+<mat-card-content>
+  <mat-dialog-content>
+    <form [formGroup]="form" class="recipe-dialog-form">
+      <div class="row">
+        <mat-form-field class="example-full-width">
+          <mat-label>{{ '::Recipe.ProductCode' | abpLocalization }}</mat-label>
+          <input type="text" matInput formControlName="productCode" [matAutocomplete]="auto" />
+          <mat-error *ngIf="form.controls['productCode'].hasError('invalidOption')">
+            {{ '::Recipe.ProductCode.Invalid' | abpLocalization }}
+          </mat-error>
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
+            <mat-option
+              *ngFor="let option of filteredOptions$ | async"
+              [value]="option.productCode"
+            >
+              {{ option.productCode }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="actions">
+    <button mat-raised-button color="accent" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+      {{ '::Close' | abpLocalization }}
+    </button>
+    <button mat-raised-button color="primary" (click)="onSave()">
+      <mat-icon>save</mat-icon>
+      {{ '::Save' | abpLocalization }}
+    </button>
+  </mat-dialog-actions>
+</mat-card-content>

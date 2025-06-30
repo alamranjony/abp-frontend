@@ -1,0 +1,97 @@
+<h2 mat-dialog-title>{{ (data.isEditMode ? '::Edit' : '::WireServiceShop:NewWireServiceShop') | abpLocalization }}</h2>
+<mat-card-content>
+    <mat-dialog-content>
+        <form [formGroup]="wireShopform">
+            <div class="row">
+                <div class="col col-md-6">
+                    <div class="mt-2">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{ '::WireServiceShop:WireServiceId' | abpLocalization }}</mat-label>
+                            <mat-select id="wire-shop-wireService" formControlName="wireServiceId">
+                                <mat-option [value]="null">{{ '::Select' | abpLocalization }}</mat-option>
+                                <mat-option [value]="wire.value" *ngFor="let wire of wireService">
+                                    {{ '::Enum:WireService.' + wire.value | abpLocalization }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="mt-2">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{ '::WireServiceShop:HeadquarterCode' | abpLocalization }}</mat-label>
+                            <input matInput type="text" id="wire-shop-headquarterCode"
+                                formControlName="headquarterCode" />
+                        </mat-form-field>
+                    </div>
+                    <div *ngIf="formControls.wireServiceId.value === 3" class="mt-2">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{ '::WireServiceShop:MemberCode' | abpLocalization }}</mat-label>
+                            <input matInput type="text" id="wire-shop-memberCode" formControlName="memberCode" />
+                        </mat-form-field>
+                    </div>
+                    <div *ngIf="formControls.wireServiceId.value === 3" class="mt-2">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{ '::WireServiceShop:InterfaceId' | abpLocalization }}</mat-label>
+                            <input matInput type="text" id="wire-shop-interfaceId" formControlName="interfaceId" />
+                        </mat-form-field>
+                    </div>
+                    <div class="mt-2">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{ '::WireServiceShop:Account' | abpLocalization }}</mat-label>
+                            <input matInput type="text" id="wire-shop-account" formControlName="account" />
+                        </mat-form-field>
+                    </div>
+                    <div class="mt-2">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{ '::WireServiceShop:UserId' | abpLocalization }}</mat-label>
+                            <input matInput type="text" id="wire-shop-userId" formControlName="userId" />
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="col col-md-6">
+                    <div class="mt-2">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{ '::WireServiceShop:Password' | abpLocalization }}</mat-label>
+                            <input matInput type="text" id="wire-shop-password" formControlName="password" />
+                        </mat-form-field>
+                    </div>
+                    <div class="mt-2">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{ '::WireServiceShop:CrossRefShopCode' | abpLocalization }}</mat-label>
+                            <input matInput type="text" id="wire-shop-crossRefShopCode"
+                                formControlName="crossRefShopCode" />
+                        </mat-form-field>
+                    </div>
+                    <div class="mt-2">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{ '::WireServiceShop:FloristAuthShopCode' | abpLocalization }}</mat-label>
+                            <input matInput type="text" id="wire-shop-floristAuthShopCode"
+                                formControlName="floristAuthShopCode" />
+                        </mat-form-field>
+                    </div>
+                    <div *ngIf="formControls.wireServiceId.value === 2 || formControls.wireServiceId.value === 3 || formControls.wireServiceId.value === 5"
+                        class="mt-2">
+                        <mat-checkbox id="wire-shop-isAutoForward" formControlName="isAutoForward">{{
+                            '::WireServiceShop:IsAutoForward' | abpLocalization
+                            }}</mat-checkbox>
+                    </div>
+                    <div *ngIf="formControls.wireServiceId.value === 2 || formControls.wireServiceId.value === 3"
+                        class="mt-2">
+                        <mat-checkbox id="wire-shop-isConfirmReqd" formControlName="isConfirmReqd">{{
+                            '::WireServiceShop:IsConfirmReqd' | abpLocalization
+                            }}</mat-checkbox>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="accent" (click)="onClose()">
+            <mat-icon>close</mat-icon>
+            {{ '::Close' | abpLocalization }}
+        </button>
+        <button mat-raised-button color="primary" (click)="onSave()">
+            <mat-icon>save</mat-icon>
+            {{ '::Save' | abpLocalization }}
+        </button>
+    </mat-dialog-actions>
+</mat-card-content>

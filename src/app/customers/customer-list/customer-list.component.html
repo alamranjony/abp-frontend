@@ -1,0 +1,224 @@
+<mat-card>
+  <mat-card-header class="w-100">
+    <mat-card-title-group class="w-100">
+      <mat-card-title class="abp-card-title"
+        >{{ '::Menu:CustomerList' | abpLocalization }}
+      </mat-card-title>
+      <div class="text-end col col-md-6 row justify-content-end mx-0 gap-2">
+        <div class="col-auto px-0 pt-0">
+          <button
+            *abpPermission="'ClientPortal.Customers.CreateAndEdit'"
+            id="create"
+            mat-raised-button
+            color="primary"
+            type="button"
+            [routerLink]="['create']"
+          >
+            <mat-icon>add</mat-icon>
+            <span>{{ '::NewCustomer' | abpLocalization }}</span>
+          </button>
+        </div>
+        <div class="col-auto px-0 pt-0" *abpPermission="'ClientPortal.Customers.Import'">
+          <button
+            mat-raised-button
+            color="accent"
+            class="me-2"
+            type="button"
+            (click)="downloadTemplate()"
+          >
+            <mat-icon>download</mat-icon>
+            <span>{{ '::Customer:ImportTemplate' | abpLocalization }}</span>
+          </button>
+
+          <button
+            id="import"
+            mat-raised-button
+            color="primary"
+            type="button"
+            (click)="openImportCustomerDialog(importCustomerDialog)"
+          >
+            <i class="fa fa-upload mr-1"></i>
+            <span>{{ '::Import' | abpLocalization }}</span>
+          </button>
+        </div>
+        <div class="col-auto px-0 pt-0" *abpPermission="'ClientPortal.Customers.Export'">
+          <app-export-csv
+            [apiUrl]="exportUrl"
+            fileName="customers"
+            [fieldList]="exportFieldList"
+            [hasQueryParams]="false"
+            [displayColumnList]="displayFieldNames"
+          >
+            >
+          </app-export-csv>
+        </div>
+      </div>
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content>
+    <app-search
+      [placeHolder]="'::Customer:Search:Placeholder' | abpLocalization"
+      (filterChange)="onSearch($event)"
+      [(filter)]="filter"
+    ></app-search>
+
+    <table
+      mat-table
+      [dataSource]="customers.items"
+      class="w-100"
+      matSort
+      (matSortChange)="changeSort($event)"
+    >
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let myRowData; columns: columns"></tr>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>{{ '::Actions' | abpLocalization }}</th>
+        <td mat-cell *matCellDef="let element">
+          <button
+            mat-raised-button
+            color="primary"
+            [matMenuTriggerFor]="menu"
+            [matMenuTriggerData]="{
+              id: element.id,
+              customerAccountType: element.customerAccountType,
+            }"
+          >
+            <mat-icon>settings</mat-icon>
+            {{ '::Actions' | abpLocalization }}
+            <mat-icon>expand_more</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="customerId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::Customer:CustomerId' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.customerId }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::Customer:Name' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+      </ng-container>
+      <ng-container matColumnDef="customerAccountType">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::Customer:CustomerAccountType' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ '::Enum:CustomerAccountType:' + element.customerAccountType | abpLocalization }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="address1">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ '::Customer:Address1' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.address1 }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="phoneNumbers">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ '::Customer:Phone' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container *ngFor="let phoneDirectory of element.phoneDirectories">
+            {{ phoneDirectory.phoneNumber }}<br />
+          </ng-container>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="emails">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ '::Customer:Email' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container *ngFor="let emailDirectory of element.emailDirectories">
+            {{ emailDirectory.email }}<br />
+          </ng-container>
+        </td>
+      </ng-container>
+
+      <tr class="mat-row no-data-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="columns.length">
+          <app-empty-table-message></app-empty-table-message>
+        </td>
+      </tr>
+    </table>
+    <mat-paginator
+      [pageIndex]="list.page"
+      [length]="customers.totalCount"
+      [pageSize]="list.maxResultCount"
+      (page)="changePage($event)"
+    ></mat-paginator>
+  </mat-card-content>
+</mat-card>
+
+<mat-menu #menu="matMenu">
+  <ng-template let-customerAccountType="customerAccountType" let-id="id" matMenuContent>
+    <button
+      *abpPermission="'ClientPortal.Customers.CreateAndEdit'"
+      mat-menu-item
+      [routerLink]="['edit', id]"
+    >
+      {{ '::Edit' | abpLocalization }}
+    </button>
+
+    <button
+      *abpPermission="'ClientPortal.Customers.CustomerComments'"
+      mat-menu-item
+      [routerLink]="['/customers', id, 'comments']"
+    >
+      {{ '::CustomerComments' | abpLocalization }}
+    </button>
+
+    <button *abpPermission="'ClientPortal.Customers.Delete'" mat-menu-item (click)="delete(id)">
+      {{ '::Delete' | abpLocalization }}
+    </button>
+
+    @if (customerAccountType === CustomerAccountType.House) {
+      <button
+        mat-menu-item
+        [routerLink]="['/customers', 'balance-details', id]"
+        *abpPermission="'ClientPortal.Customers.BalanceDetails'"
+      >
+        {{ '::Customer:BalanceDetails' | abpLocalization }}
+      </button>
+    }
+
+    <button
+      *abpPermission="'ClientPortal.Customers.OrderHistory'"
+      mat-menu-item
+      [routerLink]="['/customers', 'customer-order-history', id]"
+    >
+      {{ '::Customer:OrderHistory' | abpLocalization }}
+    </button>
+  </ng-template>
+</mat-menu>
+
+<ng-template #importCustomerDialog>
+  <div class="text-center" *ngIf="showDiv">
+    <h4 mat-dialog-title class="p-3">{{ '::ImportCustomers' | abpLocalization }}</h4>
+    <div class="p-2">
+      <app-import-customer-data
+        (isCustomerDataImportDone)="onCustomerImportDone($event)"
+        (hasImportProcessStarted)="onImportingProcessStarted($event)"
+        (importedDataResponse)="updateCustomerImportResponse($event)"
+      >
+      </app-import-customer-data>
+    </div>
+  </div>
+  <div class="text-center" *ngIf="!showDiv">
+    <h4 mat-dialog-title class="p-3">{{ '::ImportCustomers' | abpLocalization }}</h4>
+    <div class="p-2">
+      <h3>{{ numberOfImportedCustomers }} {{ '::ImportCustomersSuccess' | abpLocalization }}</h3>
+    </div>
+
+    <div *ngIf="errorReportUrl" class="p-3">
+      <a [href]="errorReportUrl" download="ImportErrorReport.html">{{
+        '::DownloadErrorReport' | abpLocalization
+      }}</a>
+    </div>
+  </div>
+</ng-template>

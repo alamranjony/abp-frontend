@@ -1,0 +1,105 @@
+<div class="billing-summary">
+  <h2 mat-dialog-title>{{ '::Pos:BillingSummary' | abpLocalization }}</h2>
+  <mat-dialog-content class="mat-typography content">
+    <mat-checkbox [(ngModel)]="removeAllTax" (change)="toggleAllTax()">
+      {{ '::Pos:RemoveAllTax' | abpLocalization }}
+    </mat-checkbox>
+    <mat-accordion multi="false" [displayMode]="'flat'">
+      <mat-expansion-panel *ngFor="let item of BillingItems; let i = index" [expanded]="i === 0">
+        <mat-expansion-panel-header>
+          <mat-panel-title> {{ item.shortCode }} - ( {{ item.name }} ) </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="expansion-body">
+          <mat-card class="p-2 mat-price-container" appearance="outlined">
+            <div class="price-container">
+              <div class="price-tag">{{ '::Pos:TaxExempt' | abpLocalization }}</div>
+              <div class="price">
+                <span class="price-currency">:</span>
+                <span class="tax-checkbox">
+                  <mat-checkbox
+                    [(ngModel)]="item.taxExempt"
+                    (change)="updateRemoveAllTax()"
+                  ></mat-checkbox>
+                </span>
+              </div>
+            </div>
+            <div class="price-container">
+              <div class="price-tag">{{ '::Pos:Price' | abpLocalization }}</div>
+              <div class="price">
+                <span class="price-currency">$</span>
+                <mat-form-field class="price-input-field" appearance="outline">
+                  <input class="price-input" matInput type="text" value="99.99" disabled />
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="price-container">
+              <div class="price-tag">{{ '::Pos:DeliveryFee' | abpLocalization }}</div>
+              <div class="price position-relative">
+                <span class="price-currency">$</span>
+                <mat-form-field class="price-input-field" appearance="outline">
+                  <input class="price-input" matInput type="text" value="0.00" disabled />
+                </mat-form-field>
+                <mat-icon matTooltip="Edit" class="edit" color="primary">edit</mat-icon>
+              </div>
+            </div>
+            <div class="price-container">
+              <div class="price-tag">{{ '::Pos:Tax' | abpLocalization }}</div>
+              <div class="price">
+                <span class="price-currency">$</span>
+                <mat-form-field class="price-input-field" appearance="outline">
+                  <input class="price-input" matInput type="text" value="0.00" disabled />
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="price-container">
+              <div class="price-tag">{{ '::Pos:SubTotal' | abpLocalization }}</div>
+              <div class="price">
+                <span class="price-currency">$</span>
+                <mat-form-field class="price-input-field" appearance="outline">
+                  <input class="price-input" matInput type="text" value="99.99" disabled />
+                </mat-form-field>
+              </div>
+            </div>
+          </mat-card>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <div class="price-container">
+      <div class="price-tag">{{ '::Pos:DeliveryFeeTotal' | abpLocalization }}</div>
+      <div class="price position-relative">
+        <span class="price-currency">$</span>
+        <mat-form-field class="price-input-field" appearance="outline">
+          <input
+            class="price-input"
+            matInput
+            type="number"
+            [ngModel]="deliveryFeeTotal"
+            (ngModelChange)="onChange($event)"
+          />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="price-container mt-2">
+      <div class="price-tag">{{ '::Pos:GrandTotal' | abpLocalization }}</div>
+      <div class="price">
+        <span class="price-currency">$</span>
+        <mat-form-field class="price-input-field" appearance="outline">
+          <input class="price-input" matInput type="text" value="299.97" disabled />
+        </mat-form-field>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-raised-button color="primary" type="button" (click)="updateBillSummary()">
+      <mat-icon>update</mat-icon>
+      <span>{{ '::Pos:Update' | abpLocalization }}</span>
+    </button>
+    <button mat-raised-button color="accent" type="button" mat-dialog-close>
+      <mat-icon>close</mat-icon>
+      <span>{{ '::Pos:Close' | abpLocalization }}</span>
+    </button>
+  </mat-dialog-actions>
+  <mat-icon class="custom-close-popup" mat-dialog-close color="primary">close</mat-icon>
+</div>

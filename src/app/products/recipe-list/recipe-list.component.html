@@ -1,0 +1,143 @@
+<mat-card-header class="w-100">
+  <mat-card-title-group class="w-100">
+    <div class="text-start col-md-6 row justify-content mt-1">
+      <h5>{{ '::Recipe.TotalCost' | abpLocalization }} : {{ this.totalCost }}</h5>
+    </div>
+    <div class="text-end col col-md-6 row justify-content-end mx-0 gap-2">
+      <div class="col-auto px-0 pt-0">
+        <button
+          id="create"
+          mat-raised-button
+          color="primary"
+          type="button"
+          (click)="addExistingProduct()"
+        >
+          <mat-icon>add</mat-icon>
+          <span>{{ '::Recipe.AddExistingProduct' | abpLocalization }}</span>
+        </button>
+      </div>
+      <div class="col-auto px-0 pt-0">
+        <button
+          id="create"
+          mat-raised-button
+          color="primary"
+          type="button"
+          (click)="addExistingRecipe()"
+        >
+          <mat-icon>add</mat-icon>
+          <span>{{ '::Recipe.AddExistingRecipe' | abpLocalization }}</span>
+        </button>
+      </div>
+    </div>
+  </mat-card-title-group>
+</mat-card-header>
+<mat-card-content>
+  <table
+    mat-table
+    [dataSource]="productRecipes.items"
+    class="w-100"
+    matSort
+    (matSortChange)="changeSort($event)"
+  >
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>{{ '::Actions' | abpLocalization }}</th>
+      <td mat-cell *matCellDef="let element">
+        <div *ngIf="editRowId !== element.id">
+          <button mat-icon-button color="primary" type="button" (click)="startEdit(element)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="accent" type="button" (click)="delete(element.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+        <div *ngIf="editRowId === element.id">
+          <button mat-icon-button color="primary" type="button" (click)="saveEdit(element)">
+            <mat-icon>save</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="accent"
+            class="btn-outline-accent"
+            type="button"
+            (click)="cancelEdit()"
+          >
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </div>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="productCode">
+      <th mat-header-cell *matHeaderCellDef>{{ '::Recipe.ProductCode' | abpLocalization }}</th>
+      <td mat-cell *matCellDef="let element">{{ element.productCode }}</td>
+    </ng-container>
+    <ng-container matColumnDef="description">
+      <th mat-header-cell *matHeaderCellDef>{{ '::Recipe.Description' | abpLocalization }}</th>
+      <td mat-cell *matCellDef="let element">{{ element.description }}</td>
+    </ng-container>
+    <ng-container matColumnDef="basePrice">
+      <th mat-header-cell *matHeaderCellDef>{{ '::Recipe.BasePrice' | abpLocalization }}</th>
+      <td mat-cell *matCellDef="let element">{{ element.basePrice }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="quantity">
+      <th mat-header-cell *matHeaderCellDef>{{ '::Recipe.Quantity' | abpLocalization }}</th>
+      <td mat-cell *matCellDef="let element; let i = index">
+        <ng-container *ngIf="editRowId === element.id; else readModeQuantity">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Recipe.Quantity' | abpLocalization }}</mat-label>
+            <input
+              matInput
+              [formControl]="rowFormGroup[i].get('quantity')"
+              type="number"
+              required
+            />
+            <mat-error *ngIf="rowFormGroup[i].get('quantity').hasError('required')">
+              {{ '::Required' | abpLocalization }}
+            </mat-error>
+          </mat-form-field>
+        </ng-container>
+        <ng-template #readModeQuantity>{{ element.quantity }}</ng-template>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="totalPrice">
+      <th mat-header-cell *matHeaderCellDef>{{ '::Recipe.TotalPrice' | abpLocalization }}</th>
+      <td mat-cell *matCellDef="let element; let i = index">
+        <ng-container *ngIf="editRowId === element.id; else readModeTotalPrice">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Recipe.TotalPrice' | abpLocalization }}</mat-label>
+            <input
+              matInput
+              [formControl]="rowFormGroup[i].get('totalPrice')"
+              type="number"
+              disabled
+            />
+          </mat-form-field>
+        </ng-container>
+        <ng-template #readModeTotalPrice>{{ element.totalPrice }}</ng-template>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="comments">
+      <th mat-header-cell *matHeaderCellDef>{{ '::Recipe.Comments' | abpLocalization }}</th>
+      <td mat-cell *matCellDef="let element; let i = index">
+        <ng-container *ngIf="editRowId === element.id; else readModeComments">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ '::Recipe.Comments' | abpLocalization }}</mat-label>
+            <input matInput [formControl]="rowFormGroup[i].get('comments')" />
+          </mat-form-field>
+        </ng-container>
+        <ng-template #readModeComments>{{ element.comments }}</ng-template>
+      </td>
+    </ng-container>
+
+    <!-- Row Definitions -->
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr mat-row *matRowDef="let row; columns: columns"></tr>
+  </table>
+  <mat-paginator
+    [length]="productRecipes.totalCount"
+    [pageSize]="list.maxResultCount"
+    (page)="changePage($event)"
+  ></mat-paginator>
+</mat-card-content>

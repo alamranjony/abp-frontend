@@ -1,0 +1,292 @@
+<div *ngIf="addedSubOrderItems.length === 0; else showAddedItems" class="empty-state">
+  <div class="empty-icon-container">
+    <img src="/assets/images/demo/empty-cart.svg" alt="cart-is-empty" />
+  </div>
+</div>
+
+<ng-template #showAddedItems>
+  <mat-toolbar [ngClass]="{ 'd-none': !isAnyProductSelected() }" class="pos-added-item-toolbar">
+    <div class="d-flex justify-content-between align-items-center w-100">
+      <div class="d-flex justify-content-between align-items-center">
+        <mat-icon (click)="deselectAll()" color="primary">close</mat-icon>
+        <span class="ms-2 font-size"
+          >{{ getSelectedCount() }} {{ '::Pos:ItemSelection' | abpLocalization }}</span
+        >
+      </div>
+      <div>
+        <button mat-raised-button color="primary" type="button" (click)="openAddRecipientModal()">
+          <mat-icon>person_add</mat-icon>
+          <span>{{ '::Pos:AddRecipientBtn' | abpLocalization }}</span>
+        </button>
+        <button
+          mat-raised-button
+          color="accent"
+          type="button"
+          class="ms-1"
+          (click)="copyOrderItems()"
+        >
+          <mat-icon>content_copy</mat-icon>
+          <span>{{ '::Copy' | abpLocalization }}</span>
+        </button>
+        <button
+          mat-raised-button
+          color="warn"
+          type="button"
+          class="ms-1"
+          (click)="deleteOrderItems()"
+        >
+          <mat-icon>delete_forever</mat-icon>
+          <span>{{ '::Delete' | abpLocalization }}</span>
+        </button>
+      </div>
+    </div>
+  </mat-toolbar>
+
+  <table mat-table [dataSource]="addedSubOrderItems" class="pos-added-item py-1 position-relative">
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox
+          [checked]="isAllSelected()"
+          [indeterminate]="isIndeterminate()"
+          (change)="toggleAll($event)"
+        >
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let orderItem">
+        <mat-checkbox [(ngModel)]="orderItem.selected" (change)="onCheckboxChange()"></mat-checkbox>
+      </td>
+    </ng-container>
+
+    <!-- Image Column -->
+    <ng-container matColumnDef="productName">
+      <th class="text-align-center" mat-header-cell *matHeaderCellDef>
+        {{ '::Pos:OrderItemColum:ProductName' | abpLocalization }}
+      </th>
+      <td mat-cell *matCellDef="let orderItem">
+        <span
+          class="d-flex align-items-center image-name-container"
+          (click)="showProductDetails(orderItem.productItem, false, orderItem.id)"
+          matTooltip="{{ orderItem.productItem.description }}"
+        >
+          <span class="image-container">
+            <img
+              [src]="orderItem.productItem.imageSrc"
+              alt="{{ orderItem.productItem.name }}"
+              (error)="handleImageError($event)"
+              width="50"
+            />
+          </span>
+          <span class="text-p-color name text-truncate">{{ orderItem.productItem.name }}</span>
+        </span>
+      </td>
+    </ng-container>
+    <!-- Unit Price Column -->
+    <ng-container matColumnDef="unitPrice">
+      <th class="text-align-center" mat-header-cell *matHeaderCellDef>
+        {{ '::Pos:OrderItemColum:UnitPrice' | abpLocalization }}
+      </th>
+      <td mat-cell *matCellDef="let orderItem">
+        <span class="unit-price">
+          <mat-form-field appearance="outline">
+            <input
+              matInput
+              type="number"
+              [(ngModel)]="orderItem.unitPrice"
+              (ngModelChange)="onUnitPriceChange(orderItem)"
+              [readonly]="
+                orderItem.productItem.productCategoryType === productCategoryType.GiftCard
+              "
+            />
+          </mat-form-field>
+        </span>
+      </td>
+    </ng-container>
+
+    <!-- Price Type Column -->
+    <ng-container matColumnDef="priceType">
+      <th class="text-align-center" mat-header-cell *matHeaderCellDef>
+        {{ '::Pos:OrderItemColum:PriceType' | abpLocalization }}
+      </th>
+      <td mat-cell *matCellDef="let orderItem">
+        <span class="price-type">
+          <mat-form-field appearance="outline">
+            <mat-select
+              [(ngModel)]="orderItem.priceType"
+              (selectionChange)="onPriceTypeSelectionChange($event, orderItem)"
+              [disabled]="
+                orderItem.productItem.productCategoryType === productCategoryType.GiftCard
+              "
+            >
+              <mat-option
+                *ngFor="let priceTypeOption of priceTypeOptions"
+                [value]="priceTypeOption.value"
+              >
+                {{ '::Enum:PriceType.' + priceTypeOption.value | abpLocalization }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </span>
+      </td>
+    </ng-container>
+
+    <!-- Quantity Column -->
+    <ng-container matColumnDef="quantity">
+      <th class="text-align-center" mat-header-cell *matHeaderCellDef>
+        {{ '::Pos:OrderItemColum:Qty' | abpLocalization }}
+      </th>
+      <td mat-cell *matCellDef="let orderItem">
+        <span class="qty">
+          <mat-form-field appearance="outline">
+            <input
+              matInput
+              type="number"
+              [(ngModel)]="orderItem.qty"
+              (ngModelChange)="onQuantityChange(orderItem)"
+              [readonly]="
+                orderItem.productItem.productCategoryType === productCategoryType.GiftCard
+              "
+            />
+          </mat-form-field>
+        </span>
+      </td>
+    </ng-container>
+
+    <!-- Discount Column -->
+    <ng-container matColumnDef="discountCode">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ '::Pos:OrderItemColum:DiscountCode' | abpLocalization }}
+      </th>
+      <td mat-cell *matCellDef="let orderItem">
+        <span class="discount-code">
+          <mat-form-field appearance="outline">
+            <input
+              type="text"
+              placeholder="No Discount"
+              aria-label="Number"
+              matInput
+              [matAutocomplete]="auto"
+              [(ngModel)]="orderItem.discountCode"
+              (ngModelChange)="onDiscountCodeChange(orderItem)"
+              [readonly]="
+                (isDiscountCodeFieldReadOnly$ | async) ||
+                !isDiscountOnOrderItemEnabled ||
+                orderItem.productItem.productCategoryType === productCategoryType.GiftCard
+              "
+            />
+            <mat-autocomplete
+              autoActiveFirstOption
+              #auto="matAutocomplete"
+              (optionSelected)="onOptionSelected($event, orderItem)"
+            >
+              <mat-option
+                *ngFor="let option of orderItem.filteredDiscounts"
+                [value]="option.discountCode"
+                >{{ option.discountCode }}</mat-option
+              >
+            </mat-autocomplete>
+          </mat-form-field>
+        </span>
+      </td>
+    </ng-container>
+
+    <!-- Discount Column -->
+    <ng-container matColumnDef="discount">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ '::Pos:OrderItemColum:Discount' | abpLocalization }}
+      </th>
+      <td mat-cell *matCellDef="let orderItem">
+        <span class="discount d-flex">
+          <mat-form-field class="discount-amount" appearance="outline" disabled>
+            <input
+              matInput
+              type="number"
+              [value]="
+                orderItem.discountCode
+                  ? (orderItem.itemSpecificDiscount | number: '0.2-2')
+                  : (0 | number: '0.2-2')
+              "
+              readonly
+            />
+          </mat-form-field>
+
+          <!-- Angular Material Select for Currency/Percentage -->
+          <mat-form-field class="discount-currency" appearance="outline">
+            <mat-select
+              [value]="orderItem.discountType === discountType.Amount ? '$' : '%'"
+              disabled
+            >
+              <mat-option value="$" selected>$</mat-option>
+              <mat-option value="%">%</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </span>
+      </td>
+    </ng-container>
+
+    <!-- Total Column -->
+    <ng-container matColumnDef="total">
+      <th class="text-align-center" mat-header-cell *matHeaderCellDef>
+        {{ '::Pos:OrderItemColum:Total' | abpLocalization }}
+      </th>
+      <td mat-cell *matCellDef="let orderItem">
+        <span class="total">
+          <mat-form-field appearance="outline">
+            <input matInput type="text" [value]="orderItem.subTotal | number: '0.2-2'" readonly />
+          </mat-form-field>
+        </span>
+      </td>
+    </ng-container>
+
+    <!-- Action Button Column -->
+    <ng-container matColumnDef="actions">
+      <th class="text-align-center" mat-header-cell *matHeaderCellDef>
+        {{ '::Pos:ActionsBtn' | abpLocalization }}
+      </th>
+      <td class="action-buttons" mat-cell *matCellDef="let orderItem; let i = index">
+        <ng-container *ngIf="shouldDisplayContent(orderItem); else anotherContent">
+          <app-pos-added-item-icon [subOrderItem]="orderItem"></app-pos-added-item-icon>
+        </ng-container>
+        <ng-template #anotherContent>
+          <div class="pos-added-item-icon d-flex align-items-center">
+            <span class="added-recipient">
+              <ng-container *ngIf="orderItem.isWillPickup; else checkCarryOut">
+                <span class="clickable-text" (click)="onWillCallClick(orderItem)">
+                  {{
+                    orderItem.recipientName
+                      ? orderItem.recipientName
+                      : ('::WillCall' | abpLocalization)
+                  }}
+                </span>
+              </ng-container>
+              <ng-template #checkCarryOut>
+                <ng-container *ngIf="orderItem.isCarryOut; else showRecipientName">
+                  <span class="clickable-text" (click)="onCarryOutClick(orderItem)">
+                    {{
+                      orderItem.recipientName
+                        ? orderItem.recipientName
+                        : ('::CarryOut' | abpLocalization)
+                    }}
+                  </span>
+                </ng-container>
+              </ng-template>
+              <ng-template #showRecipientName>
+                <span class="clickable-text" (click)="onRecipientNameClick(orderItem)">
+                  {{ orderItem.recipient?.firstName }}
+                </span>
+              </ng-template>
+              <button mat-icon-button color="warn" (click)="onCancel(orderItem)">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </span>
+          </div>
+        </ng-template>
+      </td>
+    </ng-container>
+
+    <!-- Header Row -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <!-- Data Rows -->
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</ng-template>

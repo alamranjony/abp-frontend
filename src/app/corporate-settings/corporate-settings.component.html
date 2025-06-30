@@ -1,0 +1,647 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title-group>
+      <mat-card-title>
+        {{ '::Menu:CorporateSettings' | abpLocalization }}
+      </mat-card-title>
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <mat-card class="example-card mb-2" appearance="outlined">
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-12">
+              <span class="text-warning mat-mdc-card-title mb-2">{{
+                '::CorporateSetting.General' | abpLocalization
+              }}</span>
+            </div>
+            <div class="col-md-12">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label
+                  >{{ '::CorporateSetting.WireOutOrderHoldTime' | abpLocalization }}
+                </mat-label>
+                <input matInput type="number" formControlName="wireOutOrderHoldTime" />
+                <span matTextSuffix>In Minutes</span>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 mb-1">
+              <mat-label
+                >{{ '::CorporateSetting.PrintRawCommMessage' | abpLocalization }}
+              </mat-label>
+              <mat-radio-group formControlName="printRawCommMessage">
+                <mat-radio-button [value]="true"
+                  >{{ '::CorporateSetting.PrintRawCommMessage.Yes' | abpLocalization }}
+                </mat-radio-button>
+                <mat-radio-button [value]="false"
+                  >{{ '::CorporateSetting.PrintRawCommMessage.No' | abpLocalization }}
+                </mat-radio-button>
+              </mat-radio-group>
+            </div>
+            <div class="col-md-12">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label
+                  >{{ '::CorporateSetting.GeocodingPreferenceType' | abpLocalization }}
+                </mat-label>
+                <mat-select formControlName="geocodingPreferenceType">
+                  <mat-option *ngFor="let geoCodeType of geoCodingTypes" [value]="geoCodeType.value"
+                    >{{ '::Enum:GeoCodingPreferenceType.' + geoCodeType.value | abpLocalization }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label
+                  >{{ '::CorporateSetting.UpdateQuantityCommittedDays' | abpLocalization }}
+                </mat-label>
+                <input matInput type="number" formControlName="updateQuantityCommittedDays" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-12">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label
+                  >{{ '::CorporateSetting.PasswordResetDays' | abpLocalization }}
+                </mat-label>
+                <input matInput type="number" formControlName="passwordResetDays" />
+                <span matTextSuffix>In Days</span>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{ '::CorporateSetting.AuditLogEmails' | abpLocalization }}</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  formControlName="auditLogEmails"
+                  placeholder="{{
+                    '::CorporateSetting.AuditLogEmailsPlaceholder' | abpLocalization
+                  }}"
+                />
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-12">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{ '::CorporateSetting.MinOrderAmount' | abpLocalization }}</mat-label>
+                <input matInput type="number" formControlName="minOrderAmount" />
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-12" *abpPermission="'ClientPortal.Host'">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{ '::CorporateSetting.EmailForErrorLog' | abpLocalization }}</mat-label>
+                <input matInput type="text" formControlName="emailForErrorLog" />
+                <span matError *ngIf="form.get('emailForErrorLog').hasError('email')">
+                  {{ '::Email:Invalid' | abpLocalization }}
+                </span>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{
+                  '::CorporateSetting.HotOrderThreshold' | abpLocalization
+                }}</mat-label>
+                <input matInput type="text" formControlName="hotOrderThresholdInHour" />
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="example-card mb-2" appearance="outlined">
+        <mat-card-content>
+          <div class="col-md-12">
+            <span class="text-warning mat-mdc-card-title mb-2">{{
+              '::CorporateSetting.ReturnsAndEdits' | abpLocalization
+            }}</span>
+          </div>
+          <div class="col-md-12">
+            <mat-form-field class="w-100" appearance="outline">
+              <mat-label>{{ '::CorporateSetting.ReturnWindowDays' | abpLocalization }}</mat-label>
+              <input matInput type="number" formControlName="returnWindowDays" />
+              <span matTextSuffix>In Days</span>
+            </mat-form-field>
+          </div>
+          <div class="col-md-12 mb-1">
+            <mat-label>{{ '::CorporateSetting.AllowCOD' | abpLocalization }}</mat-label>
+            <mat-radio-group formControlName="allowCOD">
+              <mat-radio-button [value]="true"
+                >{{ '::CorporateSetting.AllowCOD.Yes' | abpLocalization }}
+              </mat-radio-button>
+              <mat-radio-button [value]="false"
+                >{{ '::CorporateSetting.AllowCOD.No' | abpLocalization }}
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+          <div class="col-md-12">
+            <label>{{ '::CorporateSetting.AllowCashOrderEdits' | abpLocalization }}</label>
+            <mat-radio-group formControlName="allowCashOrderEdits">
+              <mat-radio-button [value]="true"
+                >{{ '::CorporateSetting.AllowCashOrderEdits.Yes' | abpLocalization }}
+              </mat-radio-button>
+              <mat-radio-button [value]="false"
+                >{{ '::CorporateSetting.AllowCashOrderEdits.No' | abpLocalization }}
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="example-card mb-2" appearance="outlined">
+        <mat-card-content>
+          <div class="col-md-12">
+            <span class="text-warning mat-mdc-card-title mb-2">{{
+              '::CorporateSetting.TransactionCharges' | abpLocalization
+            }}</span>
+          </div>
+          <div class="col-md-12">
+            <mat-form-field class="w-100" appearance="outline">
+              <mat-label>{{ '::CorporateSetting.RelayFee' | abpLocalization }}</mat-label>
+              <input matInput type="number" formControlName="relayFee" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-12">
+            <mat-form-field class="w-100" appearance="outline">
+              <mat-label>{{ '::CorporateSetting.OverseasRelayFee' | abpLocalization }}</mat-label>
+              <input matInput type="number" formControlName="overseasRelayFee" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-12">
+            <mat-form-field class="w-100" appearance="outline">
+              <mat-label>{{ '::CorporateSetting.WireOutDeliveryFee' | abpLocalization }}</mat-label>
+              <input matInput type="number" formControlName="wireOutDeliveryFee" />
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="example-card mb-2" appearance="outlined">
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-12">
+              <span class="text-warning mat-mdc-card-title mb-2">{{
+                '::CorporateSetting.Sales' | abpLocalization
+              }}</span>
+            </div>
+            <div class="col-md-12">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label
+                  >{{ '::CorporateSetting.StartingCustomerId' | abpLocalization }}
+                </mat-label>
+                <input matInput type="number" formControlName="startingCustomerId" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-12">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{ '::CorporateSetting.StartingOrderId' | abpLocalization }}</mat-label>
+                <input matInput type="number" formControlName="startingOrderId" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-12">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label
+                  >{{ '::CorporateSetting.PrintNoteCardType' | abpLocalization }}
+                </mat-label>
+                <mat-select formControlName="printNoteCardType">
+                  <mat-option
+                    *ngFor="let noteCardType of printNoteCardTypeOptions"
+                    [value]="noteCardType.value"
+                    >{{ '::Enum:PrintNoteCardType.' + noteCardType.value | abpLocalization }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{ '::CorporateSetting.ReturnedCheckFee' | abpLocalization }}</mat-label>
+                <input matInput type="number" formControlName="returnedCheckFee" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-12">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label
+                  >{{ '::CorporateSetting.CreditStatusNotAllowedToCharge' | abpLocalization }}
+                </mat-label>
+                <mat-select formControlName="creditStatusNotAllowedToCharge">
+                  <mat-option
+                    *ngFor="let creditOption of creditStatusNotAllowedToChargeOptions"
+                    [value]="creditOption"
+                    >{{ creditOption }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label
+                  >{{ '::CorporateSetting.FulfillingStoreId' | abpLocalization }}
+                </mat-label>
+                <mat-select formControlName="fulfillingStoreId">
+                  <mat-option *ngFor="let store of stores" [value]="store.id"
+                    >{{ store.storeName }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label
+                  >{{ '::CorporateSetting.InventoryTrackingType' | abpLocalization }}
+                </mat-label>
+                <mat-select formControlName="inventoryTrackingType">
+                  <mat-option
+                    *ngFor="let trackingType of inventoryTrackingTypes"
+                    [value]="trackingType.value"
+                    >{{ '::Enum:InventoryTrackingType.' + trackingType.value | abpLocalization }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12">
+              <mat-checkbox formControlName="applyCreditCardSetupToAllStores"
+                >{{ '::CorporateSetting.ApplyCreditCardSetupToAllStores' | abpLocalization }}
+              </mat-checkbox>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="example-card mb-2" appearance="outlined">
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-12">
+              <span class="text-warning mat-mdc-card-title mb-2">{{
+                '::CorporateSetting.Tax' | abpLocalization
+              }}</span>
+            </div>
+            <div class="col-md-12">
+              <mat-label>{{
+                '::CorporateSetting.TaxOnBusinessLocation' | abpLocalization
+              }}</mat-label>
+              <mat-radio-group formControlName="taxOnBusinessLocation">
+                <mat-radio-button [value]="true"
+                  >{{ '::CorporateSetting.TaxOnBusinessLocation.Yes' | abpLocalization }}
+                </mat-radio-button>
+                <mat-radio-button [value]="false"
+                  >{{ '::CorporateSetting.TaxOnBusinessLocation.No' | abpLocalization }}
+                </mat-radio-button>
+              </mat-radio-group>
+            </div>
+            @if (form.get('taxOnBusinessLocation').value) {
+              <div class="col-md-12">
+                <mat-label>{{ '::CorporateSetting.TaxOnDelivery' | abpLocalization }}</mat-label>
+                <mat-radio-group formControlName="taxOnDelivery">
+                  <mat-radio-button [value]="true"
+                    >{{ '::CorporateSetting.TaxOnDelivery.Yes' | abpLocalization }}
+                  </mat-radio-button>
+                  <mat-radio-button [value]="false"
+                    >{{ '::CorporateSetting.TaxOnDelivery.No' | abpLocalization }}
+                  </mat-radio-button>
+                </mat-radio-group>
+              </div>
+              <div class="col-md-12">
+                <mat-label>{{ '::CorporateSetting.TaxOnRelay' | abpLocalization }}</mat-label>
+                <mat-radio-group formControlName="taxOnRelay">
+                  <mat-radio-button [value]="true"
+                    >{{ '::CorporateSetting.TaxOnRelay.Yes' | abpLocalization }}
+                  </mat-radio-button>
+                  <mat-radio-button [value]="false"
+                    >{{ '::CorporateSetting.TaxOnRelay.No' | abpLocalization }}
+                  </mat-radio-button>
+                </mat-radio-group>
+              </div>
+              <div class="col-md-12">
+                <mat-label>{{ '::CorporateSetting.TaxOnMerchandise' | abpLocalization }}</mat-label>
+                <mat-radio-group formControlName="taxOnMerchandise">
+                  <mat-radio-button [value]="true"
+                    >{{ '::CorporateSetting.TaxOnMerchandise.Yes' | abpLocalization }}
+                  </mat-radio-button>
+                  <mat-radio-button [value]="false"
+                    >{{ '::CorporateSetting.TaxOnMerchandise.No' | abpLocalization }}
+                  </mat-radio-button>
+                </mat-radio-group>
+              </div>
+            }
+            <div class="col-md-12 mt-2">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label
+                  >{{ '::CorporateSetting.SalesTaxPercentage' | abpLocalization }}
+                </mat-label>
+                <input matInput type="number" formControlName="salesTaxPercentage" />
+                <span matTextSuffix> % </span>
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="example-card mb-2" appearance="outlined">
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-12">
+              <span class="text-warning mat-mdc-card-title mb-2">{{
+                '::CorporateSetting.ReviewRequired' | abpLocalization
+              }}</span>
+            </div>
+            <div class="col-md-6">
+              <label>{{ '::CorporateSetting.FuneralRequired' | abpLocalization }}</label>
+              <mat-radio-group formControlName="funeralRequired">
+                <mat-radio-button [value]="true"
+                  >{{ '::CorporateSetting.FuneralRequired.Yes' | abpLocalization }}
+                </mat-radio-button>
+                <mat-radio-button [value]="false"
+                  >{{ '::CorporateSetting.FuneralRequired.No' | abpLocalization }}
+                </mat-radio-button>
+              </mat-radio-group>
+            </div>
+            <div class="col-md-6">
+              <mat-checkbox formControlName="printFuneralReviewCopy"
+                >{{ '::CorporateSetting.PrintFuneralReviewCopy' | abpLocalization }}
+              </mat-checkbox>
+            </div>
+            <div class="col-md-6">
+              <label>{{ '::CorporateSetting.HospitalRequired' | abpLocalization }}</label>
+              <mat-radio-group formControlName="hospitalRequired">
+                <mat-radio-button [value]="true"
+                  >{{ '::CorporateSetting.HospitalRequired.Yes' | abpLocalization }}
+                </mat-radio-button>
+                <mat-radio-button [value]="false"
+                  >{{ '::CorporateSetting.HospitalRequired.No' | abpLocalization }}
+                </mat-radio-button>
+              </mat-radio-group>
+            </div>
+            <div class="col-md-6">
+              <mat-checkbox formControlName="printHospitalReviewCopy"
+                >{{ '::CorporateSetting.PrintHospitalReviewCopy' | abpLocalization }}
+              </mat-checkbox>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="example-card mb-2" appearance="outlined">
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-12">
+              <span class="text-warning mat-mdc-card-title mb-2">{{
+                '::CorporateSetting.UpdateCustomerAccountInfo' | abpLocalization
+              }}</span>
+            </div>
+            <div class="col-md-12">
+              <mat-radio-group formControlName="customerAccountInfoUpdateType">
+                <mat-radio-button
+                  *ngFor="let accountType of accountUpdateTypes"
+                  [value]="accountType.value"
+                  >{{
+                    '::Enum:CustomerAccountInfoUpdateType.' + accountType.value | abpLocalization
+                  }}
+                </mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="example-card mb-2" appearance="outlined">
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-12">
+              <span class="text-warning mat-mdc-card-title mb-2">{{
+                '::CorporateSetting.RecipeInventoryManageType' | abpLocalization
+              }}</span>
+            </div>
+            <div class="col-md-12">
+              <mat-radio-group formControlName="recipeInventoryManageType">
+                <mat-radio-button
+                  *ngFor="let recipeType of recipeInventoryManageTypes"
+                  [value]="recipeType.value"
+                  >{{
+                    '::Enum:RecipeInventoryManageType.' + recipeType.value | abpLocalization
+                  }}</mat-radio-button
+                >
+              </mat-radio-group>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="example-card mb-2" appearance="outlined">
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-12">
+              <span class="text-warning mat-mdc-card-title mb-2">{{
+                '::CorporateSetting.PosInfo' | abpLocalization
+              }}</span>
+            </div>
+            <div class="col-md-12">
+              <mat-checkbox formControlName="enableDiscountOnOrderItemSubtotal"
+                >{{ '::CorporateSetting.EnableDiscountOnOrderItems' | abpLocalization }}
+              </mat-checkbox>
+            </div>
+            <div class="col-md-12">
+              <mat-checkbox formControlName="allowPartialPayment">{{
+                '::CorporateSetting.AllowPartialPayment' | abpLocalization
+              }}</mat-checkbox>
+            </div>
+            <div class="col-md-12 mt-2">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{ '::CorporateSetting.CreditCardFee' | abpLocalization }}</mat-label>
+                <input matInput type="number" formControlName="creditCardFee" />
+                <span matTextSuffix> % </span>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12">
+              <mat-checkbox formControlName="enabledCreditCardFeeOnPosOrder"
+                >{{ '::CorporateSetting.EnabledCreditCardFeeOnPosOrder' | abpLocalization }}
+              </mat-checkbox>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="example-card mb-2" appearance="outlined">
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-12">
+              <span class="text-warning mat-mdc-card-title mb-2">{{
+                '::CorporateSetting.GiftCardInfo' | abpLocalization
+              }}</span>
+            </div>
+            <div class="col-md-12">
+              <mat-checkbox formControlName="enableCarryForwardNormalGiftCardBalance"
+                >{{
+                  '::CorporateSetting.EnableCarryForwardNormalGiftCardBalance' | abpLocalization
+                }}
+              </mat-checkbox>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="example-card mb-2" appearance="outlined">
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-12">
+              <span class="text-warning mat-mdc-card-title mb-2">{{
+                '::CorporateSetting.CorporateCustomers' | abpLocalization
+              }}</span>
+            </div>
+            <div class="col-md-12">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{ '::CorporateSetting.Customer' | abpLocalization }}</mat-label>
+                <mat-select
+                  formControlName="corporateCustomers"
+                  multiple
+                  (selectionChange)="onCustomerSelectionChange()"
+                >
+                  <mat-select-trigger>
+                    {{ customerSelectionBoxDisplayName }}
+                  </mat-select-trigger>
+                  @for (customer of customers; track customer) {
+                    <mat-option [value]="customer.id">{{ customer.name }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="example-card mb-2" appearance="outlined">
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-12">
+              <span class="text-warning mat-mdc-card-title mb-2">{{
+                '::CorporateSetting.MaxIdleTimeBeforeSessionTimeout' | abpLocalization
+              }}</span>
+            </div>
+            <div class="col-md-12">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label
+                  >{{ '::CorporateSetting.MaxIdleTimeBeforeSessionTimeout' | abpLocalization }}
+                </mat-label>
+                <input matInput type="number" formControlName="maxIdleTimeBeforeSessionTimeout" />
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="example-card mb-2" appearance="outlined">
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-12">
+              <span class="text-warning mat-mdc-card-title mb-2">{{
+                '::AccountSettings:Country' | abpLocalization
+              }}</span>
+            </div>
+            <div class="col-md-12">
+              <app-dropdown
+                [label]="'::AccountSettings:Country' | abpLocalization"
+                [options]="countries"
+                [displayField]="'name'"
+                [valueField]="'id'"
+                [control]="form.get('countryId')"
+              >
+              </app-dropdown>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <div *abpPermission="'ClientPortal.Host'">
+        <mat-card appearance="outlined" class="example-card mb-2">
+          <mat-card-content>
+            <div class="row">
+              <div class="col-md-12">
+                <span class="text-warning mat-mdc-card-title mb-2">{{
+                  '::CorporateSetting:PrintNode' | abpLocalization
+                }}</span>
+              </div>
+              <div class="col-md-12">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>{{ '::AccountSettings:PrintNodeApiKey' | abpLocalization }}</mat-label>
+                  <input
+                    [type]="hideApiKey ? 'password' : 'text'"
+                    formControlName="printNodeApiKey"
+                    matInput
+                  />
+                  <button
+                    (click)="hideApiKey = !hideApiKey"
+                    mat-icon-button
+                    matSuffix
+                    type="button"
+                  >
+                    <mat-icon>{{ hideApiKey ? 'visibility_off' : 'visibility' }}</mat-icon>
+                  </button>
+                </mat-form-field>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <mat-card class="example-card mb-2" appearance="outlined">
+        <mat-card-content>
+          <div class="col-md-12">
+            <span class="text-warning mat-mdc-card-title mb-2">{{
+              '::CorporateSetting.TermsAndConditions' | abpLocalization
+            }}</span>
+          </div>
+          <div class="col-md-12 mt-2">
+            <mat-form-field class="w-100" appearance="outline">
+              <mat-label>{{ '::CorporateSetting.TermsAndConditions' | abpLocalization }}</mat-label>
+              <textarea matInput formControlName="termsAndConditions" rows="5"></textarea>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="example-card mb-2" appearance="outlined">
+        <mat-card-content>
+          <div class="col-md-12">
+            <span class="text-warning mat-mdc-card-title mb-2">{{
+              '::CorporateSetting.DefaultPrintMessages' | abpLocalization
+            }}</span>
+          </div>
+          <div class="col-md-12 mt-2">
+            <mat-form-field class="w-100" appearance="outline">
+              <mat-label>{{
+                '::CorporateSetting.PrintReceiptMessage' | abpLocalization
+              }}</mat-label>
+              <input matInput formControlName="printReceiptMessage" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-12 mt-2">
+            <mat-form-field class="w-100" appearance="outline">
+              <mat-label>{{
+                '::CorporateSetting.PrintInvoiceMessage' | abpLocalization
+              }}</mat-label>
+              <input matInput formControlName="printInvoiceMessage" />
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="example-card mb-2" appearance="outlined">
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-12">
+              <span class="text-warning mat-mdc-card-title mb-2">{{
+                '::CorporateSetting.DesignModule' | abpLocalization
+              }}</span>
+            </div>
+            <div class="col-md-12">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{ '::CorporateSetting.CutOffTime' | abpLocalization }} </mat-label>
+                <input matInput type="number" formControlName="cutOffTime" />
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <button mat-raised-button color="primary" type="submit" class="float-end">
+        <mat-icon>save</mat-icon>
+        {{ '::Save' | abpLocalization }}
+      </button>
+    </form>
+  </mat-card-content>
+</mat-card>

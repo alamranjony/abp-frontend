@@ -1,0 +1,123 @@
+<mat-card>
+  <mat-card-header class="w-100">
+    <mat-card-title-group class="w-100">
+      <mat-card-title class="abp-card-title">
+        {{ '::Customer:OrderHistory' | abpLocalization }}
+      </mat-card-title>
+    </mat-card-title-group>
+    <app-back-button [route]="'/customers'"></app-back-button>
+  </mat-card-header>
+  <mat-card-content class="my-3">
+    <table mat-table [dataSource]="dataSourceItems" class="mat-elevation-z8">
+      <ng-container matColumnDef="subOrder">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ '::Customer:OrderHistory.SubOrder' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.sequenceNumber }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="deliveryDate">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ '::Customer:OrderHistory.DeliveryDate' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.deliveryDate ? (element.deliveryDate | date) : '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="orderType">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ '::Customer:OrderHistory.OrderType' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ '::Enum:OrderType.' + element.orderType | abpLocalization }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="recipient">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ '::Customer:OrderHistory.Recipient' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.recipient ?? '-' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="deliveryLocation">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ '::Customer:OrderHistory.DeliveryLocation' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.deliveryLocation ?? '-' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="orderDetails">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ '::Customer:OrderHistory.OrderDetails' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.orderDetails ?? '-' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="orderStatus">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ '::Customer:OrderHistory.OrderStatus' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ '::Enum:OrderStatus.' + element.orderStatus | abpLocalization }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="deliveryType">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ '::Customer:OrderHistory.DeliveryType' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          @if (element.deliveryType) {
+            {{ '::Enum:DeliveryDetails.DeliveryType.' + element.deliveryType | abpLocalization }}
+          } @else {
+            <span>-</span>
+          }
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="deliveryStatus">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ '::Customer:OrderHistory.DeliveryStatus' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ '::Enum:SubOrderDeliveryStatus.' + element.deliveryStatus | abpLocalization }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="deliveredDate">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ '::Customer:OrderHistory.DeliveredDate' | abpLocalization }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.deliveredDate ? (element.deliveredDate | date) : '-' }}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+      <!-- Group header -->
+      <ng-container matColumnDef="groupHeader">
+        <mat-cell *matCellDef="let group">
+          <mat-icon *ngIf="group.expanded">expand_less</mat-icon>
+          <mat-icon *ngIf="!group.expanded">expand_more</mat-icon>
+          <strong
+            >{{ '::Customer:OrderHistory.Order' | abpLocalization }} #{{
+              group[groupByColumns]
+            }}
+            ({{ group.totalCounts }})
+          </strong>
+        </mat-cell>
+      </ng-container>
+
+      <mat-row
+        *matRowDef="let row; columns: ['groupHeader']; when: isGroup"
+        (click)="groupHeaderClick(row)"
+      >
+      </mat-row>
+
+      <tr class="mat-row no-data-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+          <app-empty-table-message></app-empty-table-message>
+        </td>
+      </tr>
+    </table>
+  </mat-card-content>
+</mat-card>

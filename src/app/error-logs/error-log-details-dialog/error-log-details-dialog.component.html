@@ -1,0 +1,19 @@
+<div class="modal-header">
+  <h2 mat-dialog-title>{{ '::Logs:Details' | abpLocalization }}</h2>
+  <button mat-icon-button mat-dialog-close aria-label="Close">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<mat-dialog-content>
+  <hr />
+  @for (item of this.errorLogDetails; track item.label) {
+    <div class="p-1">
+      <strong>{{ item.label | abpLocalization }}: </strong>
+      <span [ngClass]="item.label === '::Logs:FullMessage' ? 'log-value-long' : 'log-value'">
+        {{ item.value ? item.value : ('::Logs:Empty' | abpLocalization) }}
+      </span>
+    </div>
+    <hr />
+  }
+</mat-dialog-content>
