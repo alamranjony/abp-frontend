@@ -29,8 +29,8 @@ jobs:
 
       - name: Copy environment files
         run: |
-          copy ".\Deployment Materials\Dev\environment.prod.ts" ".\angular\src\environments\environment.prod.ts"
-          copy ".\Deployment Materials\Dev\environment.ts" ".\angular\src\environments\environment.ts"
+          copy "Deployment Materials\Dev\environment.prod.ts" "angular\src\environments\environment.prod.ts"
+          copy "Deployment Materials\Dev\environment.ts" "angular\src\environments\environment.ts"
 
       - name: Install ABP CLI
         run: dotnet tool install -g Volo.Abp.Cli
@@ -46,7 +46,7 @@ jobs:
           yarn build:prod
 
       - name: Copy web.config into build output
-        run: copy ".\Deployment Materials\Dev\web.config" ".\angular\dist\ClientPortal\web.config"
+        run: copy "Deployment Materials\Dev\web.config" "angular\dist\ClientPortal\web.config"
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
