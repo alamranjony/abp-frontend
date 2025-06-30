@@ -27,18 +27,13 @@ jobs:
       - name: Install project dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Copy environment files
-        run: |
-          copy "Deployment-Materials\Dev\environment.prod.ts" "angular\src\environments\environment.prod.ts"
-          copy "Deployment-Materials\Dev\environment.ts" "angular\src\environments\environment.ts"
-
       - name: Install ABP CLI
         run: dotnet tool install -g Volo.Abp.Cli
 
       - name: Generate Angular proxies
         run: |
           cd angular
-          abp generate-proxy -t ng
+          abp generate-proxy -t ng proxyGenerateProd
 
       - name: Build Angular App
         run: |
